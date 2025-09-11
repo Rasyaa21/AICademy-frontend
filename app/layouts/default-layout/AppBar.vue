@@ -19,20 +19,17 @@ onMounted(() => {
 </script>
 
 <template>
-  <header class="sticky top-0 z-50 bg-primary/90 backdrop-blur shadow-sm">
+  <header class="sticky top-0 z-50 bg-primary/90 backdrop-blur shadow-sm w-full">
     <nav class="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 py-3">
-      <!-- Left: Brand -->
-      <NuxtLink to="/" class="text-2xl font-bold text-white">AICademy</NuxtLink>
+      <NuxtLink to="/" class="text-2xl font-bold text-white w-1/3">AICademy</NuxtLink>
 
-      <!-- Center: Desktop links -->
-      <ul class="hidden md:flex items-center gap-6 text-white font-medium">
+      <ul class="hidden md:flex items-center gap-6 text-white font-medium w-1/3 justify-center">
         <li v-for="l in links" :key="l.to">
           <NuxtLink :to="l.to" class="hover:text-white/80">{{ l.label }}</NuxtLink>
         </li>
       </ul>
 
-      <!-- Right: Desktop actions -->
-      <div class="hidden md:flex items-center gap-3">
+      <div class="hidden md:flex items-center gap-3 w-1/3 justify-end">
         <NuxtLink to="/login" class="px-4 py-2 rounded-lg border border-white text-white font-semibold hover:bg-white/10">
           Log In
         </NuxtLink>

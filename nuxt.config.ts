@@ -8,7 +8,8 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@nuxtjs/google-fonts',
     'nuxt-marquee',
-    'nuxt-marquee'
+    'nuxt-marquee',
+    'motion-v/nuxt'
   ], 
   googleFonts: {
     families: {

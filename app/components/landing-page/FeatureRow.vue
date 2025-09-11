@@ -31,7 +31,7 @@ const props = withDefaults(defineProps<{
             <img :src="props.iconSrc" alt="Icon" class="w-full h-full object-contain" />
         </div>
 
-        <div class="p-4 rounded-xl bg-white/60">
+        <div class="p-4 rounded-xl bg-white/60 shadow-lg">
             <div :class="['flex flex-col px-6 py-4 rounded-xl bg-white items-start text-start max-w-md', props.cardClass]">
             <h3 class="text-2xl font-bold">{{ props.title }}</h3>
             <p v-if="props.description" class="text-lg">{{ props.description }}</p>

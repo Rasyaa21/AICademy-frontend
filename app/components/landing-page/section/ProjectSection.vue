@@ -4,47 +4,47 @@ import ProjectCard from '../ProjectCard.vue';
 const projects = ref([
   {
     id: 1,
-    title: 'Dodolan - E-commerce Platform',
+    title: 'Sortify',
     description: 'Platform e-commerce modern dengan fitur lengkap untuk UMKM dan toko online. Dilengkapi dengan sistem pembayaran terintegrasi dan dashboard analytics.',
-    category: 'Full Stack',
+    category: 'Mobile Application',
     rank: 1,
     author: {
-      avatar: '/assets/images/student-1.jpg',
-      team: 'Tim PHP Forever'
+      avatar: '/assets/images/project/dinacom.png',
+      team: 'klub_realitas.dart'
     },
-    tech: ['Laravel', 'Vue.js', 'MySQL', 'Tailwind'],
-    image: '/assets/images/project-1.jpg',
-    githubUrl: 'https://github.com/example/dodolan',
+    tech: ['Flutter', 'Gemini AI', 'Laravel', 'MySQL'],
+    image: '/assets/images/project/dinacom.png',
+    githubUrl: 'https://github.com/Rasyaa21/Nyampah_Dinacom',
     liveUrl: 'https://dodolan.example.com'
   },
   {
     id: 2,
-    title: 'EduTrack - Learning Management',
+    title: 'Sortify',
     description: 'Sistem manajemen pembelajaran digital untuk sekolah dengan fitur tracking progress siswa dan video conference terintegrasi.',
-    category: 'Web Development',
+    category: 'Mobile Application',
     rank: 2,
     author: {
-      avatar: '/assets/images/student-2.jpg',
-      team: 'Code Warriors'
+      avatar: '/assets/images/project/dinacom.png',
+      team: 'klub_realitas.dart'
     },
-    tech: ['React', 'Node.js', 'MongoDB', 'Socket.io'],
-    image: '/assets/images/project-2.jpg',
-    githubUrl: 'https://github.com/example/edutrack',
+    tech: ['Flutter', 'Gemini AI', 'Laravel', 'MySQL'],
+    image: '/assets/images/project/dinacom.png',
+    githubUrl: 'https://github.com/Rasyaa21/Nyampah_Dinacom',
     liveUrl: 'https://edutrack.example.com'
   },
   {
     id: 3,
-    title: 'SmartLibrary - Digital Library',
+    title: 'Dodolan',
     description: 'Perpustakaan digital dengan sistem AI recommendation dan QR code untuk peminjaman buku fisik yang terintegrasi.',
-    category: 'Mobile App',
+    category: 'Web Application',
     rank: 3,
     author: {
-      avatar: '/assets/images/student-3.jpg',
-      team: 'Digital Innovators'
+      avatar: '/assets/images/project/dodolan-img.png',
+      team: 'Penerbang Roket'
     },
-    tech: ['Flutter', 'Firebase', 'Python', 'TensorFlow'],
-    image: '/assets/images/project-3.jpg',
-    githubUrl: 'https://github.com/example/smartlibrary',
+    tech: ['Laravel', 'MySql', 'Midtrans'],
+    image: '/assets/images/project/dodolan-img.png',
+    githubUrl: 'https://github.com/Rasyaa21/dodolan-final-web',
     liveUrl: 'https://smartlibrary.example.com'
   }
 ]);
