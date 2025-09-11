@@ -14,8 +14,8 @@ const challenges = ref([
     participants: 47,
     deadline: '20 Agustus 2025',
     author: {
-      name: 'Farrel Dwi Lasso S.Pd',
-      avatar: '/assets/images/teacher-avatar.jpg',
+      name: 'Agus Dwi Cahaya S.Kom',
+      avatar: '/assets/images/profile/lord-aic.jpeg',
       school: 'SMK Telkom Purwokerto'
     },
     tech: ['Laravel', 'MySQL', 'PHP'],
@@ -30,8 +30,8 @@ const challenges = ref([
     participants: 32,
     deadline: '25 Agustus 2025',
     author: {
-      name: 'Andi Pratama S.Kom',
-      avatar: '/assets/images/teacher-avatar-2.jpg',
+      name: 'Agus Dwi Cahaya S.Kom',
+      avatar: '/assets/images/profile/lord-aic.jpeg',
       school: 'SMK Telkom Purwokerto'
     },
     tech: ['React JS', 'Tailwind', 'Vite'],
@@ -46,8 +46,8 @@ const challenges = ref([
     participants: 28,
     deadline: '30 Agustus 2025',
     author: {
-      name: 'Sari Indah S.Sn',
-      avatar: '/assets/images/teacher-avatar-3.jpg',
+      name: 'Agus Dwi Cahaya S.Kom',
+      avatar: '/assets/images/profile/lord-aic.jpeg',
       school: 'SMK Telkom Purwokerto'
     },
     tech: ['Figma', 'Adobe XD', 'Prototyping'],
@@ -62,8 +62,8 @@ const challenges = ref([
     participants: 15,
     deadline: '15 September 2025',
     author: {
-      name: 'Budi Santoso S.T',
-      avatar: '/assets/images/teacher-avatar-4.jpg',
+      name: 'Agus Dwi Cahaya S.Kom',
+      avatar: '/assets/images/profile/lord-aic.jpeg',
       school: 'SMK Telkom Purwokerto'
     },
     tech: ['Kali Linux', 'Burp Suite', 'OWASP'],

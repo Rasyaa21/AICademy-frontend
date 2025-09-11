@@ -4,16 +4,16 @@ import ProjectCard from '../ProjectCard.vue';
 const projects = ref([
   {
     id: 1,
-    title: 'Sortify',
+    title: 'Pregnacare',
     description: 'Platform e-commerce modern dengan fitur lengkap untuk UMKM dan toko online. Dilengkapi dengan sistem pembayaran terintegrasi dan dashboard analytics.',
-    category: 'Mobile Application',
+    category: 'Web Application',
     rank: 1,
     author: {
-      avatar: '/assets/images/project/dinacom.png',
-      team: 'klub_realitas.dart'
+      avatar: '/assets/images/project/pregnacare.jpeg',
+      team: 'IntechCode'
     },
-    tech: ['Flutter', 'Gemini AI', 'Laravel', 'MySQL'],
-    image: '/assets/images/project/dinacom.png',
+    tech: ['Next.js', 'Express.js', 'Prisma', 'PosgresSQL'],
+    image: '/assets/images/project/pregnacare.jpeg',
     githubUrl: 'https://github.com/Rasyaa21/Nyampah_Dinacom',
     liveUrl: 'https://dodolan.example.com'
   },
@@ -34,18 +34,18 @@ const projects = ref([
   },
   {
     id: 3,
-    title: 'Dodolan',
+    title: 'Agriloka',
     description: 'Perpustakaan digital dengan sistem AI recommendation dan QR code untuk peminjaman buku fisik yang terintegrasi.',
     category: 'Web Application',
     rank: 3,
     author: {
       avatar: '/assets/images/project/dodolan-img.png',
-      team: 'Penerbang Roket'
+      team: 'IntechCode'
     },
-    tech: ['Laravel', 'MySql', 'Midtrans'],
-    image: '/assets/images/project/dodolan-img.png',
+    tech: ['Next.js'],
+    image: '/assets/images/project/agriloka.jpeg',
     githubUrl: 'https://github.com/Rasyaa21/dodolan-final-web',
-    liveUrl: 'https://smartlibrary.example.com'
+    liveUrl: 'https://agriloka-intech.vercel.app/'
   }
 ]);
 

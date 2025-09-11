@@ -30,7 +30,10 @@
                 </div>
             </div>
 
-            <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-white text-center leading-tight mb-6 drop-shadow-lg z-10 relative">
+
+            <h1 
+                class="text-5xl md:text-6xl lg:text-7xl font-bold text-white text-center leading-tight mb-6 drop-shadow-lg z-10 relative"
+                >
                 Temukan Karir <br /> Yang Kamu Banget
             </h1>
 
@@ -47,10 +50,10 @@
             <div class="flex items-center space-x-6 mt-4 mb-8 z-10 relative">
                 <div class="flex items-center space-x-2">
                     <div class="flex -space-x-2">
-                        <div class="w-8 h-8 bg-blue-500 rounded-full border-2 border-white"></div>
-                        <div class="w-8 h-8 bg-green-500 rounded-full border-2 border-white"></div>
-                        <div class="w-8 h-8 bg-purple-500 rounded-full border-2 border-white"></div>
-                        <div class="w-8 h-8 bg-accent rounded-full border-2 border-white flex items-center justify-center">
+                        <div class="w-8 h-8 bg-[url(/assets/images/profile/sigma-2.jpeg)] bg-cover rounded-full border-2 border-white"></div>
+                        <div class="w-8 h-8 bg-[url(/assets/images/profile/sigma.jpeg)] bg-cover rounded-full border-2 border-white"></div>
+                        <div class="w-8 h-8 bg-[url(/assets/images/profile/sigma-3.jpeg)] bg-cover rounded-full border-2 border-white"></div>
+                        <div class="w-8 h-8 bg-[url(/assets/images/profile/axel.jpeg)] bg-cover rounded-full border-2 border-white flex items-center justify-center">
                             <span class="text-xs text-white font-bold">5K+</span>
                         </div>
                     </div>
@@ -192,5 +195,5 @@
 </style>
 
 <script setup>
-import { motion } from 'motion-v'
+
 </script>
