@@ -2,9 +2,9 @@
 const year = new Date().getFullYear()
 
 const socialLinks = [
-  { href: "https://instagram.com", icon: "mdi:instagram" },
-  { href: "https://youtube.com", icon: "mdi:youtube" },
-  { href: "https://tiktok.com", icon: "ic:baseline-tiktok" }
+  { href: "https://www.instagram.com/stematelpwt/", icon: "mdi:instagram" },
+  { href: "https://www.youtube.com/@stematelpwt", icon: "mdi:youtube" },
+  { href: "https://www.tiktok.com/@stematelpwt", icon: "ic:baseline-tiktok" }
 ]
 
 const aboutLinks = [

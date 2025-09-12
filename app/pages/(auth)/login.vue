@@ -30,7 +30,7 @@
             <div class="bg-white backdrop-blur-xl flex items-center justify-center rounded-3xl shadow-2xl flex-row overflow-hidden border border-white/20">
                 <div class="lg:w-1/2 w-full h-full flex flex-col lg:px-12 px-8 items-center lg:py-8 py-12">
                     <div class="text-center mb-8">
-                        <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 bg-primary/10">
                             <svg class="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1L9 7V9C9 10.1 9.9 11 11 11V14L13 16L15 14V11C16.1 11 17 10.1 17 9H21ZM6 12C7.1 12 8 11.1 8 10S7.1 8 6 8 4 8.9 4 10 4.9 12 6 12ZM18 12C19.1 12 20 11.1 20 10S19.1 8 18 8 16 8.9 16 10 16.9 12 18 12ZM4 18C4 16.9 4.9 16 6 16S8 16.9 8 18 7.1 20 6 20 4 19.1 4 18ZM16 18C16 16.9 16.9 16 18 16S20 16.9 20 18 19.1 20 18 20 16 19.1 16 18Z"/>
                             </svg>
@@ -41,40 +41,39 @@
                         </p>
                     </div>
 
-                    <form action="" class="w-full max-w-md space-y-5">
+                    <form @submit.prevent="handleLogin" class="w-full max-w-md space-y-5">
+                        <MainTextfield
+                            v-model="form.email"
+                            name="email"
+                            label="Email"
+                            type="email"
+                            placeholder="nama@email.com"
+                            required
+                        >
+                            <template #icon>
+                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
+                                </svg>
+                            </template>
+                        </MainTextfield>
 
                         <div class="space-y-2">
-                            <label for="email" class="text-sm font-semibold text-gray-700 block">Email</label>
-                            <div class="relative">
-                                <input 
-                                    type="email" 
-                                    id="email"
-                                    class="border border-gray-200 rounded-xl w-full py-4 px-4 text-gray-700 placeholder-gray-400 bg-gray-50/50 focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300 outline-none" 
-                                    placeholder="nama@email.com"
-                                >
-                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="space-y-2">
-                            <label for="password" class="text-sm font-semibold text-gray-700 block">Password</label>
-                            <div class="relative">
-                                <input 
-                                    type="password" 
-                                    id="password"
-                                    class="border border-gray-200 rounded-xl w-full py-4 px-4 text-gray-700 placeholder-gray-400 bg-gray-50/50 focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300 outline-none" 
-                                    placeholder="Minimal 8 karakter"
-                                >
-                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                            <MainTextfield
+                                v-model="form.password"
+                                name="password"
+                                label="Password"
+                                type="password"
+                                :is-password=true
+                                placeholder="Minimal 8 karakter"
+                                required
+                            >
+                                <template #icon>
                                     <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                                     </svg>
-                                </div>
-                            </div>
+                                </template>
+                            </MainTextfield>
+                            <a href="/forgot-password" class="text-primary flex items-end justify-end text-sm hover:text-primary/80 transition-colors">Lupa Password</a>
                         </div>
 
                         <button 
@@ -90,9 +89,16 @@
                                 Daftar di sini
                             </a>
                         </div>
+                        <div class="flex flex-row items-center justify-center space-x-2">
+                            <h1  class="text-gray-600 font-semibold transition-colors text-center">Masuk Sebagai </h1>
+                            <a href="/teacher-login" class="text-primary font-semibold hover:text-primary/80 transition-colors text-center">Guru</a>
+                            <h1>/</h1>
+                            <a href="/company-login" class="text-primary font-semibold hover:text-primary/80 transition-colors text-center">Perusahaan</a>
+                            <h1>/</h1>
+                            <a href="/admin-login" class="text-primary font-semibold hover:text-primary/80 transition-colors text-center">Admin</a>
+                        </div>
                     </form>
 
-                    <!-- Help Section -->
                     <div class="text-center mt-8 pt-2 border-t border-gray-100">
                         <p class="text-gray-600 mb-1">Butuh bantuan?</p>
                         <a href="mailto:aicademy@app.com" class="text-primary font-semibold hover:text-primary/80 transition-colors">
@@ -115,36 +121,48 @@
 </template>
 
 <script setup>
+import MainTextfield from '~/components/textfield/MainTextfield.vue'
+
 definePageMeta({
     layout: false
 })
+
+const form = ref({
+    email: '',
+    password: ''
+})
+
+const handleLogin = () => {
+    console.log('Login form:', form.value)
+    // Handle login logic here
+}
 </script>
 
 <style scoped>
 @keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
 }
 
 @keyframes float-delayed {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-15px); }
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
 }
 
 @keyframes float-slow {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
 }
 
 .animate-float {
-  animation: float 6s ease-in-out infinite;
+    animation: float 6s ease-in-out infinite;
 }
 
 .animate-float-delayed {
-  animation: float-delayed 8s ease-in-out infinite;
+    animation: float-delayed 8s ease-in-out infinite;
 }
 
 .animate-float-slow {
-  animation: float-slow 10s ease-in-out infinite;
+    animation: float-slow 10s ease-in-out infinite;
 }
 </style>

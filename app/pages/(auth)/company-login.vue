@@ -32,38 +32,22 @@
                     <div class="text-center mb-8">
                         <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 bg-primary/10">
                             <svg class="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1L9 7V9C9 10.1 9.9 11 11 11V14L13 16L15 14V11C16.1 11 17 10.1 17 9H21ZM6 12C7.1 12 8 11.1 8 10S7.1 8 6 8 4 8.9 4 10 4.9 12 6 12ZM18 12C19.1 12 20 11.1 20 10S19.1 8 18 8 16 8.9 16 10 16.9 12 18 12ZM4 18C4 16.9 4.9 16 6 16S8 16.9 8 18 7.1 20 6 20 4 19.1 4 18ZM16 18C16 16.9 16.9 16 18 16S20 16.9 20 18 19.1 20 18 20 16 19.1 16 18Z"/>
+                                <path d="M12 7V3H2V21H22V7H12ZM6 19H4V17H6V19ZM6 15H4V13H6V15ZM6 11H4V9H6V11ZM6 7H4V5H6V7ZM10 19H8V17H10V19ZM10 15H8V13H10V15ZM10 11H8V9H10V11ZM10 7H8V5H10V7ZM20 19H12V17H20V19ZM20 15H12V13H20V15ZM20 11H12V9H20V11Z"/>
                             </svg>
                         </div>
-                        <h1 class="text-4xl font-bold text-secondary mb-3">Bergabung Sekarang!</h1>
+                        <h1 class="text-4xl font-bold text-secondary mb-3">Login Sebagai Perusahaan</h1>
                         <p class="text-gray-500 text-lg leading-relaxed max-w-md mx-auto">
-                            Mulai perjalanan karirmu bersama ribuan siswa lainnya di platform AICademy
+                            Akses portal perusahaan untuk mengelola lowongan kerja dan rekrutmen talent
                         </p>
                     </div>
 
-                    <!-- Form -->
-                    <form @submit.prevent="handleRegister" class="w-full max-w-md space-y-5">
-                        <MainTextfield
-                            v-model="form.name"
-                            name="name"
-                            label="Nama Lengkap"
-                            type="text"
-                            placeholder="Masukkan nama lengkap"
-                            required
-                        >
-                            <template #icon>
-                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                </svg>
-                            </template>
-                        </MainTextfield>
-
+                    <form @submit.prevent="handleCompanyLogin" class="w-full max-w-md space-y-5">
                         <MainTextfield
                             v-model="form.email"
                             name="email"
                             label="Email"
                             type="email"
-                            placeholder="nama@email.com"
+                            placeholder="company@example.com"
                             required
                         >
                             <template #icon>
@@ -73,39 +57,48 @@
                             </template>
                         </MainTextfield>
 
-                        <PasswordTextfield/>
+                        <div class="space-y-2">
+                            <MainTextfield
+                                v-model="form.password"
+                                name="password"
+                                label="Password"
+                                type="password"
+                                :is-password="true"
+                                placeholder="Minimal 8 karakter"
+                                required
+                            >
+                                <template #icon>
+                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                    </svg>
+                                </template>
+                            </MainTextfield>
+                            <a href="/forgot-password" class="text-primary flex items-end justify-end text-sm hover:text-primary/80 transition-colors">Lupa Password?</a>
+                        </div>
 
                         <button 
                             type="submit"
                             class="w-full bg-gradient-to-r from-primary to-red-600 text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-primary/90 hover:to-red-600/90 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 mt-8"
                         >
-                            Daftar Sekarang
+                            Masuk sebagai Perusahaan
                         </button>
-
-                        <!-- Login Link -->
-                        <div class="text-center pt-4">
-                            <span class="text-gray-600">Sudah punya akun? </span>
-                            <a href="/login" class="text-primary font-semibold hover:text-primary/80 transition-colors">
-                                Masuk di sini
-                            </a>    
-                        </div>
                     </form>
 
-                    <!-- Help Section -->
                     <div class="text-center mt-8 pt-2 border-t border-gray-100">
                         <p class="text-gray-600 mb-1">Butuh bantuan?</p>
-                        <a href="mailto:aicademy@app.com" class="text-primary font-semibold hover:text-primary/80 transition-colors">
-                            aicademy@app.com
+                        <a href="mailto:partnership@aicademy.com" class="text-primary font-semibold hover:text-primary/80 transition-colors">
+                            partnership@aicademy.com
                         </a>
                     </div>
                 </div>
 
+                <!-- Image Section -->
                 <div class="hidden lg:flex lg:w-1/2 h-full items-center justify-center relative overflow-hidden">
-                        <img 
-                            src="/assets/images/login.png" 
-                            alt="Register Illustration" 
-                            class="w-full max-w-md mx-auto drop-shadow-lg"
-                        >
+                    <img 
+                        src="/assets/images/login.png" 
+                        alt="Company Login Illustration" 
+                        class="w-full p-10 drop-shadow-lg"
+                    >
                 </div>
             </div>
         </div>
@@ -114,22 +107,19 @@
 
 <script setup>
 import MainTextfield from '~/components/textfield/MainTextfield.vue'
-import PasswordTextfield from '~/components/textfield/PasswordTextfield.vue'
 
 definePageMeta({
     layout: false
 })
 
 const form = ref({
-    name: '',
     email: '',
-    password: '',
-    confirmPassword: ''
+    password: ''
 })
 
-const handleRegister = () => {
-    console.log('Register form:', form.value)
-    // Handle registration logic here
+const handleCompanyLogin = () => {
+    console.log('Company login form:', form.value)
+    // Handle company login logic here
 }
 </script>
 

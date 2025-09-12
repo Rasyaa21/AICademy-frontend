@@ -6,11 +6,9 @@ const links = [
   { label: 'Project', to: '/Project' },
 ]
 
-// Tutup menu saat route berubah (klik link)
 const route = useRoute()
 watch(() => route.fullPath, () => (isOpen.value = false))
 
-// Tutup pakai ESC
 onMounted(() => {
   const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') isOpen.value = false }
   window.addEventListener('keydown', onKey)
