@@ -9,7 +9,10 @@ export default defineNuxtConfig({
     '@nuxtjs/google-fonts',
     'nuxt-marquee',
     'nuxt-marquee',
-    'motion-v/nuxt'
+    'motion-v/nuxt',
+    '@nuxt/icon',
+    '@samk-dev/nuxt-vcalendar',
+    'nuxt-charts',
   ], 
   googleFonts: {
     families: {

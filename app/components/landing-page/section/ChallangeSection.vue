@@ -1,90 +1,85 @@
+<!-- components/landing-page/section/ChallangeSection.vue -->
 <script setup lang="ts">
-import SegmentedControl from '../SegmentedControl.vue';
-import ChallengeCard from '../ChallengeCard.vue';
+import SegmentedControl from '../SegmentedControl.vue'
+import ChallengeCard from '../../card/ChallengeCard.vue'
+import type { Challenge } from '~/types/Challange'
 
-const selectedCategory = ref('All');
+const selectedCategory = ref('All')
 
-const challenges = ref([
-  {
-    id: 1,
-    title: 'API Perpustakaan',
-    category: 'Backend',
-    description: 'Buatlah REST API untuk sistem perpustakaan dengan skema database yang telah ditentukan',
-    difficulty: 'Medium' as const,
-    participants: 47,
-    deadline: '20 Agustus 2025',
-    author: {
-      name: 'Agus Dwi Cahaya S.Kom',
-      avatar: '/assets/images/profile/lord-aic.jpeg',
-      school: 'SMK Telkom Purwokerto'
+// Simple mock data sesuai backend structure
+const challenges = ref<Challenge[]>([
+    {
+        id: '550e8400-e29b-41d4-a716-446655440001',
+        thumbnail_image: '/assets/images/challenges/api-perpustakaan.jpg',
+        title: 'API Perpustakaan',
+        description: 'Buatlah REST API untuk sistem perpustakaan dengan skema database yang telah ditentukan',
+        organizer: 'Agus Dwi Cahaya S.Kom',
+        deadline: '2025-08-20T23:59:59Z',
+        prize: 'Rp 2.000.000 + Certificate',
+        participant: 47,
+        winner_team_id: null
     },
-    tech: ['Laravel', 'MySQL', 'PHP'],
-    bgColor: 'bg-gradient-to-br from-red-500 to-red-600'
-  },
-  {
-    id: 2,
-    title: 'React JS Portfolio',
-    category: 'Frontend', 
-    description: 'Buat portfolio website menggunakan React JS dengan design yang responsive dan modern',
-    difficulty: 'Easy' as const,
-    participants: 32,
-    deadline: '25 Agustus 2025',
-    author: {
-      name: 'Agus Dwi Cahaya S.Kom',
-      avatar: '/assets/images/profile/lord-aic.jpeg',
-      school: 'SMK Telkom Purwokerto'
+    {
+        id: '550e8400-e29b-41d4-a716-446655440002',
+        thumbnail_image: '/assets/images/challenges/react-portfolio.jpg',
+        title: 'React JS Portfolio',
+        description: 'Buat portfolio website menggunakan React JS dengan design yang responsive dan modern',
+        organizer: 'Siti Nurhasanah S.Pd',
+        deadline: '2025-08-25T23:59:59Z',
+        prize: null,
+        participant: 32,
+        winner_team_id: null
     },
-    tech: ['React JS', 'Tailwind', 'Vite'],
-    bgColor: 'bg-gradient-to-br from-blue-500 to-blue-600'
-  },
-  {
-    id: 3,
-    title: 'UI Design Challenge',
-    category: 'UI/UX Design',
-    description: 'Desain interface aplikasi mobile untuk e-commerce dengan fokus pada user experience',
-    difficulty: 'Hard' as const,
-    participants: 28,
-    deadline: '30 Agustus 2025',
-    author: {
-      name: 'Agus Dwi Cahaya S.Kom',
-      avatar: '/assets/images/profile/lord-aic.jpeg',
-      school: 'SMK Telkom Purwokerto'
+    {
+        id: '550e8400-e29b-41d4-a716-446655440003',
+        thumbnail_image: '/assets/images/challenges/ui-design.jpg',
+        title: 'UI Design Challenge',
+        description: 'Desain interface aplikasi mobile untuk e-commerce dengan fokus pada user experience',
+        organizer: 'Ahmad Rizki M.Kom',
+        deadline: '2025-08-30T23:59:59Z',
+        prize: 'Sertifikat + Portfolio Review',
+        participant: 28,
+        winner_team_id: null
     },
-    tech: ['Figma', 'Adobe XD', 'Prototyping'],
-    bgColor: 'bg-gradient-to-br from-purple-500 to-purple-600'
-  },
-  {
-    id: 4,
-    title: 'CTF Web Security',
-    category: 'Cybersecurity',
-    description: 'Selesaikan tantangan keamanan web dengan berbagai teknik penetration testing',
-    difficulty: 'Hard' as const,
-    participants: 15,
-    deadline: '15 September 2025',
-    author: {
-      name: 'Agus Dwi Cahaya S.Kom',
-      avatar: '/assets/images/profile/lord-aic.jpeg',
-      school: 'SMK Telkom Purwokerto'
-    },
-    tech: ['Kali Linux', 'Burp Suite', 'OWASP'],
-    bgColor: 'bg-gradient-to-br from-gray-700 to-gray-800'
-  }
-]);
+    {
+        id: '550e8400-e29b-41d4-a716-446655440004',
+        thumbnail_image: '/assets/images/challenges/ctf-security.jpg',
+        title: 'CTF Web Security',
+        description: 'Selesaikan tantangan keamanan web dengan berbagai teknik penetration testing',
+        organizer: 'Agus Dwi Cahaya S.Kom',
+        deadline: '2025-09-15T23:59:59Z',
+        prize: null,
+        participant: 15,
+        winner_team_id: null
+    }
+])
 
-// Filter challenges based on selected category
+// Simple filtering berdasarkan title keywords
 const filteredChallenges = computed(() => {
-  if (selectedCategory.value === 'Frontend') {
-    return challenges.value.filter(c => c.category.includes('Frontend'))
-  }
-  if (selectedCategory.value === 'Cybersecurity') {
-    return challenges.value.filter(c => c.category.includes('Cybersecurity'))
-  }
-  if (selectedCategory.value === 'UI/UX') {
-    return challenges.value.filter(c => c.category.includes('UI/UX'))
-  }
-  // LKS or All
-  return challenges.value
-});
+    if (selectedCategory.value === 'Frontend') {
+        return challenges.value.filter(c => 
+            c.title.toLowerCase().includes('react') || 
+            c.title.toLowerCase().includes('frontend') ||
+            c.title.toLowerCase().includes('portfolio')
+        )
+    }
+    if (selectedCategory.value === 'Cybersecurity') {
+        return challenges.value.filter(c => 
+            c.title.toLowerCase().includes('security') || 
+            c.title.toLowerCase().includes('ctf') ||
+            c.title.toLowerCase().includes('cyber')
+        )
+    }
+    if (selectedCategory.value === 'UI/UX') {
+        return challenges.value.filter(c => 
+            c.title.toLowerCase().includes('ui') || 
+            c.title.toLowerCase().includes('design') ||
+            c.title.toLowerCase().includes('ux')
+        )
+    }
+    // All
+    return challenges.value
+})
 </script>
 
 <template>
@@ -105,7 +100,7 @@ const filteredChallenges = computed(() => {
                 </svg>
             </div>
             <span class="text-sm font-semibold text-primary bg-primary/10 px-3 py-1 rounded-full">
-                Challange & Collaboration
+                Challenge & Collaboration
             </span>
         </div>
         
@@ -126,7 +121,7 @@ const filteredChallenges = computed(() => {
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-8">
         <ChallengeCard 
-          v-for="challenge in filteredChallenges" 
+          v-for="challenge in filteredChallenges.slice(0, 4)" 
           :key="challenge.id"
           :challenge="challenge"
         />
@@ -143,9 +138,12 @@ const filteredChallenges = computed(() => {
       </div>
 
       <div class="text-center mt-16">
-        <button class="bg-primary text-white px-8 py-3 rounded-2xl font-semibold hover:bg-primary/90 transition-colors shadow-lg">
+        <NuxtLink 
+          to="/student/dashboard/challange"
+          class="bg-primary text-white px-8 py-3 rounded-2xl font-semibold hover:bg-primary/90 transition-colors shadow-lg inline-block"
+        >
           Lihat Semua Challenge
-        </button>
+        </NuxtLink>
       </div>
     </div>
   </section>

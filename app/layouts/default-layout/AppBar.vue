@@ -54,7 +54,6 @@ onMounted(() => {
       </button>
     </nav>
 
-    <!-- Mobile menu -->
     <Transition
       enter-active-class="transition duration-200 ease-out"
       enter-from-class="opacity-0 -translate-y-2"

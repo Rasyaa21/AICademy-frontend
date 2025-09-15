@@ -133,8 +133,9 @@ const form = ref({
 })
 
 const handleLogin = () => {
+    const router = useRouter()
     console.log('Login form:', form.value)
-    // Handle login logic here
+    router.push('/student/dashboard')
 }
 </script>
 
