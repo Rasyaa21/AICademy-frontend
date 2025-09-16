@@ -56,15 +56,11 @@
                 </div>
             </div>
 
-            <!-- Right Column - Calendar & Quick Actions -->
             <div class="space-y-6">
-                <!-- Calendar -->
                 <Calendar />
                 
-                <!-- Quick Actions -->
                 <QuickActions />
                 
-                <!-- Recent Activity -->
                 <RecentActivity />
             </div>
         </div>

@@ -51,6 +51,10 @@ watch(isCollapse, v => localStorage.setItem('sidebar:collapsed', v ? '1' : '0'))
                     path="/admin/dashboard" :collapsed="isCollapse" />
       <SidebarItems icon="heroicons:users-16-solid" label="Data Siswa"
                     :is-selected="false" path="/admin/dashboard/students" :collapsed="isCollapse" />
+      <SidebarItems icon="heroicons:users-16-solid" label="Data Guru"
+                    :is-selected="false" path="/admin/dashboard/teachers" :collapsed="isCollapse" />
+      <SidebarItems icon="heroicons:users-16-solid" label="Data Perusahaan"
+                    :is-selected="false" path="/admin/dashboard/companies" :collapsed="isCollapse" />
       <SidebarItems icon="heroicons:trophy-solid" label="Challange"
                     :is-selected="false" path="/admin/dashboard/challange" :collapsed="isCollapse" />
     </ul>
@@ -113,6 +117,8 @@ watch(isCollapse, v => localStorage.setItem('sidebar:collapsed', v ? '1' : '0'))
             <div class="flex flex-col gap-2">
               <SidebarItems icon="heroicons:home-solid" label="Home" path="/admin/dashboard" />
               <SidebarItems icon="heroicons:home-solid" label="Profiling" :is-selected="false" path="/admin/dashboard" />
+              <SidebarItems icon="heroicons:users-16-solid" label="Data Guru" :is-selected="false" path="/admin/dashboard/teachers"/>
+              <SidebarItems icon="heroicons:users-16-solid" label="Data Perusahaan" :is-selected="false" path="/admin/dashboard/companies"/>
               <SidebarItems icon="heroicons:trophy-solid" label="Challange" :is-selected="false" path="/admin/dashboard/challange" />
             </div>
           </div>

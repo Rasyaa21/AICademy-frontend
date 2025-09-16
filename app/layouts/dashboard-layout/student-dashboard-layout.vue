@@ -53,18 +53,17 @@ watch(isCollapse, v => localStorage.setItem('sidebar:collapsed', v ? '1' : '0'))
                     path="/student/dashboard" :collapsed="isCollapse" />
       <SidebarItems icon="heroicons:home-solid" label="Dashboard"
                     :is-selected="false" path="/student/dashboard" :collapsed="isCollapse" />
+      <SidebarItems icon="streamline-plump:arrow-roadmap-solid" label="Roadmap"
+                    :is-selected="false" path="/student/dashboard/roadmap" :collapsed="isCollapse" />
       <SidebarItems icon="heroicons:trophy-solid" label="Challange"
                     :is-selected="false" path="/student/dashboard/challange" :collapsed="isCollapse" />
     </ul>
   </aside>
 
-  <!-- Content wrapper: margin mengikuti lebar sidebar -->
   <div :class="isCollapse ? 'lg:ml-20' : 'lg:ml-64'" class="ml-0">
-    <!-- Header -->
     <header
       class="sticky top-0 z-30 h-16 bg-white/80 backdrop-blur border-b px-6 flex items-center justify-between">
       <div class="flex items-center gap-3 w-full max-w-screen-md">
-        <!-- Hamburger (mobile only) -->
         <button
           class="lg:hidden inline-flex items-center justify-center"
           @click="isOpen = !isOpen"
@@ -115,10 +114,11 @@ watch(isCollapse, v => localStorage.setItem('sidebar:collapsed', v ? '1' : '0'))
         <div v-if="isOpen" id="mobile-menu"
              class="absolute left-0 right-0 top-full z-20 md:hidden bg-white backdrop-blur border-t">
           <div class="px-4 py-3">
-            <div class="flex flex-col gap-2">
+            <div class="flex flex-col">
               <SidebarItems icon="heroicons:home-solid" label="Dashboard" path="/student/dashboard" />
-              <SidebarItems icon="heroicons:home-solid" label="Profiling" :is-selected="false" path="/student/dashboard" />
-              <SidebarItems icon="heroicons:trophy-solid" label="Challange" :is-selected="false" path="/student/dashboard/challange" />
+              <SidebarItems icon="heroicons:home-solid" label="Profiling" path="/student/dashboard" />
+                  <SidebarItems icon="streamline-plump:arrow-roadmap-solid" label="Roadmap" path="/student/dashboard/roadmap"/>
+              <SidebarItems icon="heroicons:trophy-solid" label="Challange" path="/student/dashboard/challange" />
             </div>
           </div>
         </div>

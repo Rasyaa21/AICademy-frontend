@@ -1,25 +1,24 @@
 <template>
-    <UploadCsvPopup v-model:is-open="openCsvPopup"/>
-    <StudentInputPopup v-model:is-open="openStudentInput"/>
+    <TeacherInputPopup v-model:is-open="openTeacherInput"/>
     <div class="space-y-6">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div>
-                <h1 class="text-3xl font-bold text-gray-900">Students Management</h1>
+                <h1 class="text-3xl font-bold text-gray-900">Teachers Management</h1>
                 <p class="text-gray-600 mt-1">
-                    Kelola data siswa dan monitor aktivitas mereka
+                    Kelola data guru dan monitor aktivitas mereka
                 </p>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div class="bg-white p-6 rounded-xl shadow-sm border">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-gray-500 text-sm">Total Siswa</p>
-                        <p class="text-2xl font-bold text-gray-900">{{ studentStats.total }}</p>
+                        <p class="text-gray-500 text-sm">Total Guru</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ teacherStats.total }}</p>
                     </div>
                     <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                        <Icon name="heroicons:users-20-solid" class="w-6 h-6 text-primary" />
+                        <Icon name="heroicons:academic-cap-20-solid" class="w-6 h-6 text-primary" />
                     </div>
                 </div>
             </div>
@@ -27,8 +26,20 @@
             <div class="bg-white p-6 rounded-xl shadow-sm border">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-gray-500 text-sm">Partisipasi Challenge</p>
-                        <p class="text-2xl font-bold text-purple-600">{{ studentStats.challengeParticipants }}</p>
+                        <p class="text-gray-500 text-sm">Guru Aktif</p>
+                        <p class="text-2xl font-bold text-green-600">{{ teacherStats.active }}</p>
+                    </div>
+                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                        <Icon name="heroicons:check-circle-20-solid" class="w-6 h-6 text-green-600" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Challenge Organizer</p>
+                        <p class="text-2xl font-bold text-purple-600">{{ teacherStats.challengeOrganizers }}</p>
                     </div>
                     <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
                         <Icon name="heroicons:trophy-20-solid" class="w-6 h-6 text-purple-600" />
@@ -37,30 +48,24 @@
             </div>
         </div>
 
-        <!-- Filter Component -->
-        <StudentFilter
+        <TeacherFilter
             v-model:searchQuery="searchQuery"
-            v-model:selectedClass="selectedClass"
             v-model:selectedStatus="selectedStatus"
             v-model:sortBy="sortBy"
-            :filteredCount="filteredStudents.length"
-            :totalCount="students.length"
+            :filteredCount="filteredTeachers.length"
+            :totalCount="teachers.length"
             :activeFiltersCount="activeFiltersCount"
             :hasActiveFilters="hasActiveFilters"
             @clear-filters="clearAllFilters"
-            @import-csv="openCsvPopup = true"
-            @add-student="openStudentInput = true"
+            @add-teacher="openTeacherInput = true"
         />
 
-        <!-- Students Table -->
         <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="text-left py-3 px-6 font-semibold text-gray-900 text-sm">Siswa</th>
-                            <th class="text-left py-3 px-6 font-semibold text-gray-900 text-sm">NIS</th>
-                            <th class="text-left py-3 px-6 font-semibold text-gray-900 text-sm">Kelas</th>
+                            <th class="text-left py-3 px-6 font-semibold text-gray-900 text-sm">Guru</th>
                             <th class="text-left py-3 px-6 font-semibold text-gray-900 text-sm">Email</th>
                             <th class="text-left py-3 px-6 font-semibold text-gray-900 text-sm">Status</th>
                             <th class="text-left py-3 px-6 font-semibold text-gray-900 text-sm">Bergabung</th>
@@ -68,54 +73,52 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="student in paginatedStudents" :key="student.id" class="border-b border-gray-100 hover:bg-gray-50">
+                        <tr v-for="teacher in paginatedTeachers" :key="teacher.id" class="border-b border-gray-100 hover:bg-gray-50">
                             <td class="py-4 px-6">
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                                        <span class="text-primary font-semibold text-sm">{{ getInitials(student.name) }}</span>
+                                        <span class="text-primary font-semibold text-sm">{{ getInitials(teacher.fullname) }}</span>
                                     </div>
                                     <div>
-                                        <div class="font-medium text-gray-900 text-sm">{{ student.name }}</div>
-                                        <div class="text-xs text-gray-500">{{ student.username }}</div>
+                                        <div class="font-medium text-gray-900 text-sm">{{ teacher.fullname }}</div>
+                                        <div class="text-xs text-gray-500">{{ teacher.role }}</div>
                                     </div>
                                 </div>
                             </td>
-                            <td class="py-4 px-6 text-sm text-gray-600">{{ student.nis }}</td>
-                            <td class="py-4 px-6 text-sm text-gray-600">{{ student.class }}</td>
-                            <td class="py-4 px-6 text-sm text-gray-600">{{ student.email }}</td>
+                            <td class="py-4 px-6 text-sm text-gray-600">{{ teacher.email }}</td>
                             <td class="py-4 px-6">
                                 <span 
                                     :class="[
                                         'px-2 py-1 rounded-full text-xs font-medium',
-                                        student.status === 'active' 
+                                        teacher.status === 'active' 
                                             ? 'bg-green-100 text-green-800' 
                                             : 'bg-red-100 text-red-800'
                                     ]"
                                 >
-                                    {{ student.status === 'active' ? 'Aktif' : 'Tidak Aktif' }}
+                                    {{ teacher.status === 'active' ? 'Aktif' : 'Tidak Aktif' }}
                                 </span>
                             </td>
                             <td class="py-4 px-6 text-sm text-gray-600">
-                                {{ formatDate(student.created_at) }}
+                                {{ formatDate(teacher.created_at) }}
                             </td>
                             <td class="py-4 px-6">
                                 <div class="flex items-center gap-1">
                                     <button 
-                                        @click="viewStudent(student)"
+                                        @click="viewTeacher(teacher)"
                                         class="p-1 hover:bg-gray-200 rounded"
                                         title="Lihat Detail"
                                     >
                                         <Icon name="heroicons:eye-20-solid" class="w-4 h-4 text-gray-600" />
                                     </button>
                                     <button 
-                                        @click="editStudent(student)"
+                                        @click="editTeacher(teacher)"
                                         class="p-1 hover:bg-gray-200 rounded"
                                         title="Edit"
                                     >
                                         <Icon name="heroicons:pencil-20-solid" class="w-4 h-4 text-gray-600" />
                                     </button>
                                     <button 
-                                        @click="deleteStudent(student)"
+                                        @click="deleteTeacher(teacher)"
                                         class="p-1 hover:bg-gray-200 rounded"
                                         title="Hapus"
                                     >
@@ -130,13 +133,13 @@
         </div>
 
         <!-- Empty State -->
-        <div v-if="filteredStudents.length === 0" class="text-center py-12">
+        <div v-if="filteredTeachers.length === 0" class="text-center py-12">
             <div class="text-gray-400 mb-4">
-                <Icon name="heroicons:users-20-solid" class="w-16 h-16 mx-auto" />
+                <Icon name="heroicons:academic-cap-20-solid" class="w-16 h-16 mx-auto" />
             </div>
-            <h3 class="text-lg font-semibold text-gray-900 mb-2">Tidak ada siswa ditemukan</h3>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">Tidak ada guru ditemukan</h3>
             <p class="text-gray-500 mb-4">
-                {{ searchQuery ? 'Coba ubah kata kunci pencarian atau' : 'Coba ubah' }} filter untuk melihat siswa lainnya
+                {{ searchQuery ? 'Coba ubah kata kunci pencarian atau' : 'Coba ubah' }} filter untuk melihat guru lainnya
             </p>
             <button 
                 @click="clearAllFilters"
@@ -146,14 +149,15 @@
             </button>
         </div>
 
-        <div v-if="filteredStudents.length > itemsPerPage" class="flex justify-center">
+        <!-- Pagination -->
+        <div v-if="filteredTeachers.length > itemsPerPage" class="flex justify-center">
             <nav class="flex items-center gap-2">
                 <button 
                     @click="currentPage--"
                     :disabled="currentPage === 1"
                     class="px-3 py-2 rounded-lg border border-gray-200 text-sm font-medium
-                            disabled:opacity-50 disabled:cursor-not-allowed
-                         *:hover:bg-gray-50 transition-colors"
+                           disabled:opacity-50 disabled:cursor-not-allowed
+                           hover:bg-gray-50 transition-colors"
                 >
                     Previous
                 </button>
@@ -178,19 +182,20 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import StudentFilter from '~/components/dashboard-admin/students/StudentFilter.vue'
-import StudentInputPopup from '~/components/modal/StudentInputPopup.vue'
-import UploadCsvPopup from '~/components/modal/UploadCsvPopup.vue'
-import type { Student } from '~/types/Student'
+import TeacherFilter from '~/components/dashboard-admin/teachers/TeacherFilter.vue'
+import TeacherInputPopup from '~/components/modal/TeacherInputPopup.vue'
+import type { Teacher } from '~/types/Teacher'
 
 definePageMeta({
     layout: 'admin-dashboard-layout'
 })
 
-const openCsvPopup = ref(false)
-const openStudentInput = ref(false)
+// Types
+
+
+// Filter states
+const openTeacherInput = ref(false)
 const searchQuery = ref('')
-const selectedClass = ref('')
 const selectedStatus = ref('')
 const sortBy = ref('newest')
 
@@ -199,68 +204,52 @@ const currentPage = ref(1)
 const itemsPerPage = 10
 
 // Sample data
-const students = ref<Student[]>([
+const teachers = ref<Teacher[]>([
     {
         id: '1',
-        nis: '2024001',
-        name: 'Ahmad Rizki Pratama',
-        username: 'ahmadrizki',
-        email: 'ahmad.rizki@student.smk.sch.id',
-        class: 'XII RPL 1',
+        user_id: 'user1',
+        fullname: 'Dr. Agus Dwi Cahaya S.Kom',
+        email: 'agus.dwi@teacher.smk.sch.id',
+        role: 'Guru Pengampu',
         status: 'active',
-        created_at: '2024-01-15T08:00:00Z'
+        created_at: '2024-01-10T08:00:00Z'
     },
     {
         id: '2',
-        nis: '2024002',
-        name: 'Siti Nurhaliza',
-        username: 'sitinur',
-        email: 'siti.nur@student.smk.sch.id',
-        class: 'XII RPL 1',
+        user_id: 'user2',
+        fullname: 'Siti Nurhasanah S.Pd',
+        email: 'siti.nur@teacher.smk.sch.id',
+        role: 'Guru Pengampu',
         status: 'active',
-        created_at: '2024-01-16T08:00:00Z'
+        created_at: '2024-01-12T08:00:00Z'
     },
     {
         id: '3',
-        nis: '2024003',
-        name: 'Budi Santoso',
-        username: 'budisantoso',
-        email: 'budi.santoso@student.smk.sch.id',
-        class: 'XI RPL 2',
+        user_id: 'user3',
+        fullname: 'Ahmad Rizki M.Kom',
+        email: 'ahmad.rizki@teacher.smk.sch.id',
+        role: 'Guru Pengampu',
         status: 'inactive',
-        created_at: '2024-02-01T08:00:00Z'
-    },
-    {
-        id: '4',
-        nis: '2024004',
-        name: 'Dewi Sartika',
-        username: 'dewisartika',
-        email: 'dewi.sartika@student.smk.sch.id',
-        class: 'XII RPL 2',
-        status: 'active',
-        created_at: '2024-02-15T08:00:00Z'
+        created_at: '2024-01-15T08:00:00Z'
     }
 ])
 
-const filteredStudents = computed(() => {
-    let filtered = students.value
+// Computed properties
+const filteredTeachers = computed(() => {
+    let filtered = teachers.value
 
+    // Search filter
     if (searchQuery.value) {
         const query = searchQuery.value.toLowerCase()
-        filtered = filtered.filter(student => 
-            student.name.toLowerCase().includes(query) ||
-            student.nis.toLowerCase().includes(query) ||
-            student.email.toLowerCase().includes(query) ||
-            student.username.toLowerCase().includes(query)
+        filtered = filtered.filter(teacher => 
+            teacher.fullname.toLowerCase().includes(query) ||
+            teacher.email.toLowerCase().includes(query)
         )
     }
 
-    if (selectedClass.value) {
-        filtered = filtered.filter(s => s.class === selectedClass.value)
-    }
-
+    // Status filter
     if (selectedStatus.value) {
-        filtered = filtered.filter(s => s.status === selectedStatus.value)
+        filtered = filtered.filter(t => t.status === selectedStatus.value)
     }
 
     // Sort
@@ -269,11 +258,9 @@ const filteredStudents = computed(() => {
             case 'newest':
                 return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
             case 'name':
-                return a.name.localeCompare(b.name)
-            case 'nis':
-                return a.nis.localeCompare(b.nis)
-            case 'class':
-                return a.class.localeCompare(b.class)
+                return a.fullname.localeCompare(b.fullname)
+            case 'email':
+                return a.email.localeCompare(b.email)
             default:
                 return 0
         }
@@ -282,40 +269,33 @@ const filteredStudents = computed(() => {
     return filtered
 })
 
-const paginatedStudents = computed(() => {
+const paginatedTeachers = computed(() => {
     const start = (currentPage.value - 1) * itemsPerPage
     const end = start + itemsPerPage
-    return filteredStudents.value.slice(start, end)
+    return filteredTeachers.value.slice(start, end)
 })
 
 const totalPages = computed(() => {
-    return Math.ceil(filteredStudents.value.length / itemsPerPage)
+    return Math.ceil(filteredTeachers.value.length / itemsPerPage)
 })
 
-const studentStats = computed(() => {
-    const active = students.value.filter(s => s.status === 'active').length
-    const newThisMonth = students.value.filter(s => {
-        const createdDate = new Date(s.created_at)
-        const now = new Date()
-        return createdDate.getMonth() === now.getMonth() && createdDate.getFullYear() === now.getFullYear()
-    }).length
+const teacherStats = computed(() => {
+    const active = teachers.value.filter(t => t.status === 'active').length
     
     return {
-        total: students.value.length,
+        total: teachers.value.length,
         active,
-        newThisMonth,
-        challengeParticipants: Math.floor(students.value.length * 0.7)
+        challengeOrganizers: Math.floor(teachers.value.length * 0.8)
     }
 })
 
 const hasActiveFilters = computed(() => {
-    return !!(searchQuery.value || selectedClass.value || selectedStatus.value)
+    return !!(searchQuery.value || selectedStatus.value)
 })
 
 const activeFiltersCount = computed(() => {
     let count = 0
     if (searchQuery.value) count++
-    if (selectedClass.value) count++
     if (selectedStatus.value) count++
     return count
 })
@@ -323,7 +303,6 @@ const activeFiltersCount = computed(() => {
 // Methods
 const clearAllFilters = () => {
     searchQuery.value = ''
-    selectedClass.value = ''
     selectedStatus.value = ''
     currentPage.value = 1
 }
@@ -345,34 +324,19 @@ const formatDate = (dateString: string) => {
     })
 }
 
-// Action handlers
-const handleImportCSV = () => {
-    console.log('Import CSV clicked')
-    // Implement CSV import logic
+const viewTeacher = (teacher: Teacher) => {
+    console.log('View teacher:', teacher)
 }
 
-const handleAddStudent = () => {
-    console.log('Add student clicked')
-    // Implement add student logic
+const editTeacher = (teacher: Teacher) => {
+    console.log('Edit teacher:', teacher)
 }
 
-const viewStudent = (student: Student) => {
-    console.log('View student:', student)
-    // Implement view student logic
+const deleteTeacher = (teacher: Teacher) => {
+    console.log('Delete teacher:', teacher)
 }
 
-const editStudent = (student: Student) => {
-    console.log('Edit student:', student)
-    // Implement edit student logic
-}
-
-const deleteStudent = (student: Student) => {
-    console.log('Delete student:', student)
-    // Implement delete student logic
-}
-
-// Watch for filter changes to reset pagination
-watch([searchQuery, selectedClass, selectedStatus], () => {
+watch([searchQuery, selectedStatus], () => {
     currentPage.value = 1
 })
 </script>

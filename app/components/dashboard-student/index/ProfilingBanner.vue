@@ -19,7 +19,7 @@
                 Lanjutkan Perjalanan <br/> Menuju Karir
             </p>
             
-            <div class="px-4 py-2 rounded-md bg-white w-fit">
+            <div class="px-4 py-2 rounded-xl bg-white w-fit">
                 <NuxtLink to="/profiling" class="text-primary font-bold text-md hover:text-primary/80 transition-colors">
                     Isi Profiling >
                 </NuxtLink>
