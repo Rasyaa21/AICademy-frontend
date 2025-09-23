@@ -1,4 +1,11 @@
 <template>
+    <AlertModal 
+        v-model:isOpen="alertModal.isOpen"
+        :type="alertModal.type"
+        :title="alertModal.title"
+        :message="alertModal.message"
+        @ok="() => {}"
+    />
     <section class="w-full py-8 bg-gradient-to-b from-primary to-red-700 relative overflow-hidden min-h-screen flex items-center justify-center">
         <div class="absolute -top-10 -left-10 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
         <div class="absolute -bottom-20 -right-10 w-96 h-96 bg-pink-400/20 rounded-full blur-3xl"></div>
@@ -41,7 +48,7 @@
                     </p>
                 </div>
 
-                <form @submit.prevent="handleForgotPassword" class="w-full max-w-md space-y-5">
+                <form  class="w-full max-w-md space-y-5" @submit.prevent="handleForgotPassword">
                     <MainTextfield
                         v-model="form.email"
                         name="email"
@@ -76,7 +83,7 @@
     </section>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import MainTextfield from '~/components/textfield/MainTextfield.vue'
 
 definePageMeta({
@@ -87,9 +94,36 @@ const form = ref({
     email: ''
 })
 
-const handleForgotPassword = () => {
-    console.log('Forgot password form:', form.value)
-    // Handle forgot password logic here
+const config = useRuntimeConfig();
+const isResetPasswordEmailSended = ref(false)
+
+const alertModal = ref({
+  isOpen: isResetPasswordEmailSended,
+  type: 'success' as const,
+  title: 'Email Terkirim',
+  message: 'Silahkan cek email anda untuk melanjutkan proses reset password'
+})
+
+const handleForgotPassword =async () => {
+     const payload = {          
+        email: form.value.email,
+    }
+
+    try {
+        const res = await $fetch('/auth/forgot-password', {
+            method: 'POST',
+            body: payload,
+            credentials: 'include',
+            headers: {
+                'Content-Type' : 'application/json'
+            },
+            baseURL: config.public.apiBase
+        });
+        console.log(res)
+        isResetPasswordEmailSended.value = true
+    } catch (e) {
+        console.error('Error submitting post:', e)
+    }
 }
 </script>
 

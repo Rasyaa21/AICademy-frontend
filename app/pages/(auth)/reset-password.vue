@@ -41,7 +41,7 @@
                     </p>
                 </div>
 
-                <form @submit.prevent="handleForgotPassword" class="w-full max-w-md space-y-5">
+                <form  class="w-full max-w-md space-y-5" @submit.prevent="handleReset">
                     <PasswordTextfield/>
 
                     <button 
@@ -64,7 +64,6 @@
 </template>
 
 <script setup>
-import MainTextfield from '~/components/textfield/MainTextfield.vue'
 import PasswordTextfield from '~/components/textfield/PasswordTextfield.vue'
 
 definePageMeta({
@@ -72,12 +71,30 @@ definePageMeta({
 })
 
 const form = ref({
-
+    password: '',
 })
 
-const handleForgotPassword = () => {
-    console.log('Forgot password form:', form.value)
-    // Handle forgot password logic here
+const handleReset = async () => {
+
+    const payload = {          
+        password: form.value.password,
+    }
+
+    try {
+        //todo passwing token
+        const res = await $fetch('reset-password/RESET_TOKEN_FROM_EMAIL', {
+            method: 'POST',
+            body: payload,
+            credentials: 'include',
+            headers: {
+                'Content-Type' : 'application/json'
+            },
+            baseURL: config.public.apiBase
+        });
+        console.log(res)
+    } catch (e) {
+        console.error('Error submitting post:', e)
+    }
 }
 </script>
 

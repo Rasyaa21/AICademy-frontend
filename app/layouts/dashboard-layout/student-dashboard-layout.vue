@@ -51,12 +51,14 @@ watch(isCollapse, v => localStorage.setItem('sidebar:collapsed', v ? '1' : '0'))
     <ul class="space-y-2 w-full">
       <SidebarItems icon="heroicons:home-solid" label="Dashboard" :is-selected="true"
                     path="/student/dashboard" :collapsed="isCollapse" />
-      <SidebarItems icon="heroicons:home-solid" label="Dashboard"
-                    :is-selected="false" path="/student/dashboard" :collapsed="isCollapse" />
+      <SidebarItems icon="tabler:clipboard-list" label="Profiling"
+                    :is-selected="false" path="/student/dashboard/questionnaires" :collapsed="isCollapse" />
       <SidebarItems icon="streamline-plump:arrow-roadmap-solid" label="Roadmap"
                     :is-selected="false" path="/student/dashboard/roadmap" :collapsed="isCollapse" />
       <SidebarItems icon="heroicons:trophy-solid" label="Challange"
                     :is-selected="false" path="/student/dashboard/challange" :collapsed="isCollapse" />
+            <SidebarItems icon="heroicons:user-group-20-solid" label="Tim"
+                    :is-selected="false" path="/student/dashboard/looking-for-team" :collapsed="isCollapse" />
     </ul>
   </aside>
 
@@ -116,9 +118,10 @@ watch(isCollapse, v => localStorage.setItem('sidebar:collapsed', v ? '1' : '0'))
           <div class="px-4 py-3">
             <div class="flex flex-col">
               <SidebarItems icon="heroicons:home-solid" label="Dashboard" path="/student/dashboard" />
-              <SidebarItems icon="heroicons:home-solid" label="Profiling" path="/student/dashboard" />
-                  <SidebarItems icon="streamline-plump:arrow-roadmap-solid" label="Roadmap" path="/student/dashboard/roadmap"/>
+              <SidebarItems icon="tabler:clipboard-list" label="Profiling" path="/student/dashboard/questionnaires" />
+              <SidebarItems icon="streamline-plump:arrow-roadmap-solid" label="Roadmap" path="/student/dashboard/roadmap"/>
               <SidebarItems icon="heroicons:trophy-solid" label="Challange" path="/student/dashboard/challange" />
+              <SidebarItems icon="heroicons:user-group-20-solid" label="Tim" path="/student/dashboard/looking-for-team" />
             </div>
           </div>
         </div>

@@ -7,6 +7,25 @@ const links = [
 ]
 
 const route = useRoute()
+const token = useCookie<string | null>('token')
+const role = useCookie<string | null>('role') // Tambahkan role cookie
+
+const isLoggedIn = computed(() => !!token.value)
+
+// Fungsi untuk mendapatkan dashboard URL berdasarkan role
+const getDashboardUrl = () => {
+  if (!role.value) return '/dashboard'
+  
+  switch (role.value) {
+    case 'admin': return '/admin/dashboard'
+    case 'teacher': return '/teacher/dashboard'
+    case 'alumni': return '/alumni/dashboard'
+    case 'company': return '/company/dashboard'
+    case 'student':
+    default: return '/student/dashboard'
+  }
+}
+
 watch(() => route.fullPath, () => (isOpen.value = false))
 
 onMounted(() => {
@@ -27,7 +46,13 @@ onMounted(() => {
         </li>
       </ul>
 
-      <div class="hidden md:flex items-center gap-3 w-1/3 justify-end">
+      <div v-if="isLoggedIn" class="hidden md:flex items-center gap-3 w-1/3 justify-end">
+        <NuxtLink :to="getDashboardUrl()" class="px-4 py-2 rounded-lg border border-white text-white font-semibold hover:bg-white/10">
+          Dashboard
+        </NuxtLink>
+      </div>
+
+      <div v-else class="hidden md:flex items-center gap-3 w-1/3 justify-end">
         <NuxtLink to="/login" class="px-4 py-2 rounded-lg border border-white text-white font-semibold hover:bg-white/10">
           Log In
         </NuxtLink>
@@ -74,7 +99,12 @@ onMounted(() => {
               {{ l.label }}
             </NuxtLink>
           </div>
-          <div class="mt-3 grid grid-cols-2 gap-2">
+          <div v-if="isLoggedIn" class="mt-3 grid grid-cols-1 gap-2">
+            <NuxtLink :to="getDashboardUrl()" class="px-3 py-2 rounded-lg border border-white text-white text-center font-semibold hover:bg-white/10">
+              Dashboard
+            </NuxtLink>
+          </div>
+          <div v-else class="mt-3 grid grid-cols-2 gap-2">
             <NuxtLink to="/login" class="px-3 py-2 rounded-lg border border-white text-white text-center font-semibold hover:bg-white/10">
               Log In
             </NuxtLink>

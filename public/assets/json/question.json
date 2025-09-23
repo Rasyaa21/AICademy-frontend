@@ -1,0 +1,200 @@
+{
+  "questions": [
+    {
+      "question_text": "Saat mengerjakan tugas yang rumit, saya lebih suka...",
+      "question_type": "likert",
+      "options": null,
+      "category": "personality",
+      "reasoning": "Mengukur preferensi kerja mandiri vs. kolaboratif. Backend Developer dan Data Analyst sering bekerja mandiri dalam analisis mendalam, sementara UI/UX Designer dan Frontend Developer lebih sering berkolaborasi dengan tim lain."
+    },
+    {
+      "question_text": "Saya merasa puas ketika berhasil memecahkan masalah yang membutuhkan logika dan alur berpikir yang runut.",
+      "question_type": "likert",
+      "options": null,
+      "category": "personality",
+      "reasoning": "Menilai afinitas terhadap pemecahan masalah logis. Ini adalah ciri kuat untuk Backend Developer, Data Analyst, dan IT Support. Sebaliknya, UI/UX Designer lebih mengandalkan empati dan kreativitas."
+    },
+    {
+      "question_text": "Dalam sebuah proyek, saya sangat peduli dengan detail-detail kecil agar semuanya sempurna.",
+      "question_type": "likert",
+      "options": null,
+      "category": "personality",
+      "reasoning": "Mengidentifikasi orientasi pada detail. Frontend Developer (pixel-perfect design), UI/UX Designer (konsistensi visual), dan Data Analyst (akurasi data) sangat membutuhkan ini. IT Support lebih fokus pada penyelesaian masalah secara cepat."
+    },
+    {
+      "question_text": "Saya lebih tertarik memahami 'mengapa' pengguna melakukan sesuatu daripada 'bagaimana' sistem bekerja secara teknis.",
+      "question_type": "likert",
+      "options": null,
+      "category": "personality",
+      "reasoning": "Membedakan antara fokus pada pengguna (user-centric) vs. fokus pada sistem (system-centric). Skor tinggi sangat mengarah ke UI/UX Designer, sementara skor rendah mengarah ke Backend Developer dan IT Support."
+    },
+    {
+      "question_text": "Menghadapi aturan dan prosedur yang baku membuat saya merasa lebih nyaman dan produktif.",
+      "question_type": "likert",
+      "options": null,
+      "category": "personality",
+      "reasoning": "Mengukur kenyamanan dengan struktur. IT Support/Network Specialist sering bekerja dengan prosedur standar (SOP). Sebaliknya, UI/UX Designer dan Frontend Developer seringkali membutuhkan fleksibilitas untuk bereksperimen."
+    },
+    {
+      "question_text": "Saya lebih bersemangat saat melihat hasil kerja saya bisa langsung dilihat dan digunakan oleh orang lain.",
+      "question_type": "likert",
+      "options": null,
+      "category": "personality",
+      "reasoning": "Menilai motivasi dari hasil yang visual dan interaktif. Ini adalah motivator utama bagi Frontend Developer dan UI/UX Designer. Backend Developer dan Data Analyst seringkali bekerja di belakang layar yang hasilnya tidak langsung terlihat."
+    },
+    {
+      "question_text": "Dari bagian sebuah aplikasi berikut, mana yang paling membuat Anda penasaran untuk membuatnya?",
+      "question_type": "mcq",
+      "options": [
+        {"label": "Tampilan visual, tombol, dan animasi yang menarik", "value": "a"},
+        {"label": "Sistem di balik layar yang memproses data dengan cepat dan aman", "value": "b"},
+        {"label": "Alur penggunaan aplikasi yang mudah dan tidak membingungkan", "value": "c"},
+        {"label": "Laporan dan grafik yang menunjukkan tren penjualan produk", "value": "d"}
+      ],
+      "category": "interests",
+      "reasoning": "Langsung memetakan minat ke peran spesifik: (a) Frontend Developer, (b) Backend Developer, (c) UI/UX Designer, (d) Data Analyst."
+    },
+    {
+      "question_text": "Jika Anda harus memilih satu keahlian untuk dikuasai dalam sebulan, mana yang akan Anda pilih?",
+      "question_type": "mcq",
+      "options": [
+        {"label": "Mendesain antarmuka aplikasi yang indah dengan Figma", "value": "a"},
+        {"label": "Membangun logika server menggunakan bahasa pemrograman seperti JavaScript (Node.js) atau PHP", "value": "b"},
+        {"label": "Menganalisis data pengguna untuk menemukan pola kebiasaan mereka", "value": "c"},
+        {"label": "Merakit dan mengkonfigurasi jaringan komputer agar berjalan lancar", "value": "d"}
+      ],
+      "category": "skills",
+      "reasoning": "Mengukur preferensi skill yang secara langsung terkait dengan tool dan tugas harian setiap peran: (a) UI/UX Designer, (b) Backend Developer, (c) Data Analyst, (d) IT Support/Network Specialist."
+    },
+    {
+      "question_text": "Jenis masalah apa yang paling menantang untuk Anda selesaikan?",
+      "question_type": "mcq",
+      "options": [
+        {"label": "Membuat website yang tampilannya berantakan di HP menjadi rapi", "value": "a"},
+        {"label": "Memperbaiki database yang lambat saat diakses ribuan pengguna", "value": "b"},
+        {"label": "Mencari tahu mengapa pengguna sering salah klik sebuah tombol", "value": "c"},
+        {"label": "Mengatasi masalah koneksi internet yang sering putus di kantor", "value": "d"}
+      ],
+      "category": "preferences",
+      "reasoning": "Menggali preferensi problem-solving: (a) Frontend Developer, (b) Backend Developer, (c) UI/UX Designer, (d) IT Support/Network Specialist."
+    },
+    {
+      "question_text": "Saat belajar hal baru tentang teknologi, bagaimana cara yang paling Anda sukai?",
+      "question_type": "mcq",
+      "options": [
+        {"label": "Mencoba-coba langsung (trial and error) sambil melihat hasilnya", "value": "a"},
+        {"label": "Membaca dokumentasi teknis untuk memahami konsep dari akarnya", "value": "b"},
+        {"label": "Mengamati bagaimana orang lain menggunakan teknologi tersebut", "value": "c"},
+        {"label": "Mengikuti panduan langkah-demi-langkah (step-by-step guide) yang sudah teruji", "value": "d"}
+      ],
+      "category": "preferences",
+      "reasoning": "Mengidentifikasi gaya belajar yang cocok dengan peran: (a) Frontend, (b) Backend, (c) UI/UX, (d) IT Support. Ini menunjukkan bagaimana mereka mendekati pengetahuan baru."
+    },
+    {
+      "question_text": "Bayangkan Anda bisa menciptakan 'sihir' di dunia digital. Sihir apa yang Anda pilih?",
+      "question_type": "mcq",
+      "options": [
+        {"label": "Kemampuan membuat tampilan apapun menjadi sangat indah dan estetik seketika", "value": "a"},
+        {"label": "Kemampuan memahami dan menyusun sistem logika yang paling rumit sekalipun", "value": "b"},
+        {"label": "Kemampuan membaca pikiran pengguna untuk tahu apa yang mereka butuhkan", "value": "c"},
+        {"label": "Kemampuan menemukan dan memperbaiki masalah teknis apapun dengan cepat", "value": "d"}
+      ],
+      "category": "interests",
+      "reasoning": "Pertanyaan metaforis untuk mengungkap hasrat inti: (a) UI/UX & Frontend, (b) Backend, (c) UI/UX & Data Analyst, (d) IT Support."
+    },
+    {
+      "question_text": "Konten teknologi seperti apa yang paling sering Anda ikuti di media sosial atau YouTube?",
+      "question_type": "mcq",
+      "options": [
+        {"label": "Review gadget terbaru, setup komputer, dan hardware", "value": "a"},
+        {"label": "Tutorial coding, tips programming, dan arsitektur sistem", "value": "b"},
+        {"label": "Studi kasus desain produk, tren UI/UX, dan psikologi pengguna", "value": "c"},
+        {"label": "Berita tentang keamanan siber, update software, dan jaringan", "value": "d"}
+      ],
+      "category": "interests",
+      "reasoning": "Minat di luar jam sekolah seringkali menjadi indikator kuat. (a) IT Support, (b) Frontend/Backend Developer, (c) UI/UX Designer, (d) IT Support/Network Specialist."
+    },
+    {
+      "question_text": "Dalam kerja kelompok, peran apa yang paling sering Anda ambil?",
+      "question_type": "mcq",
+      "options": [
+        {"label": "Bagian visual/desain, memastikan presentasi atau produk terlihat bagus", "value": "a"},
+        {"label": "Bagian 'mesin', memastikan semua fungsi teknis berjalan lancar", "value": "b"},
+        {"label": "Bagian riset, mencari data dan memastikan ide sesuai kebutuhan pengguna", "value": "c"},
+        {"label": "Bagian teknis, membantu teman yang kesulitan dengan laptop atau software", "value": "d"}
+      ],
+      "category": "experience",
+      "reasoning": "Menerjemahkan pengalaman kerja kelompok ke dalam peran teknologi. (a) Frontend/UI/UX, (b) Backend, (c) UI/UX/Data Analyst, (d) IT Support."
+    },
+    {
+        "question_text": "Manakah dari tujuan berikut yang paling memotivasi Anda dalam sebuah proyek?",
+        "question_type": "mcq",
+        "options": [
+          {"label": "Menciptakan pengalaman pengguna yang mulus dan menyenangkan", "value": "a"},
+          {"label": "Membangun sistem yang efisien, aman, dan dapat diandalkan", "value": "b"},
+          {"label": "Menemukan wawasan (insight) tersembunyi dari sekumpulan data", "value": "c"},
+          {"label": "Memastikan semua sistem dan infrastruktur berjalan tanpa gangguan", "value": "d"}
+        ],
+        "category": "preferences",
+        "reasoning": "Menggali motivasi intrinsik yang selaras dengan nilai inti setiap peran. (a) UI/UX, Frontend, (b) Backend, (c) Data Analyst, (d) IT Support."
+    },
+    {
+      "question_text": "Tim Anda ditugaskan membuat aplikasi presensi online untuk sekolah. Sebagai langkah pertama, apa yang akan Anda usulkan untuk dilakukan?",
+      "question_type": "case",
+      "options": null,
+      "category": "preferences",
+      "reasoning": "Menilai pendekatan awal dalam sebuah proyek. Jawaban yang berfokus pada 'membuat sketsa/wireframe' mengarah ke UI/UX. Fokus pada 'desain database dan API' mengarah ke Backend. Fokus pada 'memilih teknologi untuk tampilan' mengarah ke Frontend. Fokus pada 'kebutuhan server' mengarah ke IT Support."
+    },
+    {
+      "question_text": "Website sekolah tiba-tiba menjadi sangat lambat. Banyak guru dan siswa mengeluh. Bagaimana Anda akan mulai mencari tahu penyebab masalahnya?",
+      "question_type": "case",
+      "options": null,
+      "category": "preferences",
+      "reasoning": "Mengukur pendekatan troubleshooting. Jawaban 'mengecek koneksi jaringan dan server' ciri IT Support. 'Menganalisis query database yang berat' ciri Backend. 'Memeriksa ukuran gambar dan file JavaScript' ciri Frontend. 'Melihat data jam berapa saja website melambat' ciri Data Analyst."
+    },
+    {
+      "question_text": "Banyak siswa yang ternyata tidak menggunakan fitur perpustakaan digital di aplikasi sekolah. Apa yang akan Anda lakukan untuk mencari tahu penyebabnya dan memberikan solusi?",
+      "question_type": "case",
+      "options": null,
+      "category": "preferences",
+      "reasoning": "Fokus pada masalah dari sisi pengguna. Pendekatan 'mewawancarai siswa' atau 'membuat survei' adalah ciri kuat UI/UX. 'Menganalisis data klik' mengarah ke Data Analyst. 'Menawarkan untuk mendesain ulang tombolnya' mengarah ke Frontend."
+    },
+    {
+      "question_text": "Anda diberikan data absensi seluruh siswa selama satu semester dalam bentuk spreadsheet. Informasi menarik apa yang pertama kali ingin Anda cari dari data tersebut?",
+      "question_type": "case",
+      "options": null,
+      "category": "preferences",
+      "reasoning": "Skenario ini spesifik untuk menguji pola pikir analitis. Jawaban yang mencari 'pola siswa yang sering terlambat', 'hari dengan absensi terendah', atau 'korelasi absensi dengan nilai' menunjukkan potensi kuat sebagai Data Analyst."
+    },
+    {
+      "question_text": "Ceritakan sebuah pengalaman (di sekolah atau pribadi) saat Anda berhasil memecahkan masalah menggunakan teknologi. Apa masalahnya, bagaimana cara Anda menyelesaikannya, dan apa yang membuat Anda bangga?",
+      "question_type": "text",
+      "options": null,
+      "category": "experience",
+      "reasoning": "Menggali pengalaman nyata dan motivasi intrinsik. Cerita tentang 'memperbaiki komputer teman' bisa mengarah ke IT Support. Cerita tentang 'membuat website sederhana' bisa ke Frontend/Backend. Cerita tentang 'mengolah data untuk tugas' bisa ke Data Analyst. Cara mereka bercerita menunjukkan passion mereka."
+    },
+    {
+      "question_text": "Jika Anda bebas memilih, proyek teknologi seperti apa yang ingin sekali Anda bangun di masa depan? Jelaskan idenya secara singkat.",
+      "question_type": "text",
+      "options": null,
+      "category": "interests",
+      "reasoning": "Pertanyaan ini membuka wawasan tentang imajinasi dan ambisi siswa. Ide yang berfokus pada interaksi sosial dan kemudahan penggunaan mengarah ke UI/UX & Frontend. Ide yang kompleks dan berbasis data mengarah ke Backend & Data Analyst. Ide yang berfokus pada efisiensi sistem/jaringan mengarah ke IT Support."
+    }
+  ],
+    "metadata": {
+        "total_questions": 20,
+        "distribution": {
+        "mcq": 8,
+        "likert": 6,
+        "case": 4,
+        "text": 2
+        },
+    "target_roles_coverage": [
+        "Frontend Developer",
+        "Backend Developer",
+        "UI/UX Designer",
+        "IT Support/Network Specialist",
+        "Data Analyst (Junior)"
+    ]
+  }
+}

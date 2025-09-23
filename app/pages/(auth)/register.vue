@@ -1,16 +1,23 @@
 <template>
+    <AlertModal 
+        v-model:isOpen="alertModal.isOpen"
+        :type="alertModal.type"
+        :title="alertModal.title"
+        :message="alertModal.message"
+        @ok="() => {}"
+    />
     <section class="w-full py-8 bg-gradient-to-b from-primary to-red-700 relative overflow-hidden min-h-screen flex items-center justify-center">
-        <div class="absolute -top-10 -left-10 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
-        <div class="absolute -bottom-20 -right-10 w-96 h-96 bg-pink-400/20 rounded-full blur-3xl"></div>
+        <div class="absolute -top-10 -left-10 w-72 h-72 bg-white/10 rounded-full blur-3xl"/>
+        <div class="absolute -bottom-20 -right-10 w-96 h-96 bg-pink-400/20 rounded-full blur-3xl"/>
         
-        <div class="absolute top-32 right-32 w-16 h-16 bg-white/5 rounded-lg rotate-45"></div>
-        <div class="absolute bottom-32 left-48 w-20 h-20 bg-white/5 rounded-full"></div>
-        <div class="absolute top-1/2 left-8 w-8 h-8 bg-white/10 rounded-full"></div>
-        <div class="absolute top-1/4 right-16 w-12 h-12 bg-white/5 rounded-lg rotate-12"></div>
+        <div class="absolute top-32 right-32 w-16 h-16 bg-white/5 rounded-lg rotate-45"/>
+        <div class="absolute bottom-32 left-48 w-20 h-20 bg-white/5 rounded-full"/>
+        <div class="absolute top-1/2 left-8 w-8 h-8 bg-white/10 rounded-full"/>
+        <div class="absolute top-1/4 right-16 w-12 h-12 bg-white/5 rounded-lg rotate-12"/>
 
         <div class="absolute top-24 left-32 lg:left-48 animate-float">
             <div class="w-[80px] h-[80px] bg-white/10 backdrop-blur-sm rounded-full p-3 shadow-lg">
-                <img src="/assets/images/home-icon.png" alt="Home" class="w-full h-full object-contain opacity-80" />
+                <img src="/assets/images/home-icon.png" alt="Home" class="w-full h-full object-contain opacity-80"/>
             </div>
         </div>
 
@@ -41,11 +48,10 @@
                         </p>
                     </div>
 
-                    <!-- Form -->
-                    <form @submit.prevent="handleRegister" class="w-full max-w-md space-y-5">
+                    <form  class="w-full max-w-md space-y-5" @submit.prevent="handleRegister">
                         <MainTextfield
-                            v-model="form.name"
-                            name="name"
+                            v-model="form.fullname"
+                            fullname="fullname"
                             label="Nama Lengkap"
                             type="text"
                             placeholder="Masukkan nama lengkap"
@@ -53,14 +59,14 @@
                         >
                             <template #icon>
                                 <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                                 </svg>
                             </template>
                         </MainTextfield>
 
                         <MainTextfield
                             v-model="form.email"
-                            name="email"
+                            fullname="email"
                             label="Email"
                             type="email"
                             placeholder="nama@email.com"
@@ -68,7 +74,7 @@
                         >
                             <template #icon>
                                 <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/>
                                 </svg>
                             </template>
                         </MainTextfield>
@@ -82,7 +88,6 @@
                             Daftar Sekarang
                         </button>
 
-                        <!-- Login Link -->
                         <div class="text-center pt-4">
                             <span class="text-gray-600">Sudah punya akun? </span>
                             <a href="/login" class="text-primary font-semibold hover:text-primary/80 transition-colors">
@@ -91,7 +96,6 @@
                         </div>
                     </form>
 
-                    <!-- Help Section -->
                     <div class="text-center mt-8 pt-2 border-t border-gray-100">
                         <p class="text-gray-600 mb-1">Butuh bantuan?</p>
                         <a href="mailto:aicademy@app.com" class="text-primary font-semibold hover:text-primary/80 transition-colors">
@@ -112,7 +116,8 @@
     </section>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import AlertModal from '~/components/modal/basic-modal/AlertModal.vue';
 import MainTextfield from '~/components/textfield/MainTextfield.vue'
 import PasswordTextfield from '~/components/textfield/PasswordTextfield.vue'
 
@@ -120,17 +125,54 @@ definePageMeta({
     layout: false
 })
 
+const responseMessage = ref("");
+const error = ref(false)
+const config = useRuntimeConfig();
+const isRegistered = ref(false)
+const isPopupErrorOpen = ref(false)
+
 const form = ref({
-    name: '',
+    fullname: '',
     email: '',
     password: '',
-    confirmPassword: ''
 })
 
-const handleRegister = () => {
-    console.log('Register form:', form.value)
-    // Handle registration logic here
-}
+const alertModal = ref({
+  isOpen: isRegistered,
+  type: 'success' as const,
+  title: 'Registrasi berhasil',
+  message: 'Silahkan cek email anda untuk melanjutkan proses verifikasi'
+})
+
+const handleRegister = async () => {
+    responseMessage.value = ""
+    error.value = false
+
+    const payload = {
+        fullname: form.value.fullname,          
+        email: form.value.email,
+        password: form.value.password,
+    }
+
+    try {
+        const res = await $fetch('/auth/register/alumni', {
+            method: 'POST',
+            body: payload,
+            credentials: 'include',
+            headers: {
+                'Content-Type' : 'application/json'
+            },
+            baseURL: config.public.apiBase
+        });
+        isRegistered.value = true
+    } catch (e) {
+        isPopupErrorOpen.value = true
+        alertModal.value.title = "Error"
+        // alertModal.value.message = e.message
+        // responseMessage.value = e.message
+        console.error('Error submitting post:', e)
+    }
+}   
 </script>
 
 <style scoped>

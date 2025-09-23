@@ -1,4 +1,11 @@
 <template>
+    <AlertModal 
+        v-model:isOpen="alertModal.isOpen"
+        :type="alertModal.type"
+        :title="alertModal.title"
+        :message="alertModal.message"
+        @ok="() => {}"
+    />
     <section class="w-full py-8 bg-gradient-to-b from-primary to-red-700 relative overflow-hidden min-h-screen flex items-center justify-center">
         <div class="absolute -top-10 -left-10 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
         <div class="absolute -bottom-20 -right-10 w-96 h-96 bg-pink-400/20 rounded-full blur-3xl"></div>
@@ -120,8 +127,11 @@
     </section>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import AlertModal from '~/components/modal/basic-modal/AlertModal.vue';
 import MainTextfield from '~/components/textfield/MainTextfield.vue'
+
+const config = useRuntimeConfig();
 
 definePageMeta({
     layout: false
@@ -132,10 +142,53 @@ const form = ref({
     password: ''
 })
 
-const handleLogin = () => {
-    const router = useRouter()
-    console.log('Login form:', form.value)
-    router.push('/student/dashboard')
+const showPopupModal = ref(false)
+
+const alertModal = ref({
+  isOpen: showPopupModal,
+  type: 'error' as const,
+  title: 'Invalid Credential',
+  message: 'Password atau email yang anda masukan salah'
+})
+
+const getDashboardUrl = (roleValue) => {
+  if (!roleValue) return '/dashboard'
+  
+  switch (roleValue) {
+    case 'admin': return '/admin/dashboard'
+    case 'teacher': return '/teacher/dashboard'
+    case 'alumni': return '/student/dashboard'
+    case 'company': return '/company/dashboard'
+    case 'student':
+    default: return '/student/dashboard'
+  }
+}
+
+const handleLogin = async () => {
+
+    const payload = {          
+        email: form.value.email,
+        password: form.value.password,
+    }
+
+    try {
+        const res = await $fetch('/auth/login', {
+            method: 'POST',
+            body: payload,
+            credentials: 'include',
+            headers: {
+                'Content-Type' : 'application/json'
+            },
+            baseURL: config.public.apiBase
+        });
+        console.log(res)
+        const roleRef  = useCookie<'admin'|'teacher'|'student'|'alumni'|'company'|null>('role')
+        const role = roleRef
+        await navigateTo(getDashboardUrl(role))
+    } catch (e) {
+        showPopupModal.value = true
+        console.error('Error submitting post:', e)
+    }
 }
 </script>
 
