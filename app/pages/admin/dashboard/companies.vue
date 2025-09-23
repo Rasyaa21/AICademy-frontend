@@ -1,56 +1,13 @@
 <template>
     <CompanyInputPopup v-model:is-open="openCompanyInput"/>
     <div class="space-y-6">
-        <!-- Header -->
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900">Companies Management</h1>
-                <p class="text-gray-600 mt-1">
-                    Kelola data perusahaan partner dan monitor aktivitas mereka
-                </p>
-            </div>
-        </div>
+        <AdminPageHeader
+            title="Companies Management"
+            description="Kelola data perusahaan partner dan monitor aktivitas mereka"
+        />
 
-        <!-- Stats Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div class="bg-white p-6 rounded-xl shadow-sm border">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-500 text-sm">Total Perusahaan</p>
-                        <p class="text-2xl font-bold text-gray-900">{{ companyStats.total }}</p>
-                    </div>
-                    <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                        <Icon name="heroicons:building-office-20-solid" class="w-6 h-6 text-primary" />
-                    </div>
-                </div>
-            </div>
+        <CompaniesStatsSection :company-stats="companyStats" />
 
-            <div class="bg-white p-6 rounded-xl shadow-sm border">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-500 text-sm">Perusahaan Aktif</p>
-                        <p class="text-2xl font-bold text-green-600">{{ companyStats.active }}</p>
-                    </div>
-                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                        <Icon name="heroicons:check-circle-20-solid" class="w-6 h-6 text-green-600" />
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white p-6 rounded-xl shadow-sm border">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-500 text-sm">Challenge Sponsor</p>
-                        <p class="text-2xl font-bold text-purple-600">{{ companyStats.challengeSponsors }}</p>
-                    </div>
-                    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                        <Icon name="heroicons:trophy-20-solid" class="w-6 h-6 text-purple-600" />
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Filter Component -->
         <CompanyFilter
             v-model:searchQuery="searchQuery"
             v-model:selectedLocation="selectedLocation"
@@ -64,131 +21,36 @@
             @add-company="openCompanyInput = true"
         />
 
-        <!-- Companies Table -->
-        <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="text-left py-3 px-6 font-semibold text-gray-900 text-sm">Perusahaan</th>
-                            <th class="text-left py-3 px-6 font-semibold text-gray-900 text-sm">Email</th>
-                            <th class="text-left py-3 px-6 font-semibold text-gray-900 text-sm">Lokasi</th>
-                            <th class="text-left py-3 px-6 font-semibold text-gray-900 text-sm">Status</th>
-                            <th class="text-left py-3 px-6 font-semibold text-gray-900 text-sm">Bergabung</th>
-                            <th class="text-left py-3 px-6 font-semibold text-gray-900 text-sm">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="company in paginatedCompanies" :key="company.id" class="border-b border-gray-100 hover:bg-gray-50">
-                            <td class="py-4 px-6">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                                        <span class="text-primary font-semibold text-sm">{{ getInitials(company.company_name) }}</span>
-                                    </div>
-                                    <div>
-                                        <div class="font-medium text-gray-900 text-sm">{{ company.company_name }}</div>
-                                        <div class="text-xs text-gray-500 truncate max-w-[200px]">{{ company.description || 'No description' }}</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="py-4 px-6 text-sm text-gray-600">{{ company.email }}</td>
-                            <td class="py-4 px-6 text-sm text-gray-600">{{ company.company_location || '-' }}</td>
-                            <td class="py-4 px-6">
-                                <span 
-                                    :class="[
-                                        'px-2 py-1 rounded-full text-xs font-medium',
-                                        company.status === 'active' 
-                                            ? 'bg-green-100 text-green-800' 
-                                            : 'bg-red-100 text-red-800'
-                                    ]"
-                                >
-                                    {{ company.status === 'active' ? 'Aktif' : 'Tidak Aktif' }}
-                                </span>
-                            </td>
-                            <td class="py-4 px-6 text-sm text-gray-600">
-                                {{ formatDate(company.created_at) }}
-                            </td>
-                            <td class="py-4 px-6">
-                                <div class="flex items-center gap-1">
-                                    <button 
-                                        @click="viewCompany(company)"
-                                        class="p-1 hover:bg-gray-200 rounded"
-                                        title="Lihat Detail"
-                                    >
-                                        <Icon name="heroicons:eye-20-solid" class="w-4 h-4 text-gray-600" />
-                                    </button>
-                                    <button 
-                                        @click="editCompany(company)"
-                                        class="p-1 hover:bg-gray-200 rounded"
-                                        title="Edit"
-                                    >
-                                        <Icon name="heroicons:pencil-20-solid" class="w-4 h-4 text-gray-600" />
-                                    </button>
-                                    <button 
-                                        @click="deleteCompany(company)"
-                                        class="p-1 hover:bg-gray-200 rounded"
-                                        title="Hapus"
-                                    >
-                                        <Icon name="heroicons:trash-20-solid" class="w-4 h-4 text-red-600" />
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        <CompaniesTableSection
+            :paginated-companies="paginatedCompanies"
+            @view-company="viewCompany"
+            @edit-company="editCompany"
+            @delete-company="deleteCompany"
+        />
 
-        <!-- Empty State -->
-        <div v-if="filteredCompanies.length === 0" class="text-center py-12">
-            <div class="text-gray-400 mb-4">
-                <Icon name="heroicons:building-office-20-solid" class="w-16 h-16 mx-auto" />
-            </div>
-            <h3 class="text-lg font-semibold text-gray-900 mb-2">Tidak ada perusahaan ditemukan</h3>
-            <p class="text-gray-500 mb-4">
-                {{ searchQuery ? 'Coba ubah kata kunci pencarian atau' : 'Coba ubah' }} filter untuk melihat perusahaan lainnya
-            </p>
-            <button 
-                @click="clearAllFilters"
-                class="text-primary hover:text-primary/80 font-medium"
-            >
-                Reset semua filter
-            </button>
-        </div>
+        <CompaniesEmptyState
+            v-if="filteredCompanies.length === 0"
+            :search-query="searchQuery"
+            @clear-filters="clearAllFilters"
+        />
 
-        <!-- Pagination -->
-        <div v-if="filteredCompanies.length > itemsPerPage" class="flex justify-center">
-            <nav class="flex items-center gap-2">
-                <button 
-                    @click="currentPage--"
-                    :disabled="currentPage === 1"
-                    class="px-3 py-2 rounded-lg border border-gray-200 text-sm font-medium
-                           disabled:opacity-50 disabled:cursor-not-allowed
-                           hover:bg-gray-50 transition-colors"
-                >
-                    Previous
-                </button>
-                
-                <span class="px-4 py-2 text-sm text-gray-600">
-                    Page {{ currentPage }} of {{ totalPages }}
-                </span>
-                
-                <button 
-                    @click="currentPage++"
-                    :disabled="currentPage === totalPages"
-                    class="px-3 py-2 rounded-lg border border-gray-200 text-sm font-medium
-                        disabled:opacity-50 disabled:cursor-not-allowed
-                        hover:bg-gray-50 transition-colors"
-                >
-                    Next
-                </button>
-            </nav>
-        </div>
+        <CompaniesPaginationSection
+            :current-page="currentPage"
+            :total-pages="totalPages"
+            :total-items="filteredCompanies.length"
+            :items-per-page="itemsPerPage"
+            @page-changed="(page: number) => currentPage = page"
+        />
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
+import AdminPageHeader from '~/components/dashboard-admin/shared/AdminPageHeader.vue'
+import CompaniesStatsSection from '~/components/dashboard-admin/companies/CompaniesStatsSection.vue'
+import CompaniesTableSection from '~/components/dashboard-admin/companies/CompaniesTableSection.vue'
+import CompaniesEmptyState from '~/components/dashboard-admin/companies/CompaniesEmptyState.vue'
+import CompaniesPaginationSection from '~/components/dashboard-admin/companies/CompaniesPaginationSection.vue'
 import CompanyFilter from '~/components/dashboard-admin/companies/CompaniesFilter.vue'
 import CompanyInputPopup from '~/components/modal/CompanyInputPopup.vue'
 import type { Company } from '~/types/Company'

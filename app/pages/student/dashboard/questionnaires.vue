@@ -1,29 +1,29 @@
 <template>
-  <div class="max-w-4xl mx-auto space-y-8">
+  <div class="mx-auto space-y-8 max-w-4xl">
     <!-- Header -->
-    <div class="text-center space-y-4">
-      <div class="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
+    <div class="space-y-4 text-center">
+      <div class="inline-flex justify-center items-center mb-4 w-16 h-16 rounded-full bg-primary/10">
         <Icon name="heroicons:clipboard-document-list-20-solid" class="w-8 h-8 text-primary" />
       </div>
       <h1 class="text-3xl font-bold text-gray-900">Kuesioner Peminatan Karir IT</h1>
-      <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+      <p class="mx-auto max-w-2xl text-lg text-gray-600">
         Jawab {{ totalQuestions }} pertanyaan berikut untuk mengetahui jalur karir IT yang paling sesuai dengan kepribadian dan minat Anda
       </p>
     </div>
 
     <!-- Draft Notice -->
-    <div v-if="hasDraft && !isDraftLoaded" class="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
-      <div class="flex items-start gap-3">
-        <Icon name="heroicons:exclamation-triangle-20-solid" class="w-5 h-5 text-yellow-600 mt-0.5" />
+    <div v-if="hasDraft && !isDraftLoaded" class="p-4 bg-yellow-50 rounded-xl border border-yellow-200">
+      <div class="flex gap-3 items-start">
+        <Icon name="heroicons:exclamation-triangle-20-solid" class="mt-0.5 w-5 h-5 text-yellow-600" />
         <div class="flex-1">
           <h3 class="font-medium text-yellow-800">Draft Tersimpan</h3>
-          <p class="text-sm text-yellow-700 mt-1">
+          <p class="mt-1 text-sm text-yellow-700">
             Kami menemukan jawaban yang belum selesai. Ingin melanjutkan dari terakhir kali?
           </p>
           <div class="flex gap-3 mt-3">
             <button 
               @click="loadDraft"
-              class="text-sm bg-yellow-100 text-yellow-800 px-3 py-1 rounded-lg hover:bg-yellow-200 transition-colors"
+              class="px-3 py-1 text-sm text-yellow-800 bg-yellow-100 rounded-lg transition-colors hover:bg-yellow-200"
             >
               Lanjutkan Draft
             </button>
@@ -39,14 +39,14 @@
     </div>
 
     <!-- Progress Section -->
-    <div class="bg-white rounded-xl p-6 shadow-sm border">
+    <div class="p-6 bg-white rounded-xl border shadow-sm">
       <!-- Step Indicators with Full Line -->
-      <div class="relative flex items-center justify-between mb-6">
+      <div class="flex relative justify-between items-center mb-6">
         <!-- Background Line -->
-        <div class="absolute top-1/2 left-0 right-0 h-1 bg-gray-200 rounded-full -translate-y-1/2"></div>
+        <div class="absolute right-0 left-0 top-1/2 h-1 bg-gray-200 rounded-full -translate-y-1/2"></div>
         <!-- Progress Line -->
         <div 
-          class="absolute top-1/2 left-0 h-1 bg-primary rounded-full -translate-y-1/2 transition-all duration-500 ease-out"
+          class="absolute left-0 top-1/2 h-1 rounded-full transition-all duration-500 ease-out -translate-y-1/2 bg-primary"
           :style="{ width: `${stepProgress}%` }"
         ></div>
         
@@ -57,7 +57,7 @@
           class="relative z-10"
         >
           <div 
-            class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 border-2"
+            class="flex justify-center items-center w-10 h-10 text-sm font-bold rounded-full border-2 transition-all duration-300"
             :class="getStepClass(step)"
           >
             <Icon 
@@ -68,37 +68,37 @@
             <span v-else>{{ step }}</span>
           </div>
           <!-- Step Label -->
-          <div class="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-600 whitespace-nowrap">
+          <div class="absolute -bottom-8 left-1/2 text-xs font-medium text-gray-600 whitespace-nowrap transform -translate-x-1/2">
             Step {{ step }}
           </div>
         </div>
       </div>
 
       <!-- Progress Bar -->
-      <div class="space-y-2 mt-12">
+      <div class="mt-12 space-y-2">
         <div class="flex justify-between text-sm">
           <span class="text-gray-600">Progress Keseluruhan</span>
           <span class="font-medium text-primary">{{ Math.round(overallProgress) }}% selesai</span>
         </div>
-        <div class="w-full bg-gray-200 rounded-full h-3">
+        <div class="w-full h-3 bg-gray-200 rounded-full">
           <div 
-            class="bg-gradient-to-r from-primary to-primary/80 h-3 rounded-full transition-all duration-500 ease-out shadow-sm"
+            class="h-3 bg-gradient-to-r rounded-full shadow-sm transition-all duration-500 ease-out from-primary to-primary/80"
             :style="{ width: `${overallProgress}%` }"
           ></div>
         </div>
-        <div class="text-xs text-gray-500 text-center">
+        <div class="text-xs text-center text-gray-500">
           {{ answeredQuestions }} dari {{ totalQuestions }} pertanyaan dijawab
         </div>
       </div>
     </div>
 
     <!-- Question Card -->
-    <div v-if="currentQuestion" class="bg-white rounded-xl p-8 shadow-sm border" id="question-card">
+    <div v-if="currentQuestion" class="p-8 bg-white rounded-xl border shadow-sm" id="question-card">
       <div class="space-y-6">
         <!-- Question Header -->
-        <div class="flex items-center justify-between pb-4 border-b border-gray-100">
+        <div class="flex justify-between items-center pb-4 border-b border-gray-100">
           <div class="space-y-1">
-            <div class="flex items-center gap-2 text-sm text-gray-500">
+            <div class="flex gap-2 items-center text-sm text-gray-500">
               <Icon name="heroicons:chat-bubble-left-ellipsis-20-solid" class="w-4 h-4" />
               <span>Pertanyaan {{ currentQuestionNumber }} dari {{ totalQuestions }}</span>
             </div>
@@ -151,12 +151,12 @@
     </div>
 
     <!-- Navigation -->
-    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 bg-white rounded-xl p-6 shadow-sm border">
+    <div class="flex flex-col gap-4 justify-between items-center p-6 bg-white rounded-xl border shadow-sm sm:flex-row">
       <!-- Left Side - Previous Button -->
       <button
         v-if="currentQuestionIndex > 0"
         @click="previousQuestion"
-        class="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+        class="flex gap-2 justify-center items-center px-6 py-3 w-full text-gray-700 rounded-lg border border-gray-300 transition-colors sm:w-auto hover:bg-gray-50"
       >
         <Icon name="heroicons:arrow-left-20-solid" class="w-4 h-4" />
         Sebelumnya
@@ -167,7 +167,7 @@
       <button
         @click="saveDraft"
         :disabled="!hasAnyAnswer"
-        class="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        class="flex gap-2 justify-center items-center px-4 py-2 w-full text-gray-600 transition-colors sm:w-auto hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
         :class="{ 'text-green-600': draftSaved }"
       >
         <Icon :name="draftSaved ? 'heroicons:check-circle-20-solid' : 'heroicons:bookmark-20-solid'" class="w-4 h-4" />
@@ -178,7 +178,7 @@
       <button
         @click="nextQuestion"
         :disabled="!canProceed"
-        class="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        class="flex gap-2 justify-center items-center px-6 py-3 w-full text-white rounded-lg transition-colors sm:w-auto bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <span>{{ isLastQuestion ? 'Kirim Jawaban' : 'Berikutnya' }}</span>
         <Icon 
@@ -189,15 +189,15 @@
     </div>
 
     <!-- Question Summary -->
-    <div v-if="isLastQuestion && answeredQuestions === totalQuestions" class="bg-green-50 border border-green-200 rounded-xl p-6">
-      <div class="flex items-start gap-3">
-        <Icon name="heroicons:check-circle-20-solid" class="w-6 h-6 text-green-600 mt-0.5" />
+    <div v-if="isLastQuestion && answeredQuestions === totalQuestions" class="p-6 bg-green-50 rounded-xl border border-green-200">
+      <div class="flex gap-3 items-start">
+        <Icon name="heroicons:check-circle-20-solid" class="mt-0.5 w-6 h-6 text-green-600" />
         <div>
-          <h3 class="font-medium text-green-800 mb-2">Semua Pertanyaan Telah Dijawab!</h3>
-          <p class="text-sm text-green-700 mb-4">
+          <h3 class="mb-2 font-medium text-green-800">Semua Pertanyaan Telah Dijawab!</h3>
+          <p class="mb-4 text-sm text-green-700">
             Terima kasih telah melengkapi kuesioner. Klik "Kirim Jawaban" untuk melihat hasil analisis peminatan karir IT Anda.
           </p>
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+          <div class="grid grid-cols-2 gap-4 text-sm md:grid-cols-4">
             <div class="text-center">
               <div class="font-medium text-green-800">{{ answeredByType.mcq }}</div>
               <div class="text-green-600">Pilihan Ganda</div>

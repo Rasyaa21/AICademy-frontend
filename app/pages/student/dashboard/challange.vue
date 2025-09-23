@@ -1,191 +1,54 @@
 <!-- pages/student/dashboard/challange.vue -->
 <template>
     <div class="space-y-6">
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div class="flex flex-col gap-4 justify-between lg:flex-row lg:items-center">
             <div>
                 <h1 class="text-3xl font-bold text-gray-900">Challenge</h1>
-                <p class="text-gray-600 mt-1">
+                <p class="mt-1 text-gray-600">
                     Ikuti berbagai challenge untuk meningkatkan skill programming Anda
                 </p>
             </div>
         </div>
 
         <!-- Stats Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div class="bg-white p-6 rounded-xl shadow-sm border">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-500 text-sm">Total Challenge</p>
-                        <p class="text-2xl font-bold text-gray-900">{{ challengeStats.total }}</p>
-                    </div>
-                    <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                        <Icon name="heroicons:puzzle-piece-20-solid" class="w-6 h-6 text-primary" />
-                    </div>
-                </div>
-            </div>
+        <ChallangeStatsSection :challenge-stats="challengeStats" />
 
-            <div class="bg-white p-6 rounded-xl shadow-sm border">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-500 text-sm">Challenge Aktif</p>
-                        <p class="text-2xl font-bold text-green-600">{{ challengeStats.active }}</p>
-                    </div>
-                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                        <Icon name="heroicons:clock-20-solid" class="w-6 h-6 text-green-600" />
-                    </div>
-                </div>
-            </div>
+        <!-- Filter Section -->
+        <ChallangeFilterSection
+            v-model:search-query="searchQuery"
+            v-model:selected-status="selectedStatus"
+            :filtered-count="filteredChallenges.length"
+            :total-count="challenges.length"
+            :active-filters-count="activeFiltersCount"
+            :has-active-filters="hasActiveFilters"
+            @clear-filters="clearAllFilters"
+        />
 
+        <!-- Sort and View Options -->
+        <ChallangeSortViewSection
+            v-model:sort-by="sortBy"
+            v-model:view-mode="viewMode"
+        />
 
-            <div class="bg-white p-6 rounded-xl shadow-sm border">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-500 text-sm">Berakhir</p>
-                        <p class="text-2xl font-bold text-red-600">{{ challengeStats.completed }}</p>
-                    </div>
-                    <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
-                        <Icon name="heroicons:trophy-20-solid" class="w-6 h-6 text-red-600" />
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-xl p-6 shadow-sm border">
-            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-4">
-                <div>
-                    <h3 class="text-lg font-semibold text-gray-900">Filter & Pencarian</h3>
-                    <p class="text-sm text-gray-500 mt-1">
-                        {{ filteredChallenges.length }} dari {{ challenges.length }} challenge ditemukan
-                    </p>
-                </div>
-                <div class="flex items-center gap-2 text-sm text-gray-500">
-                    <Icon name="heroicons:funnel-20-solid" class="w-4 h-4" />
-                    <span>Filter aktif: {{ activeFiltersCount }}</span>
-                </div>
-            </div>
-
-            <div class="flex flex-col lg:flex-row gap-4">
-                <!-- Search -->
-                <div class="relative flex-1">
-                    <Icon
-                        name="heroicons:magnifying-glass-20-solid"
-                        class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
-                    />
-                    <input
-                        v-model="searchQuery"
-                        type="text"
-                        placeholder="Cari challenge berdasarkan judul atau deskripsi..."
-                        class="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-2 text-sm 
-                               focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
-                               transition-all duration-200"
-                    />
-                </div>
-
-
-                <div class="relative">
-                    <select 
-                        v-model="selectedStatus" 
-                        class="appearance-none bg-white border border-gray-200 rounded-xl px-4 py-2 pr-8 text-sm font-medium text-gray-700 
-                               hover:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
-                               transition-all duration-200 cursor-pointer shadow-sm"
-                    >
-                        <option value="" class="text-gray-600">Semua Status</option>
-                        <option value="active">Aktif</option>
-                        <option value="completed">Berakhir</option>
-                    </select>
-                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                        <Icon name="heroicons:chevron-down-20-solid" class="w-4 h-4 text-gray-400" />
-                    </div>
-                </div>
-
-                <!-- Clear Filters -->
-                <button 
-                    v-if="hasActiveFilters"
-                    @click="clearAllFilters"
-                    class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 
-                           rounded-xl transition-colors duration-200 flex items-center gap-2 border border-gray-200"
-                >
-                    <Icon name="heroicons:x-mark-20-solid" class="w-4 h-4" />
-                    Clear All
-                </button>
-            </div>
-        </div>
-
-        <!-- Sort Options -->
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div class="flex items-center gap-2 text-sm text-gray-600">
-                <Icon name="heroicons:bars-arrow-down-20-solid" class="w-4 h-4" />
-                <span>Urutkan berdasarkan:</span>
-                <select 
-                    v-model="sortBy"
-                    class="bg-transparent border-none text-primary font-medium cursor-pointer focus:outline-none"
-                >
-                    <option value="newest">Terbaru</option>
-                    <option value="deadline">Deadline</option>
-                    <option value="participants">Peserta Terbanyak</option>
-                </select>
-            </div>
-
-            <div class="flex items-center gap-2">
-                <span class="text-sm text-gray-500">Tampilan:</span>
-                <button 
-                    @click="viewMode = 'grid'"
-                    :class="[
-                        'p-2 rounded-lg transition-colors',
-                        viewMode === 'grid' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                    ]"
-                >
-                    <Icon name="heroicons:squares-2x2-20-solid" class="w-4 h-4" />
-                </button>
-                <button 
-                    @click="viewMode = 'list'"
-                    :class="[
-                        'p-2 rounded-lg transition-colors',
-                        viewMode === 'list' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                    ]"
-                >
-                    <Icon name="heroicons:list-bullet-20-solid" class="w-4 h-4" />
-                </button>
-            </div>
-        </div>
-
-        <!-- Challenge Grid/List -->
-        <div v-if="filteredChallenges.length > 0">
-            <div 
-                v-if="viewMode === 'grid'"
-                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6"
-            >
-                <ChallengeCard 
-                    v-for="challenge in paginatedChallenges" 
-                    :key="challenge.id"
-                    :challenge="challenge"
-                />
-            </div>
-
-            <div 
-                v-else
-                class="space-y-4"
-            >
-                <ChallengeListItem 
-                    v-for="challenge in paginatedChallenges" 
-                    :key="challenge.id"
-                    :challenge="challenge"
-                />
-            </div>
-        </div>
+        <!-- Challenge Display -->
+        <ChallangeDisplaySection
+            v-if="filteredChallenges.length > 0"
+            :view-mode="viewMode"
+            :paginated-challenges="paginatedChallenges"
+        />
 
         <!-- Empty State -->
-        <div v-else class="text-center py-12">
-            <div class="text-gray-400 mb-4">
-                <Icon name="heroicons:magnifying-glass-20-solid" class="w-16 h-16 mx-auto" />
+        <div v-else class="py-12 text-center">
+            <div class="mb-4 text-gray-400">
+                <Icon name="heroicons:magnifying-glass-20-solid" class="mx-auto w-16 h-16" />
             </div>
-            <h3 class="text-lg font-semibold text-gray-900 mb-2">Tidak ada challenge ditemukan</h3>
-            <p class="text-gray-500 mb-4">
+            <h3 class="mb-2 text-lg font-semibold text-gray-900">Tidak ada challenge ditemukan</h3>
+            <p class="mb-4 text-gray-500">
                 {{ searchQuery ? 'Coba ubah kata kunci pencarian atau' : 'Coba ubah' }} filter untuk melihat challenge lainnya
             </p>
             <button 
                 @click="clearAllFilters"
-                class="text-primary hover:text-primary/80 font-medium"
+                class="font-medium text-primary hover:text-primary/80"
             >
                 Reset semua filter
             </button>
@@ -193,13 +56,11 @@
 
         <!-- Pagination -->
         <div v-if="filteredChallenges.length > itemsPerPage" class="flex justify-center">
-            <nav class="flex items-center gap-2">
+            <nav class="flex gap-2 items-center">
                 <button 
                     @click="currentPage--"
                     :disabled="currentPage === 1"
-                    class="px-3 py-2 rounded-lg border border-gray-200 text-sm font-medium
-                           disabled:opacity-50 disabled:cursor-not-allowed
-                           hover:bg-gray-50 transition-colors"
+                    class="px-3 py-2 text-sm font-medium rounded-lg border border-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
                 >
                     Previous
                 </button>
@@ -211,9 +72,7 @@
                 <button 
                     @click="currentPage++"
                     :disabled="currentPage === totalPages"
-                    class="px-3 py-2 rounded-lg border border-gray-200 text-sm font-medium
-                        disabled:opacity-50 disabled:cursor-not-allowed
-                        hover:bg-gray-50 transition-colors"
+                    class="px-3 py-2 text-sm font-medium rounded-lg border border-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
                 >
                     Next
                 </button>
@@ -224,8 +83,10 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import ChallengeCard from '~/components/card/ChallengeCard.vue'
-import ChallengeListItem from '~/components/dashboard-student/challange/ChallangeListItem.vue'
+import ChallangeStatsSection from '~/components/dashboard-student/challange/ChallangeStatsSection.vue'
+import ChallangeFilterSection from '~/components/dashboard-student/challange/ChallangeFilterSection.vue'
+import ChallangeSortViewSection from '~/components/dashboard-student/challange/ChallangeSortViewSection.vue'
+import ChallangeDisplaySection from '~/components/dashboard-student/challange/ChallangeDisplaySection.vue'
 import type { Challenge } from '~/types/Challange'
 
 definePageMeta({

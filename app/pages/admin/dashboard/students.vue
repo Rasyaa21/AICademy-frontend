@@ -1,41 +1,30 @@
 <template>
-    <UploadCsvPopup v-model:is-open="openCsvPopup"/>
-    <StudentInputPopup v-model:is-open="openStudentInput"/>
+    <AlertModal 
+        v-model:isOpen="alertModal.isOpen"
+        :type="alertModal.type"
+        :title="alertModal.title"
+        :message="alertModal.message"
+        @ok="handleAlertOk"
+    />
+    <UploadCsvPopup v-model:is-open="openCsvPopup"        
+        @show-success-modal="showSuccessModal"
+        @show-error-modal="showErrorModal"/>
+    <StudentInputPopup 
+        v-model:is-open="openStudentInput"
+        @show-success-modal="showSuccessModal"
+        @show-error-modal="showErrorModal"
+    />
     <div class="space-y-6">
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div class="flex flex-col gap-4 justify-between lg:flex-row lg:items-center">
             <div>
                 <h1 class="text-3xl font-bold text-gray-900">Students Management</h1>
-                <p class="text-gray-600 mt-1">
+                <p class="mt-1 text-gray-600">
                     Kelola data siswa dan monitor aktivitas mereka
                 </p>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-            <div class="bg-white p-6 rounded-xl shadow-sm border">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-500 text-sm">Total Siswa</p>
-                        <p class="text-2xl font-bold text-gray-900">{{ studentStats.total }}</p>
-                    </div>
-                    <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                        <Icon name="heroicons:users-20-solid" class="w-6 h-6 text-primary" />
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white p-6 rounded-xl shadow-sm border">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-500 text-sm">Partisipasi Challenge</p>
-                        <p class="text-2xl font-bold text-purple-600">{{ studentStats.challengeParticipants }}</p>
-                    </div>
-                    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                        <Icon name="heroicons:trophy-20-solid" class="w-6 h-6 text-purple-600" />
-                    </div>
-                </div>
-            </div>
-        </div>
+        <StudentsStatsSection :student-stats="studentStats" />
 
         <!-- Filter Component -->
         <StudentFilter
@@ -53,126 +42,28 @@
         />
 
         <!-- Students Table -->
-        <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="text-left py-3 px-6 font-semibold text-gray-900 text-sm">Siswa</th>
-                            <th class="text-left py-3 px-6 font-semibold text-gray-900 text-sm">NIS</th>
-                            <th class="text-left py-3 px-6 font-semibold text-gray-900 text-sm">Kelas</th>
-                            <th class="text-left py-3 px-6 font-semibold text-gray-900 text-sm">Email</th>
-                            <th class="text-left py-3 px-6 font-semibold text-gray-900 text-sm">Status</th>
-                            <th class="text-left py-3 px-6 font-semibold text-gray-900 text-sm">Bergabung</th>
-                            <th class="text-left py-3 px-6 font-semibold text-gray-900 text-sm">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="student in paginatedStudents" :key="student.id" class="border-b border-gray-100 hover:bg-gray-50">
-                            <td class="py-4 px-6">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                                        <span class="text-primary font-semibold text-sm">{{ getInitials(student.name) }}</span>
-                                    </div>
-                                    <div>
-                                        <div class="font-medium text-gray-900 text-sm">{{ student.name }}</div>
-                                        <div class="text-xs text-gray-500">{{ student.username }}</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="py-4 px-6 text-sm text-gray-600">{{ student.nis }}</td>
-                            <td class="py-4 px-6 text-sm text-gray-600">{{ student.class }}</td>
-                            <td class="py-4 px-6 text-sm text-gray-600">{{ student.email }}</td>
-                            <td class="py-4 px-6">
-                                <span 
-                                    :class="[
-                                        'px-2 py-1 rounded-full text-xs font-medium',
-                                        student.status === 'active' 
-                                            ? 'bg-green-100 text-green-800' 
-                                            : 'bg-red-100 text-red-800'
-                                    ]"
-                                >
-                                    {{ student.status === 'active' ? 'Aktif' : 'Tidak Aktif' }}
-                                </span>
-                            </td>
-                            <td class="py-4 px-6 text-sm text-gray-600">
-                                {{ formatDate(student.created_at) }}
-                            </td>
-                            <td class="py-4 px-6">
-                                <div class="flex items-center gap-1">
-                                    <button 
-                                        @click="viewStudent(student)"
-                                        class="p-1 hover:bg-gray-200 rounded"
-                                        title="Lihat Detail"
-                                    >
-                                        <Icon name="heroicons:eye-20-solid" class="w-4 h-4 text-gray-600" />
-                                    </button>
-                                    <button 
-                                        @click="editStudent(student)"
-                                        class="p-1 hover:bg-gray-200 rounded"
-                                        title="Edit"
-                                    >
-                                        <Icon name="heroicons:pencil-20-solid" class="w-4 h-4 text-gray-600" />
-                                    </button>
-                                    <button 
-                                        @click="deleteStudent(student)"
-                                        class="p-1 hover:bg-gray-200 rounded"
-                                        title="Hapus"
-                                    >
-                                        <Icon name="heroicons:trash-20-solid" class="w-4 h-4 text-red-600" />
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        <StudentsTableSection 
+            :paginated-students="paginatedStudents"
+            @view-student="viewStudent"
+            @edit-student="editStudent"
+            @delete-student="deleteStudent"
+        />
 
         <!-- Empty State -->
-        <div v-if="filteredStudents.length === 0" class="text-center py-12">
-            <div class="text-gray-400 mb-4">
-                <Icon name="heroicons:users-20-solid" class="w-16 h-16 mx-auto" />
-            </div>
-            <h3 class="text-lg font-semibold text-gray-900 mb-2">Tidak ada siswa ditemukan</h3>
-            <p class="text-gray-500 mb-4">
-                {{ searchQuery ? 'Coba ubah kata kunci pencarian atau' : 'Coba ubah' }} filter untuk melihat siswa lainnya
-            </p>
-            <button 
-                @click="clearAllFilters"
-                class="text-primary hover:text-primary/80 font-medium"
-            >
-                Reset semua filter
-            </button>
-        </div>
+        <StudentsEmptyState 
+            v-if="filteredStudents.length === 0"
+            :search-query="searchQuery"
+            @clear-filters="clearAllFilters"
+        />
 
-        <div v-if="filteredStudents.length > itemsPerPage" class="flex justify-center">
-            <nav class="flex items-center gap-2">
-                <button 
-                    @click="currentPage--"
-                    :disabled="currentPage === 1"
-                    class="px-3 py-2 rounded-lg border border-gray-200 text-sm font-medium
-                            disabled:opacity-50 disabled:cursor-not-allowed
-                         *:hover:bg-gray-50 transition-colors"
-                >
-                    Previous
-                </button>
-                
-                <span class="px-4 py-2 text-sm text-gray-600">
-                    Page {{ currentPage }} of {{ totalPages }}
-                </span>
-                
-                <button 
-                    @click="currentPage++"
-                    :disabled="currentPage === totalPages"
-                    class="px-3 py-2 rounded-lg border border-gray-200 text-sm font-medium
-                        disabled:opacity-50 disabled:cursor-not-allowed
-                        hover:bg-gray-50 transition-colors"
-                >
-                    Next
-                </button>
-            </nav>
-        </div>
+        <!-- Pagination -->
+        <StudentsPaginationSection
+            :current-page="currentPage"
+            :total-pages="totalPages"
+            :total-items="filteredStudents.length"
+            :items-per-page="itemsPerPage"
+            @page-changed="(page: number) => currentPage = page"
+        />
     </div>
 </template>
 
@@ -181,10 +72,22 @@ import { ref, computed, watch } from 'vue'
 import StudentFilter from '~/components/dashboard-admin/students/StudentFilter.vue'
 import StudentInputPopup from '~/components/modal/StudentInputPopup.vue'
 import UploadCsvPopup from '~/components/modal/UploadCsvPopup.vue'
+import AlertModal from '~/components/modal/basic-modal/AlertModal.vue'
+import StudentsStatsSection from '~/components/dashboard-admin/students/StudentsStatsSection.vue'
+import StudentsTableSection from '~/components/dashboard-admin/students/StudentsTableSection.vue'
+import StudentsEmptyState from '~/components/dashboard-admin/students/StudentsEmptyState.vue'
+import StudentsPaginationSection from '~/components/dashboard-admin/students/StudentsPaginationSection.vue'
 import type { Student } from '~/types/Student'
 
 definePageMeta({
     layout: 'admin-dashboard-layout'
+})
+
+const alertModal = ref({
+    isOpen: false,
+    type: 'success' as 'success' | 'error' | 'warning' | 'info',
+    title: '',
+    message: ''
 })
 
 const openCsvPopup = ref(false)
@@ -328,34 +231,7 @@ const clearAllFilters = () => {
     currentPage.value = 1
 }
 
-const getInitials = (name: string) => {
-    return name
-        .split(' ')
-        .map(word => word.charAt(0))
-        .join('')
-        .toUpperCase()
-        .slice(0, 2)
-}
-
-const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('id-ID', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric'
-    })
-}
-
 // Action handlers
-const handleImportCSV = () => {
-    console.log('Import CSV clicked')
-    // Implement CSV import logic
-}
-
-const handleAddStudent = () => {
-    console.log('Add student clicked')
-    // Implement add student logic
-}
-
 const viewStudent = (student: Student) => {
     console.log('View student:', student)
     // Implement view student logic
@@ -371,8 +247,38 @@ const deleteStudent = (student: Student) => {
     // Implement delete student logic
 }
 
+// Alert modal handlers
+const showSuccessModal = (message: string) => {
+    alertModal.value = {
+        isOpen: true,
+        type: 'success',
+        title: 'Berhasil',
+        message: message
+    }
+}
+
+const showErrorModal = (message: string) => {
+    alertModal.value = {
+        isOpen: true,
+        type: 'error',
+        title: 'Gagal',
+        message: message
+    }
+}
+
+const handleAlertOk = () => {
+    alertModal.value.isOpen = false
+    // Optionally refresh data after successful operation
+    if (alertModal.value.type === 'success') {
+        // You could refresh the student list here
+        // await refreshStudentList()
+    }
+}
+
 // Watch for filter changes to reset pagination
 watch([searchQuery, selectedClass, selectedStatus], () => {
     currentPage.value = 1
 })
+
+
 </script>

@@ -4,42 +4,42 @@
         :selected-item="selectedRoadmapItem"
         @submit-task="handleSubmitTask"
     />
-    <section class="-m-6 min-w-screen py-6 md:py-8 bg-gradient-to-b from-primary to-red-700 relative overflow-hidden min-h-screen">
+    <section class="overflow-hidden relative py-6 -m-6 min-h-screen bg-gradient-to-b to-red-700 min-w-screen md:py-8 from-primary">
         <!-- Background Elements - Adjusted for mobile -->
-        <div class="absolute -top-10 -left-10 w-48 h-48 md:w-72 md:h-72 bg-white/10 rounded-full blur-3xl"></div>
-        <div class="absolute -bottom-20 -right-10 w-64 h-64 md:w-96 md:h-96 bg-pink-400/20 rounded-full blur-3xl"></div>
+        <div class="absolute -top-10 -left-10 w-48 h-48 rounded-full blur-3xl md:w-72 md:h-72 bg-white/10"></div>
+        <div class="absolute -right-10 -bottom-20 w-64 h-64 rounded-full blur-3xl md:w-96 md:h-96 bg-pink-400/20"></div>
         
-        <div class="hidden md:block absolute top-32 right-32 w-16 h-16 bg-white/5 rounded-lg rotate-45"></div>
-        <div class="hidden md:block absolute bottom-32 left-48 w-20 h-20 bg-white/5 rounded-full"></div>
-        <div class="hidden sm:block absolute top-1/2 left-8 w-6 h-6 md:w-8 md:h-8 bg-white/10 rounded-full"></div>
-        <div class="hidden sm:block absolute top-1/4 right-16 w-8 h-8 md:w-12 md:h-12 bg-white/5 rounded-lg rotate-12"></div>
+        <div class="hidden absolute top-32 right-32 w-16 h-16 rounded-lg rotate-45 md:block bg-white/5"></div>
+        <div class="hidden absolute bottom-32 left-48 w-20 h-20 rounded-full md:block bg-white/5"></div>
+        <div class="hidden absolute left-8 top-1/2 w-6 h-6 rounded-full sm:block md:w-8 md:h-8 bg-white/10"></div>
+        <div class="hidden absolute right-16 top-1/4 w-8 h-8 rounded-lg rotate-12 sm:block md:w-12 md:h-12 bg-white/5"></div>
 
         <!-- Floating Icons - Responsive positioning -->
-        <div class="absolute top-16 md:top-24 left-8 md:left-32 lg:left-48 animate-float">
-            <div class="w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 bg-white/10 backdrop-blur-sm rounded-full p-2 md:p-3 shadow-lg">
+        <div class="absolute left-8 top-16 md:top-24 md:left-32 lg:left-48 animate-float">
+            <div class="p-2 w-12 h-12 rounded-full shadow-lg backdrop-blur-sm md:w-16 md:h-16 lg:w-20 lg:h-20 bg-white/10 md:p-3">
                 <Icon name="heroicons:academic-cap-20-solid" class="w-full h-full text-white opacity-80" />
             </div>
         </div>
 
-        <div class="absolute top-1/3 right-8 md:right-24 lg:right-32 animate-float-delayed">
-            <div class="w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 bg-white/10 backdrop-blur-sm rounded-full p-2 md:p-3 shadow-lg">
+        <div class="absolute right-8 top-1/3 md:right-24 lg:right-32 animate-float-delayed">
+            <div class="p-2 w-12 h-12 rounded-full shadow-lg backdrop-blur-sm md:w-16 md:h-16 lg:w-20 lg:h-20 bg-white/10 md:p-3">
                 <Icon name="heroicons:book-open-20-solid" class="w-full h-full text-white opacity-80" />
             </div>
         </div>
 
-        <div class="absolute bottom-32 md:bottom-40 left-4 md:left-16 animate-float-slow">
-            <div class="w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 bg-white/10 backdrop-blur-sm rounded-full p-2 md:p-3 shadow-lg">
+        <div class="absolute left-4 bottom-32 md:bottom-40 md:left-16 animate-float-slow">
+            <div class="p-2 w-12 h-12 rounded-full shadow-lg backdrop-blur-sm md:w-16 md:h-16 lg:w-20 lg:h-20 bg-white/10 md:p-3">
                 <Icon name="heroicons:light-bulb-20-solid" class="w-full h-full text-white opacity-80" />
             </div>
         </div>
 
-        <div class="container mx-auto px-4 py-8 md:py-16">
+        <div class="container px-4 py-8 mx-auto md:py-16">
             <!-- Header - Responsive text sizes -->
-            <div class="text-center mb-8 md:mb-16">
-                <h1 class="text-white font-bold text-2xl md:text-3xl lg:text-4xl mb-2 md:mb-4 px-4">
+            <div class="mb-8 text-center md:mb-16">
+                <h1 class="px-4 mb-2 text-2xl font-bold text-white md:text-3xl lg:text-4xl md:mb-4">
                     Frontend Development Roadmap
                 </h1>
-                <p class="text-white/80 text-sm md:text-base lg:text-lg max-w-2xl mx-auto px-4">
+                <p class="px-4 mx-auto max-w-2xl text-sm text-white/80 md:text-base lg:text-lg">
                     Ikuti perjalanan pembelajaran yang terstruktur untuk menjadi Frontend Developer yang kompeten
                 </p>
             </div>

@@ -9,174 +9,31 @@
             </div>
         </div>
 
-        <!-- Stats Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div class="bg-white p-6 rounded-xl shadow-sm border">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-500 text-sm">Total Team</p>
-                        <p class="text-2xl font-bold text-gray-900">{{ teamStats.total }}</p>
-                    </div>
-                    <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                        <Icon name="heroicons:users-20-solid" class="w-6 h-6 text-primary" />
-                    </div>
-                </div>
-            </div>
+        <TeamStatsSection :team-stats="teamStats" />
 
-            <div class="bg-white p-6 rounded-xl shadow-sm border">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-500 text-sm">Team Aktif</p>
-                        <p class="text-2xl font-bold text-green-600">{{ teamStats.active }}</p>
-                    </div>
-                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                        <Icon name="heroicons:bolt-20-solid" class="w-6 h-6 text-green-600" />
-                    </div>
-                </div>
-            </div>
+        <TeamFilterSection
+            v-model:search-query="searchQuery"
+            v-model:selected-leader="selectedLeader"
+            :filtered-count="filteredTeams.length"
+            :total-count="teams.length"
+            :active-filters-count="activeFiltersCount"
+            :has-active-filters="hasActiveFilters"
+            :unique-leaders="uniqueLeaders"
+            @clear-filters="clearAllFilters"
+        />
 
-            <div class="bg-white p-6 rounded-xl shadow-sm border">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-500 text-sm">Butuh Member</p>
-                        <p class="text-2xl font-bold text-blue-600">{{ teamStats.recruiting }}</p>
-                    </div>
-                    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                        <Icon name="heroicons:user-plus-20-solid" class="w-6 h-6 text-blue-600" />
-                    </div>
-                </div>
-            </div>
-        </div>
+        <TeamSortViewSection
+            v-model:sort-by="sortBy"
+            v-model:view-mode="viewMode"
+        />
 
-        <div class="bg-white rounded-xl p-6 shadow-sm border">
-            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-4">
-                <div>
-                    <h3 class="text-lg font-semibold text-gray-900">Filter & Pencarian</h3>
-                    <p class="text-sm text-gray-500 mt-1">
-                        {{ filteredTeams.length }} dari {{ teams.length }} team ditemukan
-                    </p>
-                </div>
-                <div class="flex items-center gap-2 text-sm text-gray-500">
-                    <Icon name="heroicons:funnel-20-solid" class="w-4 h-4" />
-                    <span>Filter aktif: {{ activeFiltersCount }}</span>
-                </div>
-            </div>
-
-            <div class="flex flex-col lg:flex-row gap-4">
-                <!-- Search -->
-                <div class="relative flex-1">
-                    <Icon
-                        name="heroicons:magnifying-glass-20-solid"
-                        class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
-                    />
-                    <input
-                        v-model="searchQuery"
-                        type="text"
-                        placeholder="Cari team berdasarkan nama atau deskripsi..."
-                        class="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-2 text-sm 
-                               focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
-                               transition-all duration-200"
-                    />
-                </div>
-
-                <!-- Team Leader Filter -->
-                <div class="relative">
-                    <select 
-                        v-model="selectedLeader" 
-                        class="appearance-none bg-white border border-gray-200 rounded-xl px-4 py-2 pr-8 text-sm font-medium text-gray-700 
-                               hover:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
-                               transition-all duration-200 cursor-pointer shadow-sm"
-                    >
-                        <option value="" class="text-gray-600">Semua Leader</option>
-                        <option v-for="leader in uniqueLeaders" :key="leader" :value="leader">
-                            {{ leader }}
-                        </option>
-                    </select>
-                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                        <Icon name="heroicons:chevron-down-20-solid" class="w-4 h-4 text-gray-400" />
-                    </div>
-                </div>
-
-                <!-- Clear Filters -->
-                <button 
-                    v-if="hasActiveFilters"
-                    @click="clearAllFilters"
-                    class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 
-                           rounded-xl transition-colors duration-200 flex items-center gap-2 border border-gray-200"
-                >
-                    <Icon name="heroicons:x-mark-20-solid" class="w-4 h-4" />
-                    Clear All
-                </button>
-            </div>
-        </div>
-
-        <!-- Sort Options -->
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div class="flex items-center gap-2 text-sm text-gray-600">
-                <Icon name="heroicons:bars-arrow-down-20-solid" class="w-4 h-4" />
-                <span>Urutkan berdasarkan:</span>
-                <select 
-                    v-model="sortBy"
-                    class="bg-transparent border-none text-primary font-medium cursor-pointer focus:outline-none"
-                >
-                    <option value="newest">Terbaru</option>
-                    <option value="oldest">Terlama</option>
-                    <option value="name">Nama Team</option>
-                    <option value="members">Jumlah Member</option>
-                </select>
-            </div>
-
-            <div class="flex items-center gap-2">
-                <span class="text-sm text-gray-500">Tampilan:</span>
-                <button 
-                    @click="viewMode = 'grid'"
-                    :class="[
-                        'p-2 rounded-lg transition-colors',
-                        viewMode === 'grid' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                    ]"
-                >
-                    <Icon name="heroicons:squares-2x2-20-solid" class="w-4 h-4" />
-                </button>
-                <button 
-                    @click="viewMode = 'list'"
-                    :class="[
-                        'p-2 rounded-lg transition-colors',
-                        viewMode === 'list' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                    ]"
-                >
-                    <Icon name="heroicons:list-bullet-20-solid" class="w-4 h-4" />
-                </button>
-            </div>
-        </div>
-
-        <!-- Team Grid/List -->
-        <div v-if="filteredTeams.length > 0">
-            <div 
-                v-if="viewMode === 'grid'"
-                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6"
-            >
-                <TeamCard 
-                    v-for="team in paginatedTeams" 
-                    :key="team.id"
-                    :team="team"
-                    @view-team="handleViewTeam"
-                    @join-team="handleJoinTeam"
-                />
-            </div>
-
-            <div 
-                v-else
-                class="space-y-4"
-            >
-                <TeamListItem 
-                    v-for="team in paginatedTeams" 
-                    :key="team.id"
-                    :team="team"
-                    @view-team="handleViewTeam"
-                    @join-team="handleJoinTeam"
-                />
-            </div>
-        </div>
+        <TeamDisplaySection
+            v-if="filteredTeams.length > 0"
+            :view-mode="viewMode"
+            :paginated-teams="paginatedTeams"
+            @view-team="handleViewTeam"
+            @join-team="handleJoinTeam"
+        />
 
         <!-- Empty State -->
         <div v-else class="text-center py-12">
@@ -228,8 +85,10 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import TeamCard from '~/components/card/TeamCard.vue'
-import TeamListItem from '~/components/dashboard-student/team/TeamListItem.vue'
+import TeamStatsSection from '~/components/dashboard-student/team/TeamStatsSection.vue'
+import TeamFilterSection from '~/components/dashboard-student/team/TeamFilterSection.vue'
+import TeamSortViewSection from '~/components/dashboard-student/team/TeamSortViewSection.vue'
+import TeamDisplaySection from '~/components/dashboard-student/team/TeamDisplaySection.vue'
 import type { Team } from '~/types/Team'
 
 definePageMeta({

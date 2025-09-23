@@ -1,82 +1,17 @@
 <template>          
     <div class="space-y-6">
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
-                <p class="text-gray-600 mt-1">
-                    Kelola data siswa dan monitor aktivitas mereka
-                </p>
-            </div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <StatsCard
-                title="Total Pengguna"
-                :value="389"
-                icon="heroicons:users-16-solid"
-            />
-            <StatsCard
-                title="Total Challenge"
-                :value="challengeStats.total"
-                icon="heroicons:puzzle-piece-20-solid"
-            />
-            <StatsCard
-                title="Challenge Aktif"
-                :value="challengeStats.active"
-                icon="heroicons:clock-20-solid"
-            />
-            <StatsCard
-                title="Total Partisipan"
-                :value="challengeStats.totalParticipants"
-                icon="heroicons:academic-cap-20-solid"
-            />
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="lg:col-span-2 space-y-6">
-                <div class="bg-white rounded-2xl p-6 shadow-sm border">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900">Data Partisipasi Siswa</h3>
-                    </div>
-                    <ChallangeChart :data="chartData" />
-                </div>
-
-                <div class="bg-white rounded-2xl p-6 shadow-sm border">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Participation Analytics</h3>
-                    <ParticipationChart :challenges="challenges" />
-                </div>
-
-                <div class="bg-white rounded-2xl p-6 shadow-sm border">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900">Challange Terkini</h3>
-                        <NuxtLink to="/admin/dashboard/challenge" class="text-primary hover:text-primary/80 text-sm font-medium">
-                            Lihat Semua
-                        </NuxtLink>
-                    </div>
-                    <ChallengeTable :challenges="recentChallenges" />
-                </div>
-            </div>
-
-            <div class="space-y-6">
-                <Calendar />
-                
-                <QuickActions />
-                
-                <RecentActivity />
-            </div>
-        </div>
+        <AdminDashboardHeader />
+        <AdminDashboardStats :challenge-stats="challengeStats" />
+        <AdminDashboardCharts :chart-data="chartData" :challenges="challenges" :recent-challenges="recentChallenges" />
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import AdminDashboardHeader from '~/components/dashboard-admin/sections/AdminDashboardHeader.vue'
+import AdminDashboardStats from '~/components/dashboard-admin/sections/AdminDashboardStats.vue'
+import AdminDashboardCharts from '~/components/dashboard-admin/sections/AdminDashboardCharts.vue'
 import type { Challenge } from '~/types/Challange'
-import ChallengeTable from '~/components/dashboard-admin/index/ChallangeTable.vue'
-import Calendar from '~/components/calendar/Calendar.vue'
-import QuickActions from '~/components/dashboard-admin/index/QuickAction.vue'
-import RecentActivity from '~/components/dashboard-admin/index/RecentActivity.vue'
-import ParticipationChart from '~/components/dashboard-admin/index/ParticipationChart.vue'
-import ChallangeChart from '~/components/dashboard-admin/index/ChallangeChart.vue'
-import StatsCard from '~/components/dashboard-admin/index/StatsCard.vue'
 
 definePageMeta({
     layout: 'admin-dashboard-layout'

@@ -1,4 +1,11 @@
 <template>
+    <AlertModal 
+        v-model:isOpen="alertModal.isOpen"
+        :type="alertModal.type"
+        :title="alertModal.title"
+        :message="alertModal.message"
+        @ok="handleAlertOk"
+    />
     <section class="w-full py-8 bg-gradient-to-b from-primary to-red-700 relative overflow-hidden min-h-screen flex items-center justify-center">
         <div class="absolute -top-10 -left-10 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
         <div class="absolute -bottom-20 -right-10 w-96 h-96 bg-pink-400/20 rounded-full blur-3xl"></div>
@@ -48,7 +55,7 @@
                         type="submit"
                         class="w-full bg-gradient-to-r from-primary to-red-600 text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-primary/90 hover:to-red-600/90 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 mt-8"
                     >
-                        Kirim Reset Email
+                        Reset Password
                     </button>
                     
                     <div class="text-center">
@@ -63,16 +70,53 @@
     </section>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import PasswordTextfield from '~/components/textfield/PasswordTextfield.vue'
+import AlertModal from '~/components/modal/basic-modal/AlertModal.vue'
 
 definePageMeta({
     layout: false
 })
 
+const config = useRuntimeConfig()
+
 const form = ref({
     password: '',
 })
+
+const alertModal = ref({
+    isOpen: false,
+    type: 'success' as 'success' | 'error' | 'warning' | 'info',
+    title: '',
+    message: ''
+})
+
+// Alert modal handlers
+const showSuccessModal = (message: string) => {
+    alertModal.value = {
+        isOpen: true,
+        type: 'success',
+        title: 'Reset Password Berhasil',
+        message: message
+    }
+}
+
+const showErrorModal = (message: string) => {
+    alertModal.value = {
+        isOpen: true,
+        type: 'error',
+        title: 'Reset Password Gagal',
+        message: message
+    }
+}
+
+const handleAlertOk = () => {
+    alertModal.value.isOpen = false
+    if (alertModal.value.type === 'success') {
+        // Redirect to login after successful password reset
+        navigateTo('/login')
+    }
+}
 
 const handleReset = async () => {
 
@@ -82,7 +126,7 @@ const handleReset = async () => {
 
     try {
         //todo passwing token
-        const res = await $fetch('reset-password/RESET_TOKEN_FROM_EMAIL', {
+        await $fetch('reset-password/RESET_TOKEN_FROM_EMAIL', {
             method: 'POST',
             body: payload,
             credentials: 'include',
@@ -91,9 +135,23 @@ const handleReset = async () => {
             },
             baseURL: config.public.apiBase
         });
-        console.log(res)
-    } catch (e) {
-        console.error('Error submitting post:', e)
+        
+        showSuccessModal('Password berhasil direset! Anda akan dialihkan ke halaman login')
+    } catch (error: unknown) {
+        const err = error as { status?: number; statusCode?: number; data?: { message?: string; error?: string }; message?: string }
+        
+        let errorMessage = 'Terjadi kesalahan saat mereset password'
+        
+        if (err.status === 400 || err.statusCode === 400) {
+            errorMessage = 'Token reset password tidak valid atau sudah kadaluarsa'
+        } else if (err.data?.message) {
+            errorMessage = err.data.message
+        } else if (err.message) {
+            errorMessage = err.message
+        }
+        
+        showErrorModal(errorMessage)
+        console.error('Error submitting post:', error)
     }
 }
 </script>

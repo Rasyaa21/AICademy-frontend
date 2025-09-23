@@ -1,8 +1,8 @@
 <template>
-    <div v-if="isOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl mx-4">
+    <div v-if="isOpen" class="flex fixed inset-0 z-50 justify-center items-center bg-black bg-opacity-50">
+        <div class="mx-4 w-full max-w-2xl bg-white rounded-xl shadow-xl">
             <div class="p-6 border-b border-gray-200">
-                <div class="flex items-center justify-between">
+                <div class="flex justify-between items-center">
                     <h3 class="text-lg font-semibold text-gray-900">
                         {{ isEditing ? 'Edit Kuisioner' : 'Tambah Kuisioner Baru' }}
                     </h3>
@@ -88,13 +88,13 @@
                     <button
                         type="button"
                         @click="closeModal"
-                        class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                        class="flex-1 px-4 py-2 text-gray-700 rounded-lg border border-gray-300 transition-colors hover:bg-gray-50"
                     >
                     Batal
                     </button>
                     <button
                         type="submit"
-                        class="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+                        class="flex-1 px-4 py-2 text-white rounded-lg transition-colors bg-primary hover:bg-primary/90"
                         >
                         {{ isEditing ? 'Update' : 'Simpan' }}
                     </button>
