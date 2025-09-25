@@ -42,29 +42,16 @@
                             <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1L9 7V9C9 10.1 9.9 11 11 11V14L13 16L15 14V11C16.1 11 17 10.1 17 9H21ZM6 12C7.1 12 8 11.1 8 10S7.1 8 6 8 4 8.9 4 10 4.9 12 6 12ZM18 12C19.1 12 20 11.1 20 10S19.1 8 18 8 16 8.9 16 10 16.9 12 18 12ZM4 18C4 16.9 4.9 16 6 16S8 16.9 8 18 7.1 20 6 20 4 19.1 4 18ZM16 18C16 16.9 16.9 16 18 16S20 16.9 20 18 19.1 20 18 20 16 19.1 16 18Z"/>
                         </svg>
                     </div>
-                    <h1 class="mb-3 text-4xl font-bold text-secondary">Lupa Password</h1>
+                    <h1 class="mb-3 text-4xl font-bold text-secondary">Reset Password</h1>
                     <p class="mx-auto mb-4 max-w-md text-lg leading-relaxed text-gray-500">
-                        Silahkan masukan email agar sistem kami dapat mengirimkan email untuk melakukan reset password
+                        Silahkan masukan password baru anda
                     </p>
                 </div>
 
-                <form  class="space-y-5 w-full max-w-md" @submit.prevent="handleForgotPassword">
-                    <MainTextfield
-                        v-model="form.email"
-                        name="email"
-                        label="Email"
-                        type="email"
-                        placeholder="nama@email.com"
-                        required
-                    >
-                        <template #icon>
-                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
-                            </svg>
-                        </template>
-                    </MainTextfield>
+                <form  class="space-y-5 w-full max-w-md" @submit.prevent="handleReset">
+                    <PasswordTextfield v-model:password="form.new_password"/>
 
-                    <UniversalButton type="submit" text="Kirim Reset Email"/>
+                    <UniversalButton type="submit" text="Reset Password"/>
 
                     
                     <div class="text-center">
@@ -80,18 +67,19 @@
 </template>
 
 <script setup lang="ts">
-import UniversalButton from '~/components/button/UniversalButton.vue';
-import MainTextfield from '~/components/textfield/MainTextfield.vue'
+import PasswordTextfield from '~/components/textfield/PasswordTextfield.vue'
+import AlertModal from '~/components/modal/basic-modal/AlertModal.vue'
+import UniversalButton from '~/components/button/UniversalButton.vue'
 
 definePageMeta({
     layout: false
 })
 
-const form = ref({
-    email: ''
-})
+const config = useRuntimeConfig()
 
-const config = useRuntimeConfig();
+const form = ref({
+    new_password: '',
+})
 
 const alertModal = ref({
     isOpen: false,
@@ -105,7 +93,7 @@ const showSuccessModal = (message: string) => {
     alertModal.value = {
         isOpen: true,
         type: 'success',
-        title: 'Email Terkirim',
+        title: 'Reset Password Berhasil',
         message: message
     }
 }
@@ -114,7 +102,7 @@ const showErrorModal = (message: string) => {
     alertModal.value = {
         isOpen: true,
         type: 'error',
-        title: 'Gagal Mengirim Email',
+        title: 'Reset Password Gagal',
         message: message
     }
 }
@@ -122,18 +110,20 @@ const showErrorModal = (message: string) => {
 const handleAlertOk = () => {
     alertModal.value.isOpen = false
     if (alertModal.value.type === 'success') {
-        // Redirect to login after successful email send
+        // Redirect to login after successful password reset
         navigateTo('/login')
     }
 }
 
-const handleForgotPassword = async () => {
-     const payload = {          
-        email: form.value.email,
+const handleReset = async () => {
+
+    const payload = {          
+        new_password: form.value.new_password,
     }
 
     try {
-        await $fetch('/auth/forgot-password', {
+        //todo passwing token
+        await $fetch('/auth/student/change-default-password', {
             method: 'POST',
             body: payload,
             credentials: 'include',
@@ -143,14 +133,14 @@ const handleForgotPassword = async () => {
             baseURL: config.public.apiBase
         });
         
-        showSuccessModal('Email reset password telah terkirim. Silahkan cek email anda untuk melanjutkan proses reset password')
+        showSuccessModal('Password berhasil direset! Anda akan dialihkan ke dashboard')
     } catch (error: unknown) {
         const err = error as { status?: number; statusCode?: number; data?: { message?: string; error?: string }; message?: string }
         
-        let errorMessage = 'Terjadi kesalahan saat mengirim email reset password'
+        let errorMessage = 'Terjadi kesalahan saat mereset password'
         
-        if (err.status === 404 || err.statusCode === 404) {
-            errorMessage = 'Email tidak ditemukan dalam sistem'
+        if (err.status === 400 || err.statusCode === 400) {
+            errorMessage = 'Token reset password tidak valid atau sudah kadaluarsa'
         } else if (err.data?.message) {
             errorMessage = err.data.message
         } else if (err.message) {

@@ -1,57 +1,57 @@
 <!-- filepath: /Users/rasya2121/Documents/code/pkl/JHIC/aicademy-frontend/app/pages/(auth)/email-verification.vue -->
 <template>
-    <section class="w-full py-8 bg-gradient-to-b from-primary to-red-700 relative overflow-hidden min-h-screen flex items-center justify-center">
+    <section class="flex overflow-hidden relative justify-center items-center py-8 w-full min-h-screen bg-gradient-to-b to-red-700 from-primary">
         <!-- Background Elements -->
-        <div class="absolute -top-10 -left-10 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
-        <div class="absolute -bottom-20 -right-10 w-96 h-96 bg-pink-400/20 rounded-full blur-3xl"></div>
+        <div class="absolute -top-10 -left-10 w-72 h-72 rounded-full blur-3xl bg-white/10"></div>
+        <div class="absolute -right-10 -bottom-20 w-96 h-96 rounded-full blur-3xl bg-pink-400/20"></div>
         
-        <div class="absolute top-32 right-32 w-16 h-16 bg-white/5 rounded-lg rotate-45"></div>
-        <div class="absolute bottom-32 left-48 w-20 h-20 bg-white/5 rounded-full"></div>
-        <div class="absolute top-1/2 left-8 w-8 h-8 bg-white/10 rounded-full"></div>
-        <div class="absolute top-1/4 right-16 w-12 h-12 bg-white/5 rounded-lg rotate-12"></div>
+        <div class="absolute top-32 right-32 w-16 h-16 rounded-lg rotate-45 bg-white/5"></div>
+        <div class="absolute bottom-32 left-48 w-20 h-20 rounded-full bg-white/5"></div>
+        <div class="absolute left-8 top-1/2 w-8 h-8 rounded-full bg-white/10"></div>
+        <div class="absolute right-16 top-1/4 w-12 h-12 rounded-lg rotate-12 bg-white/5"></div>
 
         <!-- Floating Icons -->
         <div class="absolute top-24 left-32 lg:left-48 animate-float">
             <div class="w-[80px] h-[80px] bg-white/10 backdrop-blur-sm rounded-full p-3 shadow-lg">
-                <img src="/assets/images/home-icon.png" alt="Home" class="w-full h-full object-contain opacity-80" />
+                <img src="/assets/images/home-icon.png" alt="Home" class="object-contain w-full h-full opacity-80" />
             </div>
         </div>
 
-        <div class="absolute top-1/3 right-24 lg:right-32 animate-float-delayed">
+        <div class="absolute right-24 top-1/3 lg:right-32 animate-float-delayed">
             <div class="w-[80px] h-[80px] bg-white/10 backdrop-blur-sm rounded-full p-3 shadow-lg">
-                <img src="/assets/images/book-icon.png" alt="Book" class="w-full h-full object-contain opacity-80" />
+                <img src="/assets/images/book-icon.png" alt="Book" class="object-contain w-full h-full opacity-80" />
             </div>
         </div>
 
-        <div class="absolute bottom-40 left-16 animate-float-slow">
+        <div class="absolute left-16 bottom-40 animate-float-slow">
             <div class="w-[80px] h-[80px] bg-white/10 backdrop-blur-sm rounded-full p-3 shadow-lg">
-                <img src="/assets/images/gear-icon.png" alt="Settings" class="w-full h-full object-contain opacity-80" />
+                <img src="/assets/images/gear-icon.png" alt="Settings" class="object-contain w-full h-full opacity-80" />
             </div>
         </div>
 
         <!-- Main Content -->
-        <div class="w-full max-w-2xl mx-auto px-6 relative z-10">
-            <div class="bg-white backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden border border-white/20 py-12 px-8">
+        <div class="relative z-10 px-6 mx-auto w-full max-w-2xl">
+            <div class="overflow-hidden px-8 py-12 bg-white rounded-2xl border shadow-2xl backdrop-blur-xl border-white/20">
                 <div class="text-center">
                     <!-- Success Icon -->
-                    <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 bg-green-100">
+                    <div class="flex justify-center items-center mx-auto mb-6 w-20 h-20 bg-green-100 rounded-full">
                         <Icon name="heroicons:check-circle-20-solid" class="w-10 h-10 text-green-600" />
                     </div>
 
                     <!-- Title -->
-                    <h1 class="text-4xl font-bold text-primary mb-4">
+                    <h1 class="mb-4 text-4xl font-bold text-primary">
                         Email Berhasil Diverifikasi!
                     </h1>
 
                     <!-- Message -->
-                    <p class="text-gray-600 text-lg leading-relaxed max-w-md mx-auto mb-8">
+                    <p class="mx-auto mb-8 max-w-md text-lg leading-relaxed text-gray-600">
                         Selamat! Email Anda telah berhasil diverifikasi. Sekarang Anda dapat masuk ke akun AICademy Anda.
                     </p>
 
                     <!-- Login Button -->
                     <NuxtLink 
                         to="/login"
-                        class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-red-600 text-white py-4 px-8 rounded-xl font-semibold text-lg hover:from-primary/90 hover:to-red-600/90 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                        class="inline-flex gap-2 justify-center items-center px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r to-red-600 rounded-xl shadow-lg transition-all duration-300 transform from-primary hover:from-primary/90 hover:to-red-600/90 hover:shadow-xl hover:-translate-y-0.5"
                     >
                         <Icon name="heroicons:arrow-left-20-solid" class="w-5 h-5" />
                         Kembali ke Login

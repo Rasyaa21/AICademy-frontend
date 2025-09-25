@@ -83,12 +83,8 @@
                             <a href="/forgot-password" class="flex justify-end items-end text-sm transition-colors text-primary hover:text-primary/80">Lupa Password</a>
                         </div>
 
-                        <button 
-                            type="submit"
-                            class="px-6 py-4 mt-8 w-full text-lg font-semibold text-white bg-gradient-to-r to-red-600 rounded-xl shadow-lg transition-all duration-300 transform from-primary hover:from-primary/90 hover:to-red-600/90 hover:shadow-xl hover:-translate-y-0.5"
-                        >
-                            Masuk
-                        </button>
+                        <UniversalButton type="submit" text="Masuk"/>
+
 
                         <div class="pt-4 text-center">
                             <span class="text-gray-600">Sudah punya akun? </span>
@@ -128,6 +124,7 @@
 </template>
 
 <script setup lang="ts">
+import UniversalButton from '~/components/button/UniversalButton.vue';
 import AlertModal from '~/components/modal/basic-modal/AlertModal.vue';
 import MainTextfield from '~/components/textfield/MainTextfield.vue'
 
@@ -205,13 +202,27 @@ const handleLogin = async () => {
         console.log(res)
         const roleRef = useCookie<'admin'|'teacher'|'student'|'alumni'|'company'|null>('role')
         const role = roleRef.value
+        const isPasswordReset = res.data.require_password_change
+        console.log(`is password reset ${isPasswordReset}`)
+
+        if(isPasswordReset == true) {
+            showSuccessModal('Login berhasil! Anda akan dialihkan ke page reset password')
+            setTimeout(() => {
+                navigateTo('/reset-default-user-password')
+            }, 1500)
+            return;
+        }
         
-        showSuccessModal('Login berhasil! Anda akan dialihkan ke dashboard')
+        if(roleRef != useCookie<'student'>('role')) {
+            showSuccessModal('Login berhasil! Anda akan dialihkan ke dashboard')
+            setTimeout(() => {
+                navigateTo(getDashboardUrl(role))
+            }, 1500)
+            return;
+        }
         
-        // Add a small delay before navigation to show the success message
-        setTimeout(() => {
-            navigateTo(getDashboardUrl(role))
-        }, 1500)
+        
+        
     } catch (error: unknown) {
         const err = error as { status?: number; statusCode?: number; data?: { message?: string; error?: string }; message?: string }
         

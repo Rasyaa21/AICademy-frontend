@@ -156,7 +156,7 @@ const handleSubmit = async () => {
     
     // Create FormData for file upload
     const formData = new FormData()
-    formData.append('file_csv', file.value)
+    formData.append('file', file.value)
     
     try {
         const res = await $fetch('/admin/students/upload-csv', {
@@ -168,6 +168,7 @@ const handleSubmit = async () => {
         
         // Success response
         if (res) {
+            console.log("success")
             const successMessage = `Berhasil mengupload ${file.value.name}. Data siswa telah ditambahkan.`
             emit('show-success-modal', successMessage)
             closeModal()

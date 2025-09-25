@@ -81,12 +81,8 @@
 
                         <PasswordTextfield/>
 
-                        <button 
-                            type="submit"
-                            class="px-6 py-4 mt-8 w-full text-lg font-semibold text-white bg-gradient-to-r to-red-600 rounded-xl shadow-lg transition-all duration-300 transform from-primary hover:from-primary/90 hover:to-red-600/90 hover:shadow-xl hover:-translate-y-0.5"
-                        >
-                            Daftar Sekarang
-                        </button>
+
+                        <UniversalButton type="submit" text="Daftar Sekarang"/>
 
                         <div class="pt-4 text-center">
                             <span class="text-gray-600">Sudah punya akun? </span>
@@ -117,6 +113,7 @@
 </template>
 
 <script setup lang="ts">
+import UniversalButton from '~/components/button/UniversalButton.vue';
 import AlertModal from '~/components/modal/basic-modal/AlertModal.vue';
 import MainTextfield from '~/components/textfield/MainTextfield.vue'
 import PasswordTextfield from '~/components/textfield/PasswordTextfield.vue'
