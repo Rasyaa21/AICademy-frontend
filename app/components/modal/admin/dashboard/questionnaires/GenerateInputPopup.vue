@@ -34,6 +34,7 @@
                 <MainTextfield 
                     v-model="formData.question_count"
                     name="question_count" 
+                    type="number"
                     placeholder="Jumlah Kuisioner" 
                     label="Jumlah Kuisioner"
                 >
@@ -63,6 +64,23 @@
                             d="M7 4.5h7.5L19.5 9V19a2 2 0 01-2 2H7a2 2 0 01-2-2V6.5a2 2 0 012-2z" />
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M9 13h6m-6 4h6" />
+                        </svg>
+                    </template>
+                </MainTextfield>
+
+                <MainTextfield 
+                    v-if="!isEditing"
+                    v-model="formData.ai_personality"
+                    name="ai_personality" 
+                    placeholder="profesional" 
+                    label="Personalitas AI"
+                    :is-custom_instructions="true"
+                    required
+                >
+                    <template #icon>
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 4l1.2 3.6L14 9l-3.8 1.4L9 14l-1.2-3.6L4 9l3.8-1.4L9 4zM17 10l.9 2.7L21 14l-3.1 1.3L17 18l-.9-2.7L13 14l3.1-1.3L17 10zM12 17l.6 1.8L14 20l-1.4.6L12 22l-.6-1.4L10 20l1.4-1.2L12 17z" />
                         </svg>
                     </template>
                 </MainTextfield>
@@ -107,35 +125,34 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import MainTextfield from '~/components/textfield/MainTextfield.vue';
+import type { QuestionInputData } from '~/types/Questionnaire';
 
 const props = defineProps<{
     isOpen: boolean
-    editData?: any
+    editData?: QuestionInputData
 }>()
 
 const emit = defineEmits<{
     'update:isOpen': [value: boolean]
-    'submit': [data: any]
+    'submit': [data: QuestionInputData]
 }>()
 
 const isEditing = computed(() => !!props.editData)
 
 const formData = ref({
     name: '',
-    question_count: '',
-    target_roles: '',
+    question_count: 0,
     difficulty_level: '',
-    focus_areas: '',
+    ai_personality: '',
     custom_instructions: ''
 })
 
 const resetForm = () => {
     formData.value = {
         name: '',
-        question_count: '',
-        target_roles: '',
+        question_count: 0,
         difficulty_level: '',
-        focus_areas: '',
+        ai_personality: '',
         custom_instructions: ''
     }
 }
@@ -146,24 +163,16 @@ const closeModal = () => {
 }
 
 const handleSubmit = () => {
-    // const submitData = { ...formData.value }
-    // if (isEditing.value) {
-    //     submitData.id = props.editData.id
-    //     delete submitData.custom_instructions // Don't include custom_instructions in edit
-    // }
-    
-    // emit('submit', submitData)
-    // closeModal()
+
 }
 
 watch(() => props.editData, (newData) => {
     if (newData) {
         formData.value = {
             name: newData.name || '',
-            question_count: newData.question_count || '',
-            target_roles: newData.target_roles || '',
+            question_count: newData.question_count || 0,
             difficulty_level: newData.difficulty_level || '',
-            focus_areas: newData.focus_areas || '',
+            ai_personality: newData.ai_personality || '',
             custom_instructions: ''
         }
     }

@@ -34,7 +34,6 @@
             v-model:sortBy="sortBy"
             :filteredCount="filteredStudents.length"
             :totalCount="students.length"
-            :activeFiltersCount="activeFiltersCount"
             :hasActiveFilters="hasActiveFilters"
             @clear-filters="clearAllFilters"
             @import-csv="openCsvPopup = true"
@@ -110,7 +109,6 @@ const students = ref<Student[]>([
         username: 'ahmadrizki',
         email: 'ahmad.rizki@student.smk.sch.id',
         class: 'XII RPL 1',
-        status: 'active',
         created_at: '2024-01-15T08:00:00Z'
     },
     {
@@ -120,7 +118,6 @@ const students = ref<Student[]>([
         username: 'sitinur',
         email: 'siti.nur@student.smk.sch.id',
         class: 'XII RPL 1',
-        status: 'active',
         created_at: '2024-01-16T08:00:00Z'
     },
     {
@@ -130,7 +127,6 @@ const students = ref<Student[]>([
         username: 'budisantoso',
         email: 'budi.santoso@student.smk.sch.id',
         class: 'XI RPL 2',
-        status: 'inactive',
         created_at: '2024-02-01T08:00:00Z'
     },
     {
@@ -140,7 +136,6 @@ const students = ref<Student[]>([
         username: 'dewisartika',
         email: 'dewi.sartika@student.smk.sch.id',
         class: 'XII RPL 2',
-        status: 'active',
         created_at: '2024-02-15T08:00:00Z'
     }
 ])
@@ -162,9 +157,6 @@ const filteredStudents = computed(() => {
         filtered = filtered.filter(s => s.class === selectedClass.value)
     }
 
-    if (selectedStatus.value) {
-        filtered = filtered.filter(s => s.status === selectedStatus.value)
-    }
 
     // Sort
     filtered.sort((a, b) => {
@@ -196,7 +188,6 @@ const totalPages = computed(() => {
 })
 
 const studentStats = computed(() => {
-    const active = students.value.filter(s => s.status === 'active').length
     const newThisMonth = students.value.filter(s => {
         const createdDate = new Date(s.created_at)
         const now = new Date()
@@ -205,7 +196,6 @@ const studentStats = computed(() => {
     
     return {
         total: students.value.length,
-        active,
         newThisMonth,
         challengeParticipants: Math.floor(students.value.length * 0.7)
     }
@@ -213,14 +203,6 @@ const studentStats = computed(() => {
 
 const hasActiveFilters = computed(() => {
     return !!(searchQuery.value || selectedClass.value || selectedStatus.value)
-})
-
-const activeFiltersCount = computed(() => {
-    let count = 0
-    if (searchQuery.value) count++
-    if (selectedClass.value) count++
-    if (selectedStatus.value) count++
-    return count
 })
 
 // Methods
@@ -231,15 +213,12 @@ const clearAllFilters = () => {
     currentPage.value = 1
 }
 
-// Action handlers
 const viewStudent = (student: Student) => {
     console.log('View student:', student)
-    // Implement view student logic
 }
 
 const editStudent = (student: Student) => {
     console.log('Edit student:', student)
-    // Implement edit student logic
 }
 
 const deleteStudent = (student: Student) => {

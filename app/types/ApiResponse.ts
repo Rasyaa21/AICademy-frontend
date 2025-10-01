@@ -1,5 +1,5 @@
-export interface ApiInterface<T> {
+export interface ApiInterface<T = any> {
     success: boolean
-    messsage: string
+    messsage: string // Sesuai dengan typo pada backend
     data: T
 }

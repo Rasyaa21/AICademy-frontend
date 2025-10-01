@@ -14,7 +14,6 @@
             </div>
 
             <form @submit.prevent="handleSubmit" class="p-6 space-y-4">
-                <!-- File Upload Field -->
                 <div class="space-y-2">
                     <label class="block text-sm font-medium text-gray-700">
                         File CSV Siswa

@@ -59,6 +59,8 @@ watch(isCollapse, v => localStorage.setItem('sidebar:collapsed', v ? '1' : '0'))
                     :is-selected="false" path="/admin/dashboard/challange" :collapsed="isCollapse" />
       <SidebarItems icon="tabler:clipboard-list" label="Profiling Kuisioner"
                     :is-selected="false" path="/admin/dashboard/questionnaires" :collapsed="isCollapse" />
+      <SidebarItems icon="tabler:clipboard-list" label="Role" :is-selected="false" path="/admin/dashboard/roles" :collapsed="isCollapse"/>
+
     </ul>
   </aside>
 
@@ -123,6 +125,7 @@ watch(isCollapse, v => localStorage.setItem('sidebar:collapsed', v ? '1' : '0'))
               <SidebarItems icon="heroicons:users-16-solid" label="Data Perusahaan" :is-selected="false" path="/admin/dashboard/companies"/>
               <SidebarItems icon="heroicons:trophy-solid" label="Challange" :is-selected="false" path="/admin/dashboard/challange" />
               <SidebarItems icon="tabler:clipboard-list" label="Profiling Kuisioner" :is-selected="false" path="/admin/dashboard/questionnaires" />
+              <SidebarItems icon="tabler:clipboard-list" label="Role" :is-selected="false" path="/admin/dashboard/roles" />
             </div>
           </div>
         </div>

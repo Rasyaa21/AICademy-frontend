@@ -5,6 +5,5 @@ export interface Student {
     username: string
     email: string
     class: string
-    status: 'active' | 'inactive'
     created_at: string
 }

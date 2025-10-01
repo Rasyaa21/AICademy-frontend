@@ -3,12 +3,36 @@ export interface QuestionOption {
   value: string
 }
 
+export interface QuestionnaireState {
+  questionnaireId?: string
+  currentStep: number
+  answers: Answer[]
+  isDraft: boolean
+  completedAt?: string
+  savedAt?: string
+  submissionId?: string
+  pendingSubmission?: boolean
+}
+
 export interface Question {
+  id: string
   question_text: string
   question_type: 'mcq' | 'likert' | 'case' | 'text'
-  options?: QuestionOption[] | null
+  options?: Array<{
+    value: string
+    label: string
+    score: number
+  }>
   category: string
-  reasoning: string
+  order: number
+}
+
+export interface QuestionInputData {
+  name: string
+  question_count: number
+  difficulty_level: string
+  ai_personality: string
+  custom_instructions: string
 }
 
 export interface QuestionnaireData {
@@ -36,4 +60,15 @@ export interface QuestionnaireState {
   answers: Answer[]
   isDraft: boolean
   completedAt?: string
+}
+
+export interface Questionnaire {
+    id: string
+    name: string
+    description: string
+    version: string
+    target_roles: string
+    active: boolean
+    created_at: string
+    updated_at: string
 }

@@ -1,33 +1,27 @@
 <template>
-    <div class="bg-white rounded-xl p-6 shadow-sm border">
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-4">
+    <div class="p-6 bg-white rounded-xl border shadow-sm">
+        <div class="flex flex-col gap-4 justify-between mb-4 lg:flex-row lg:items-center">
             <div>
                 <h3 class="text-lg font-semibold text-gray-900">Filter & Pencarian</h3>
-                <p class="text-sm text-gray-500 mt-1">
+                <p class="mt-1 text-sm text-gray-500">
                     {{ filteredCount }} dari {{ totalCount }} siswa ditemukan
                 </p>
             </div>
-            <div class="flex items-center gap-2 text-sm text-gray-500">
-                <Icon name="heroicons:funnel-20-solid" class="w-4 h-4" />
-                <span>Filter aktif: {{ activeFiltersCount }}</span>
-            </div>
         </div>
 
-        <div class="flex flex-col lg:flex-row gap-4">
+        <div class="flex flex-col gap-4 lg:flex-row">
             <!-- Search -->
             <div class="relative flex-1">
                 <Icon
                     name="heroicons:magnifying-glass-20-solid"
-                    class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+                    class="absolute left-3 top-1/2 w-5 h-5 text-gray-400 -translate-y-1/2"
                 />
                 <input
                     :value="searchQuery"
                     @input="updateSearch"
                     type="text"
                     placeholder="Cari siswa berdasarkan NIS, nama, atau email..."
-                    class="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-2 text-sm 
-                           focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
-                           transition-all duration-200"
+                    class="py-2 pr-4 pl-10 w-full text-sm rounded-xl border border-gray-200 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                 />
             </div>
 
@@ -48,35 +42,15 @@
                     <option value="X RPL 1">X RPL 1</option>
                     <option value="X RPL 2">X RPL 2</option>
                 </select>
-                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <div class="flex absolute inset-y-0 right-0 items-center pr-3 pointer-events-none">
                     <Icon name="heroicons:chevron-down-20-solid" class="w-4 h-4 text-gray-400" />
                 </div>
             </div>
-
-            <!-- Status Filter -->
-            <div class="relative">
-                <select 
-                    :value="selectedStatus"
-                    @change="updateStatus"
-                    class="appearance-none bg-white border border-gray-200 rounded-xl px-4 py-2 pr-8 text-sm font-medium text-gray-700 
-                           hover:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
-                           transition-all duration-200 cursor-pointer shadow-sm min-w-[120px]"
-                >
-                    <option value="" class="text-gray-600">Semua Status</option>
-                    <option value="active">Aktif</option>
-                    <option value="inactive">Tidak Aktif</option>
-                </select>
-                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                    <Icon name="heroicons:chevron-down-20-solid" class="w-4 h-4 text-gray-400" />
-                </div>
-            </div>
-
-            <!-- Clear Filters -->
+            
             <button 
                 v-if="hasActiveFilters"
                 @click="clearFilters"
-                class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 
-                       rounded-xl transition-colors duration-200 flex items-center gap-2 border border-gray-200"
+                class="flex gap-2 items-center px-4 py-2 text-sm font-medium text-gray-500 rounded-xl border border-gray-200 transition-colors duration-200 hover:text-gray-700 hover:bg-gray-100"
             >
                 <Icon name="heroicons:x-mark-20-solid" class="w-4 h-4" />
                 Clear All
@@ -84,14 +58,14 @@
         </div>
 
         <!-- Action Buttons -->
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mt-6 pt-4 border-t border-gray-100">
-            <div class="flex items-center gap-2 text-sm text-gray-600">
+        <div class="flex flex-col gap-4 justify-between items-start pt-4 mt-6 border-t border-gray-100 sm:flex-row sm:items-center">
+            <div class="flex gap-2 items-center text-sm text-gray-600">
                 <Icon name="heroicons:bars-arrow-down-20-solid" class="w-4 h-4" />
                 <span>Urutkan berdasarkan:</span>
                 <select 
                     :value="sortBy"
                     @change="updateSort"
-                    class="bg-transparent border-none text-primary font-medium cursor-pointer focus:outline-none"
+                    class="font-medium bg-transparent border-none cursor-pointer text-primary focus:outline-none"
                 >
                     <option value="newest">Terbaru</option>
                     <option value="name">Nama</option>
@@ -103,18 +77,18 @@
             <div class="flex flex-row space-x-3">
                 <button 
                     @click="$emit('import-csv')"
-                    class="px-4 py-2 bg-white border border-primary text-primary rounded-xl shadow-sm hover:bg-primary/5 transition-colors"
+                    class="px-4 py-2 bg-white rounded-xl border shadow-sm transition-colors border-primary text-primary hover:bg-primary/5"
                 >
-                    <div class="flex items-center gap-2">
+                    <div class="flex gap-2 items-center">
                         <Icon name="heroicons:document-arrow-down-20-solid" class="w-4 h-4" />
                         <span class="text-sm">Import CSV</span>
                     </div>
                 </button>
                 <button 
                     @click="$emit('add-student')"
-                    class="px-4 py-2 bg-primary text-white rounded-xl shadow-sm hover:bg-primary/90 transition-colors"
+                    class="px-4 py-2 text-white rounded-xl shadow-sm transition-colors bg-primary hover:bg-primary/90"
                 >
-                    <div class="flex items-center gap-2">
+                    <div class="flex gap-2 items-center">
                         <Icon name="heroicons:plus-20-solid" class="w-4 h-4" />
                         <span class="text-sm">Tambah Siswa</span>
                     </div>
@@ -132,7 +106,6 @@ interface Props {
     sortBy: string
     filteredCount: number
     totalCount: number
-    activeFiltersCount: number
     hasActiveFilters: boolean
 }
 
@@ -141,7 +114,6 @@ defineProps<Props>()
 const emit = defineEmits<{
     'update:searchQuery': [value: string]
     'update:selectedClass': [value: string]
-    'update:selectedStatus': [value: string]
     'update:sortBy': [value: string]
     'clear-filters': []
     'import-csv': []
@@ -156,11 +128,6 @@ const updateSearch = (event: Event) => {
 const updateClass = (event: Event) => {
     const target = event.target as HTMLSelectElement
     emit('update:selectedClass', target.value)
-}
-
-const updateStatus = (event: Event) => {
-    const target = event.target as HTMLSelectElement
-    emit('update:selectedStatus', target.value)
 }
 
 const updateSort = (event: Event) => {

@@ -1,5 +1,29 @@
 <template>
-    <GenerateInputPopup v-model:is-open="openQuestionnaireInput"/>
+    <AlertModal 
+        v-model:isOpen="alertModal.isOpen"
+        :type="alertModal.type"
+        :title="alertModal.title"
+        :message="alertModal.message"
+        @ok="handleAlertOk"
+    />
+    <GenerateInputPopup 
+        v-model:is-open="openQuestionnaireInput"
+        @show-success-modal="showSuccessModal"
+        @show-error-modal="showErrorModal"
+    />
+
+    <EditStatusPopup
+        :questionnaires-id="selectedQuestionnaire"
+        v-model:is-open="openEditQuestionnaireStatus"
+        @show-success-modal="showSuccessModal"
+        @show-error-modal="showErrorModal"
+    />
+
+    <DetailQuestionnairesPopup
+        :questionnaire-id="selectedQuestionnaire"
+        v-model:is-open="openDetailQuestionnaire"
+    />
+
     <div class="space-y-6">
         <AdminPageHeader
             title="Questionnaires Management"
@@ -14,23 +38,38 @@
             v-model:selectedType="selectedType"
             v-model:sortBy="sortBy"
             :filteredCount="filteredQuestionnaires.length"
-            :totalCount="questionnaires.length"
+            :totalCount="questionnairesData?.data?.total || 0"
             :activeFiltersCount="activeFiltersCount"
             :hasActiveFilters="hasActiveFilters"
             @clear-filters="clearAllFilters"
             @generate-questionnaire="openQuestionnaireInput = true"
         />
 
+        <!-- Loading State -->
+        <div v-if="pending" class="text-center py-8">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+            <p class="text-gray-500 mt-2">Memuat data kuisioner...</p>
+        </div>
+
+        <!-- Error State -->
+        <div v-else-if="error" class="text-center py-8">
+            <p class="text-red-500">Error: {{ error.message }}</p>
+            <button @click="refresh()" class="mt-2 px-4 py-2 bg-primary text-white rounded-lg">
+                Coba Lagi
+            </button>
+        </div>
+
         <QuestionnairesTableSection
+            v-else
             :paginated-questionnaires="paginatedQuestionnaires"
-            @toggle-status="toggleStatus"
             @view-responses="viewResponses"
+            @edit-questionnaire="editStatus"
             @preview-questionnaire="previewQuestionnaire"
             @delete-questionnaire="deleteQuestionnaire"
         />
 
         <AdminEmptyState
-            v-if="filteredQuestionnaires.length === 0"
+            v-if="!pending && !error && filteredQuestionnaires.length === 0"
             icon="heroicons:document-text-20-solid"
             title="Tidak ada kuisioner ditemukan"
             :description="searchQuery ? 'Coba ubah kata kunci pencarian atau filter untuk melihat kuisioner lainnya' : 'Mulai dengan membuat kuisioner'"
@@ -54,11 +93,12 @@
         </AdminEmptyState>
 
         <AdminPaginationSection
+            v-if="!pending && !error && totalPages > 1"
             :current-page="currentPage"
             :total-pages="totalPages"
-            :total-items="filteredQuestionnaires.length"
+            :total-items="questionnairesData?.data?.total || 0"
             :items-per-page="itemsPerPage"
-            @page-changed="(page: number) => currentPage = page"
+            @page-changed="handlePageChange"
         />
     </div>
 </template>
@@ -71,76 +111,56 @@ import AdminPaginationSection from '~/components/dashboard-admin/shared/AdminPag
 import QuestionnairesStatsSection from '~/components/dashboard-admin/questionnaires/QuestionnairesStatsSection.vue'
 import QuestionnairesTableSection from '~/components/dashboard-admin/questionnaires/QuestionnairesTableSection.vue'
 import QuestionnaireFilter from '~/components/dashboard-admin/questionnaires/QuestionnaireFilter.vue'
-import GenerateInputPopup from '~/components/modal/admin/dashboard/GenerateInputPopup.vue'
+import GenerateInputPopup from '~/components/modal/admin/dashboard/questionnaires/GenerateInputPopup.vue'
+import AlertModal from '~/components/modal/basic-modal/AlertModal.vue'
+import type { Questionnaire } from '~/types/Questionnaire'
+import EditStatusPopup from '~/components/modal/admin/dashboard/questionnaires/EditStatusPopup.vue'
+import DetailQuestionnairesPopup from '~/components/modal/admin/dashboard/questionnaires/DetailQuestionnairesPopup.vue'
 
 definePageMeta({
     layout: 'admin-dashboard-layout'
 })
 
-interface Questionnaire {
-    id: string
-    title: string
-    description: string
-    type: string
-    status: string
-    questions_count: number
-    responses_count: number
-    created_at: string
-    updated_at: string
-}
+const config = useRuntimeConfig()
+
+const alertModal = ref({
+    isOpen: false,
+    type: 'success' as 'success' | 'error' | 'warning' | 'info',
+    title: '',
+    message: ''
+})
 
 const openQuestionnaireInput = ref(false)
 const openResponseModal = ref(false)
-const selectedQuestionnaire = ref<Questionnaire | null>(null)
+const selectedQuestionnaire = ref<string | null>(null)
+const openEditQuestionnaireStatus = ref(false)
+const openDetailQuestionnaire = ref(false)
 
 const searchQuery = ref('')
 const selectedStatus = ref('')
 const selectedType = ref('')
 const sortBy = ref('newest')
 
-// Pagination
 const currentPage = ref(1)
 const itemsPerPage = 10
 
-// Sample data
-const questionnaires = ref<Questionnaire[]>([
-    {
-        id: '1',
-        title: 'Evaluasi Pembelajaran JavaScript',
-        description: 'Kuisioner untuk mengevaluasi pemahaman siswa tentang JavaScript',
-        type: 'ai-generated',
-        status: 'active',
-        questions_count: 15,
-        responses_count: 24,
-        created_at: '2024-01-15T08:00:00Z',
-        updated_at: '2024-01-15T08:00:00Z'
-    },
-    {
-        id: '2',
-        title: 'Feedback Pembelajaran React',
-        description: 'Kuisioner feedback untuk materi React',
-        type: 'manual',
-        status: 'active',
-        questions_count: 10,
-        responses_count: 18,
-        created_at: '2024-01-20T08:00:00Z',
-        updated_at: '2024-01-20T08:00:00Z'
-    },
-    {
-        id: '3',
-        title: 'Pre-Assessment Database',
-        description: 'Kuisioner untuk mengukur pengetahuan awal database',
-        type: 'ai-generated',
-        status: 'draft',
-        questions_count: 20,
-        responses_count: 0,
-        created_at: '2024-02-01T08:00:00Z',
-        updated_at: '2024-02-01T08:00:00Z'
+
+const headers = useRequestHeaders(['cookie']) 
+const { data: questionnairesData, pending, error, refresh } = await useAsyncData('questionnairesData', () => 
+    $fetch(`/admin/questionnaires?page=${currentPage.value}&limit=${itemsPerPage}`, {
+        baseURL: config.public.apiBase,
+        credentials: 'include',
+        headers
+    }), {
+        watch: [currentPage]
     }
-])
+)
+
+// Computed properties based on API response structure
+const questionnaires = computed(() => questionnairesData.value?.data?.data || [])
 
 const filteredQuestionnaires = computed(() => {
-    let filtered = questionnaires.value
+    let filtered = [...questionnaires.value]
 
     if (searchQuery.value) {
         const query = searchQuery.value.toLowerCase()
@@ -151,24 +171,22 @@ const filteredQuestionnaires = computed(() => {
     }
 
     if (selectedStatus.value) {
-        filtered = filtered.filter(q => q.status === selectedStatus.value)
+        const isActive = selectedStatus.value === 'active'
+        filtered = filtered.filter(q => q.active === isActive)
     }
 
     if (selectedType.value) {
-        filtered = filtered.filter(q => q.type === selectedType.value)
+        filtered = filtered.filter(q => q.target_roles === selectedType.value)
     }
 
-    // Sort
     filtered.sort((a, b) => {
         switch (sortBy.value) {
             case 'newest':
                 return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
             case 'title':
                 return a.title.localeCompare(b.title)
-            case 'responses':
-                return b.responses_count - a.responses_count
-            case 'questions':
-                return b.questions_count - a.questions_count
+            case 'version':
+                return a.version.localeCompare(b.version)
             default:
                 return 0
         }
@@ -178,27 +196,30 @@ const filteredQuestionnaires = computed(() => {
 })
 
 const paginatedQuestionnaires = computed(() => {
-    const start = (currentPage.value - 1) * itemsPerPage
-    const end = start + itemsPerPage
-    return filteredQuestionnaires.value.slice(start, end)
+    if (hasActiveFilters.value) {
+        const start = (currentPage.value - 1) * itemsPerPage
+        const end = start + itemsPerPage
+        return filteredQuestionnaires.value.slice(start, end)
+    }
+    return filteredQuestionnaires.value
 })
 
 const totalPages = computed(() => {
-    return Math.ceil(filteredQuestionnaires.value.length / itemsPerPage)
+    if (hasActiveFilters.value) {
+        return Math.ceil(filteredQuestionnaires.value.length / itemsPerPage)
+    }
+    return questionnairesData.value?.data?.total_pages || 1
 })
 
 const questionnaireStats = computed(() => {
-    const active = questionnaires.value.filter(q => q.status === 'active').length
-    const totalResponses = questionnaires.value.reduce((sum, q) => sum + q.responses_count, 0)
-    const averageResponses = questionnaires.value.length > 0 
-        ? Math.round((totalResponses / (questionnaires.value.length * 30)) * 100)
-        : 0
+    const active = questionnaires.value.filter(q => q.active).length
+    const inactive = questionnaires.value.filter(q => !q.active).length
     
     return {
-        total: questionnaires.value.length,
+        total: questionnairesData.value?.data?.total || 0,
         active,
-        totalResponses,
-        averageResponses
+        inactive,
+        draft: inactive // assuming inactive = draft
     }
 })
 
@@ -222,28 +243,71 @@ const clearAllFilters = () => {
     currentPage.value = 1
 }
 
-// Action handlers
-const toggleStatus = (questionnaire: Questionnaire) => {
-    questionnaire.status = questionnaire.status === 'active' ? 'draft' : 'active'
-    console.log('Toggle status:', questionnaire)
+const handlePageChange = (page: number) => {
+    currentPage.value = page
 }
 
 const viewResponses = (questionnaire: Questionnaire) => {
-    selectedQuestionnaire.value = questionnaire
+    // selectedQuestionnaire.value = questionnaire
     openResponseModal.value = true
+    console.log('View responses:', questionnaire)
 }
+
 
 const previewQuestionnaire = (questionnaire: Questionnaire) => {
-    console.log('Preview questionnaire:', questionnaire)
-    // Navigate to preview page
+    selectedQuestionnaire.value = questionnaire.id
+    openDetailQuestionnaire.value = true
 }
 
-const deleteQuestionnaire = (questionnaire: Questionnaire) => {
-    console.log('Delete questionnaire:', questionnaire)
-    // Implement delete logic with confirmation
+const deleteQuestionnaire = async (questionnaire: Questionnaire) => {
+    if (confirm('Apakah Anda yakin ingin menghapus kuisioner ini?')) {
+        try {
+            await $fetch(`/admin/questionnaires/${questionnaire.id}`, {
+                method: 'DELETE',
+                baseURL: config.public.apiBase,
+                credentials: 'include',
+                headers
+            })
+            showSuccessModal('Kuisioner berhasil dihapus')
+            refresh()
+        } catch (error) {
+            console.error('Error deleting questionnaire:', error)
+            showErrorModal('Gagal menghapus kuisioner')
+        }
+    }
 }
 
-// Watch for filter changes to reset pagination
+// Alert modal handlers - sama seperti roles
+const showSuccessModal = (message: string) => {
+    alertModal.value = {
+        isOpen: true,
+        type: 'success',
+        title: 'Berhasil',
+        message: message
+    }
+}
+
+const showErrorModal = (message: string) => {
+    alertModal.value = {
+        isOpen: true,
+        type: 'error',
+        title: 'Gagal',
+        message: message
+    }
+}
+
+const handleAlertOk = () => {
+    alertModal.value.isOpen = false
+    if (alertModal.value.type === 'success') {
+        refresh() // Refresh data after success
+    }
+}
+
+const editStatus = (data : Questionnaire) => {
+    selectedQuestionnaire.value = data.id
+    openEditQuestionnaireStatus.value = true
+}
+
 watch([searchQuery, selectedStatus, selectedType], () => {
     currentPage.value = 1
 })
