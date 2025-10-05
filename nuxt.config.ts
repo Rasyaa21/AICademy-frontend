@@ -20,6 +20,7 @@ export default defineNuxtConfig({
     'nuxt-charts',
     '@vueuse/nuxt',
     '@nuxt/eslint',
+    '@pinia/nuxt',
   ], 
   googleFonts: {
     families: {

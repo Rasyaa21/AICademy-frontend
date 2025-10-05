@@ -17,11 +17,10 @@
                         <td class="px-6 py-4">
                             <div class="flex gap-3 items-center">
                                 <div class="flex justify-center items-center w-10 h-10 rounded-full bg-primary/10">
-                                    <span class="text-sm font-semibold text-primary">{{ getInitials(student.name) }}</span>
+                                    <span class="text-sm font-semibold text-primary">A</span>
                                 </div>
                                 <div>
-                                    <div class="text-sm font-medium text-gray-900">{{ student.name }}</div>
-                                    <div class="text-xs text-gray-500">{{ student.username }}</div>
+                                    <div class="text-sm font-medium text-gray-900">{{ student.fullname }}</div>
                                 </div>
                             </div>
                         </td>

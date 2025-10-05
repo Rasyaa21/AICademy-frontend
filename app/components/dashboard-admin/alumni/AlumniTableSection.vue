@@ -4,23 +4,23 @@
             <table class="w-full">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-3 text-sm font-semibold text-left text-gray-900">Perusahaan</th>
+                        <th class="px-6 py-3 text-sm font-semibold text-left text-gray-900">Alumni</th>
                         <th class="px-6 py-3 text-sm font-semibold text-left text-gray-900">Email</th>
-                        <th class="px-6 py-3 text-sm font-semibold text-left text-gray-900">Lokasi</th>
+                        <th class="px-6 py-3 text-sm font-semibold text-left text-gray-900">Headline</th>
                         <th class="px-6 py-3 text-sm font-semibold text-left text-gray-900">Bergabung</th>
                         <th class="px-6 py-3 text-sm font-semibold text-left text-gray-900">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="company in paginatedCompanies" :key="company.id" class="border-b border-gray-100 hover:bg-gray-50">
+                    <tr v-for="alumni in paginatedAlumni" :key="alumni.id" class="border-b border-gray-100 hover:bg-gray-50">
                         <td class="px-6 py-4">
                             <div class="flex gap-3 items-center">
-                                <!-- Company Logo/Avatar -->
+                                <!-- Alumni Avatar -->
                                 <div class="flex justify-center items-center w-12 h-12 rounded-full overflow-hidden bg-primary/10 flex-shrink-0">
                                     <img 
-                                        v-if="company.company_logo" 
-                                        :src="company.company_logo" 
-                                        :alt="company.company_name"
+                                        v-if="alumni.profile_picture" 
+                                        :src="alumni.profile_picture" 
+                                        :alt="alumni.fullname"
                                         class="w-full h-full object-cover"
                                         @error="onImageError"
                                     />
@@ -28,38 +28,30 @@
                                         v-else 
                                         class="text-sm font-semibold text-primary"
                                     >
-                                        {{ getInitials(company.company_name) }}
+                                        {{ getInitials(alumni.fullname) }}
                                     </span>
                                 </div>
                                 <div class="min-w-0 flex-1">
-                                    <div class="text-sm font-medium text-gray-900 truncate">{{ company.company_name }}</div>
-                                    <div class="text-xs text-gray-500 truncate max-w-[200px]">{{ company.description || 'No description' }}</div>
+                                    <div class="text-sm font-medium text-gray-900 truncate">{{ alumni.fullname }}</div>
                                 </div>
                             </div>
                         </td>
-                        <td class="px-6 py-4 text-sm text-gray-600">{{ company.email }}</td>
-                        <td class="px-6 py-4 text-sm text-gray-600">{{ company.company_location || '-' }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-600">{{ alumni.email }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-600">{{ alumni.headline || '-' }}</td>
                         <td class="px-6 py-4 text-sm text-gray-600">
-                            {{ formatDate(company.created_at) }}
+                            {{ formatDate(alumni.created_at) }}
                         </td>
                         <td class="px-6 py-4">
                             <div class="flex gap-1 items-center">
                                 <button 
-                                    @click="$emit('view-company', company)"
+                                    @click="$emit('view-alumni', alumni)"
                                     class="p-1 rounded hover:bg-gray-200"
                                     title="Lihat Detail"
                                 >
                                     <Icon name="heroicons:eye-20-solid" class="w-4 h-4 text-gray-600" />
                                 </button>
                                 <button 
-                                    @click="$emit('edit-company', company)"
-                                    class="p-1 rounded hover:bg-gray-200"
-                                    title="Edit"
-                                >
-                                    <Icon name="heroicons:pencil-20-solid" class="w-4 h-4 text-gray-600" />
-                                </button>
-                                <button 
-                                    @click="$emit('delete-company', company)"
+                                    @click="$emit('delete-alumni', alumni)"
                                     class="p-1 rounded hover:bg-gray-200"
                                     title="Hapus"
                                 >
@@ -75,16 +67,16 @@
 </template>
 
 <script setup lang="ts">
-import type { Company } from '~/types/Company'
+import type { Alumni } from '~/types/Alumni'
 
 defineProps<{
-    paginatedCompanies: Company[]
+    paginatedAlumni: Alumni[]
 }>()
 
 defineEmits<{
-    'view-company': [company: Company]
-    'edit-company': [company: Company]
-    'delete-company': [company: Company]
+    'view-alumni': [alumni: Alumni]
+    'edit-alumni': [alumni: Alumni]
+    'delete-alumni': [alumni: Alumni]
 }>()
 
 const getInitials = (name: string) => {
@@ -110,7 +102,7 @@ const onImageError = (event: Event) => {
     // Show initials fallback
     const parent = target.parentElement
     if (parent) {
-        parent.innerHTML = `<span class="text-sm font-semibold text-primary">${getInitials(target.alt || 'Company')}</span>`
+        parent.innerHTML = `<span class="text-sm font-semibold text-primary">${getInitials(target.alt || 'Alumni')}</span>`
     }
 }
 </script>

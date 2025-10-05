@@ -143,11 +143,8 @@ const headers = useRequestHeaders(['cookie'])
 const questionnaireDetail = ref<any>(null)
 const pending = ref(false)
 const error = ref<any>(null)
-
-// Order untuk menampilkan tipe pertanyaan
 const questionTypeOrder = ['mcq', 'likert', 'case', 'text']
 
-// Grouping questions by type
 const groupedQuestions = computed(() => {
     if (!questionnaireDetail.value?.questions) return {}
     
@@ -169,7 +166,6 @@ const groupedQuestions = computed(() => {
     return groups
 })
 
-// Statistics
 const questionStats = computed(() => {
     const stats: Record<string, number> = {
         mcq: 0,

@@ -1,6 +1,7 @@
 export interface QuestionOption {
   label: string
   value: string
+  score: number
 }
 
 export interface QuestionnaireState {
@@ -18,11 +19,7 @@ export interface Question {
   id: string
   question_text: string
   question_type: 'mcq' | 'likert' | 'case' | 'text'
-  options?: Array<{
-    value: string
-    label: string
-    score: number
-  }>
+  options?: QuestionOption[]
   category: string
   order: number
 }
@@ -36,17 +33,11 @@ export interface QuestionInputData {
 }
 
 export interface QuestionnaireData {
+  id: string
+  name: string
+  version: number
   questions: Question[]
-  metadata: {
-    total_questions: number
-    distribution: {
-      mcq: number
-      likert: number
-      case: number
-      text: number
-    }
-    target_roles_coverage: string[]
-  }
+  instruction?: string
 }
 
 export interface Answer {
@@ -71,4 +62,35 @@ export interface Questionnaire {
     active: boolean
     created_at: string
     updated_at: string
+}
+
+// Result interfaces
+export interface RecommendedRole {
+  role_id: string
+  role_name: string
+  description: string
+  category: string
+  score: number
+  justification: string
+}
+
+export interface Recommendation {
+  role_id: string
+  role_name: string
+  score: number
+  justification: string
+  category: string
+  description?: string
+}
+
+export interface QuestionnaireResult {
+  id: string
+  questionnaire_id: string
+  student_id: string
+  submitted_at: string
+  total_score: number
+  max_score: number
+  recommended_role: RecommendedRole
+  recommendations?: Recommendation[]
+  status: string
 }

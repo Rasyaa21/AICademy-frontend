@@ -129,6 +129,7 @@ import AlertModal from '~/components/modal/basic-modal/AlertModal.vue';
 import MainTextfield from '~/components/textfield/MainTextfield.vue'
 
 const config = useRuntimeConfig();
+const authStore = useAuthStore()
 
 definePageMeta({
     layout: false
@@ -183,7 +184,6 @@ const getDashboardUrl = (roleValue: string | null): string => {
 }
 
 const handleLogin = async () => {
-
     const payload = {          
         email: form.value.email,
         password: form.value.password,
@@ -199,29 +199,35 @@ const handleLogin = async () => {
             },
             baseURL: config.public.apiBase
         });
-        console.log(res)
-        const roleRef = useCookie<'admin'|'teacher'|'student'|'alumni'|'company'|null>('role')
-        const role = roleRef.value
-        const isPasswordReset = res.data.require_password_change
-        console.log(`is password reset ${isPasswordReset}`)
-
-        if(isPasswordReset == true) {
-            showSuccessModal('Login berhasil! Anda akan dialihkan ke page reset password')
-            setTimeout(() => {
-                navigateTo('/reset-default-user-password')
-            }, 1500)
-            return;
-        }
         
-        if(roleRef != useCookie<'student'>('role')) {
+        console.log('Login response:', res)
+        
+        if (res.success && res.data) {
+            const { access_token, refresh_token, user, require_password_change } = res.data
+            
+            // Store tokens and user data
+            authStore.setTokens(access_token, refresh_token, user)
+            
+            console.log(`Require password reset: ${require_password_change}`)
+            
+            // Check if password reset is required
+            if (require_password_change === true) {
+                showSuccessModal('Login berhasil! Anda akan dialihkan ke halaman reset password')
+                setTimeout(() => {
+                    navigateTo('/reset-default-user-password')
+                }, 1500)
+                return;
+            }
+            
+            // Navigate to appropriate dashboard based on role
+            const dashboardUrl = getDashboardUrl(user.role)
             showSuccessModal('Login berhasil! Anda akan dialihkan ke dashboard')
             setTimeout(() => {
-                navigateTo(getDashboardUrl(role))
+                navigateTo(dashboardUrl)
             }, 1500)
-            return;
+        } else {
+            throw new Error(res.message || 'Login gagal')
         }
-        
-        
         
     } catch (error: unknown) {
         const err = error as { status?: number; statusCode?: number; data?: { message?: string; error?: string }; message?: string }
@@ -239,9 +245,14 @@ const handleLogin = async () => {
         }
         
         showErrorModal(errorMessage)
-        console.error('Error submitting post:', error)
+        console.error('Login error:', error)
     }
 }
+
+// Load auth state from cookies on component mount
+onMounted(() => {
+    authStore.loadFromCookies()
+})
 </script>
 
 <style scoped>

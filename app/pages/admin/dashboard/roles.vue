@@ -12,19 +12,13 @@
         @show-error-modal="showErrorModal"
     />
 
-    <RoleInputPopup 
-        v-model:is-open="openRoleInput"
-        @show-success-modal="showSuccessModal"
-        @show-error-modal="showErrorModal"
-    />
-
-
     <RoleEditPopup
         v-model:is-open="openEditRoleInput"
         @show-success-modal="showSuccessModal"
         @show-error-modal="showErrorModal"
         :role-id="selectedRoleId"
     />
+    
     <div class="space-y-6">
         <div class="flex flex-col gap-4 justify-between lg:flex-row lg:items-center">
             <div>
@@ -36,19 +30,6 @@
         </div>
 
         <RolesStatsSection :role-stats="roleStats" />
-
-        <!-- Filter Component -->
-        <RoleFilter
-            v-model:searchQuery="searchQuery"
-            v-model:selectedType="selectedType"
-            v-model:selectedStatus="selectedStatus"
-            v-model:sortBy="sortBy"
-            :filteredCount="filteredRoles.length"
-            :totalCount="totalRoles"
-            :hasActiveFilters="hasActiveFilters"
-            @clear-filters="clearAllFilters"
-            @add-role="openRoleInput = true"
-        />
 
         <!-- Loading State -->
         <div v-if="pending" class="text-center py-8">
@@ -64,31 +45,44 @@
             </button>
         </div>
 
-        <!-- Roles Table -->
-        <RolesTableSection 
-            v-else
-            :paginated-roles="paginatedRoles"
-            @edit-role="editRole"
-            @delete-role="deleteRole"
-        />
+        <template v-else>
+            <!-- Filter Component -->
+            <RoleFilter
+                v-model:searchQuery="searchQuery"
+                v-model:selectedType="selectedType"
+                v-model:selectedStatus="selectedStatus"
+                v-model:sortBy="sortBy"
+                :filteredCount="totalItems"
+                :totalCount="totalItems"
+                :hasActiveFilters="hasActiveFilters"
+                @clear-filters="clearAllFilters"
+                @add-role="openRoleInput = true"
+            />
 
-        <!-- Empty State -->
-        <RolesEmptyState 
-            v-if="!pending && !error && filteredRoles.length === 0"
-            :search-query="searchQuery"
-            @clear-filters="clearAllFilters"
-            @add-role="openRoleInput = true"
-        />
+            <!-- Roles Table -->
+            <RolesTableSection 
+                :paginated-roles="roles"
+                @edit-role="editRole"
+                @delete-role="deleteRole"
+            />
 
-        <!-- Pagination -->
-        <RolesPaginationSection
-            v-if="!pending && !error && totalPages > 1"
-            :current-page="currentPage"
-            :total-pages="totalPages"
-            :total-items="totalRoles"
-            :items-per-page="itemsPerPage"
-            @page-changed="handlePageChange"
-        />
+            <!-- Empty State -->
+            <RolesEmptyState 
+                v-if="roles.length === 0"
+                :search-query="searchQuery"
+                @clear-filters="clearAllFilters"
+                @add-role="openRoleInput = true"
+            />
+
+            <RolesPaginationSection
+                v-if="totalPages > 1"
+                :current-page="currentPage"
+                :total-pages="totalPages"
+                :total-items="totalItems"
+                :items-per-page="itemsPerPage"
+                @page-changed="handlePageChange"
+            />
+        </template>
     </div>
 </template>
 
@@ -128,84 +122,64 @@ const selectedRoleId = ref<string | null>(null)
 const currentPage = ref(1)
 const itemsPerPage = 10
 
-const headers = useRequestHeaders(['cookie']) 
+const headers = useRequestHeaders(['cookie'])
+
+// ✅ FIXED: Build API query with all parameters
+const buildApiQuery = () => {
+    const params = new URLSearchParams({
+        page: currentPage.value.toString(),
+        limit: itemsPerPage.toString()
+    })
+    
+    if (searchQuery.value.trim()) {
+        params.append('search', searchQuery.value.trim())
+    }
+    
+    if (selectedType.value) {
+        params.append('type', selectedType.value)
+    }
+    
+    if (selectedStatus.value) {
+        params.append('status', selectedStatus.value)
+    }
+    
+    if (sortBy.value) {
+        params.append('sort', sortBy.value)
+    }
+    
+    return params.toString()
+}
+
+// ✅ FIXED: Watch all filter parameters
 const { data: rolesData, pending, error, refresh } = await useAsyncData('roleData', () => 
-    $fetch(`/admin/questionnaires/target-roles?page=${currentPage.value}&limit=${itemsPerPage}`, {
+    $fetch(`/admin/questionnaires/target-roles?${buildApiQuery()}`, {
         baseURL: config.public.apiBase,
         credentials: 'include',
         headers
     }), {
-        watch: [currentPage]
+        watch: [currentPage, searchQuery, selectedType, selectedStatus, sortBy]
     }
 )
 
-// Computed properties based on API response structure
+// ✅ FIXED: Use API data directly (no client-side filtering)
 const roles = computed(() => rolesData.value?.data?.data || [])
-const totalRoles = computed(() => rolesData.value?.data?.total || 0)
-const totalPagesFromAPI = computed(() => rolesData.value?.data?.total_pages || 1)
+const totalPages = computed(() => rolesData.value?.data?.total_pages || 1)
+const totalItems = computed(() => rolesData.value?.data?.total || 0)
 
-const filteredRoles = computed(() => {
-    let filtered = [...roles.value]
-
-    if (searchQuery.value) {
-        const query = searchQuery.value.toLowerCase()
-        filtered = filtered.filter(role => 
-            role.name.toLowerCase().includes(query) ||
-            role.description.toLowerCase().includes(query) ||
-            role.category.toLowerCase().includes(query)
-        )
-    }
-
-    if (selectedType.value) {
-        filtered = filtered.filter(r => r.category === selectedType.value)
-    }
-
-    if (selectedStatus.value) {
-        const isActive = selectedStatus.value === 'active'
-        filtered = filtered.filter(r => r.active === isActive)
-    }
-
-    // Sort
-    filtered.sort((a, b) => {
-        switch (sortBy.value) {
-            case 'newest':
-                return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-            case 'name':
-                return a.name.localeCompare(b.name)
-            case 'category':
-                return a.category.localeCompare(b.category)
-            default:
-                return 0
-        }
-    })
-
-    return filtered
-})
-
-const paginatedRoles = computed(() => {
-    // Jika menggunakan server-side pagination, return semua filtered roles
-    // Jika menggunakan client-side pagination, slice berdasarkan currentPage
-    return filteredRoles.value
-})
-
-const totalPages = computed(() => {
-    // Jika menggunakan filter client-side, hitung ulang total pages
-    if (hasActiveFilters.value) {
-        return Math.ceil(filteredRoles.value.length / itemsPerPage)
-    }
-    // Jika tidak ada filter, gunakan total pages dari API
-    return totalPagesFromAPI.value
-})
+// ✅ FIXED: Remove client-side filtering and pagination
+// const filteredRoles = computed(() => { ... }) // ← HAPUS
+// const paginatedRoles = computed(() => { ... }) // ← HAPUS
 
 const roleStats = computed(() => {
+    // For accurate stats, you might need a separate API endpoint for all data
     const activeRoles = roles.value.filter(r => r.active).length
     const draftRoles = roles.value.filter(r => !r.active).length
     
     return {
-        total: totalRoles.value,
+        total: totalItems.value, // ✅ FIXED: Use totalItems from API
         active: activeRoles,
-        draft: draftRoles,
-        totalUsers: 0 // API tidak menyediakan data users_count
+        draft: draftRoles,  
+        totalUsers: 0
     }
 })
 
@@ -231,21 +205,22 @@ const editRole = (role: any) => {
 }
 
 const deleteRole = async (role: any) => {
-    try {
-        await $fetch(`/admin/questionnaires/target-roles/${role.id}`, {
-            method: 'DELETE',
-            baseURL: config.public.apiBase,
-            credentials: 'include',
-            headers
-        })
-        showSuccessModal('Role berhasil dihapus')
-        refresh() 
-    } catch (error) {
-        console.error('Error deleting role:', error)
-        showErrorModal('Gagal menghapus role')
+    if (confirm('Apakah Anda yakin ingin menghapus role ini?')) {
+        try {
+            await $fetch(`/admin/questionnaires/target-roles/${role.id}`, {
+                method: 'DELETE',
+                baseURL: config.public.apiBase,
+                credentials: 'include',
+                headers
+            })
+            showSuccessModal('Role berhasil dihapus')
+            refresh()
+        } catch (error) {
+            console.error('Error deleting role:', error)
+            showErrorModal('Gagal menghapus role')
+        }
     }
 }
-
 
 const showSuccessModal = (message: string) => {
     alertModal.value = {
@@ -268,11 +243,12 @@ const showErrorModal = (message: string) => {
 const handleAlertOk = () => {
     alertModal.value.isOpen = false
     if (alertModal.value.type === 'success') {
-        refresh() // Refresh data after success
+        refresh()
     }
 }
 
-watch([searchQuery, selectedType, selectedStatus], () => {
+// ✅ FIXED: Reset page when filters change
+watch([searchQuery, selectedType, selectedStatus, sortBy], () => {
     currentPage.value = 1
 })
 </script>

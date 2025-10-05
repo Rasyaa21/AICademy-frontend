@@ -6,23 +6,23 @@
         :message="alertModal.message"
         @ok="handleAlertOk"
     />
-    <TeacherInputPopup 
-        v-model:is-open="openTeacherInput"
-        @show-success-modal="showSuccessModal"
-        @show-error-modal="showErrorModal"
+    <AlumniDetailPopup
+        v-model:is-open="openAlumniDetail"
+        :alumni-id="selectedAlumniId"
     />
+    
     <div class="space-y-6">
         <AdminPageHeader
-            title="Teachers Management"
-            description="Kelola data guru dan monitor aktivitas mereka"
+            title="Alumni Management"
+            description="Kelola data alumni dan monitor aktivitas mereka"
         />
 
-        <TeachersStatsSection :teacher-stats="teacherStats" />
+        <AlumniStatsSection :alumni-stats="alumniStats" />
 
         <!-- Loading State -->
         <div v-if="pending" class="text-center py-8">
             <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-            <p class="text-gray-500 mt-2">Memuat data guru...</p>
+            <p class="text-gray-500 mt-2">Memuat data alumni...</p>
         </div>
 
         <!-- Error State -->
@@ -35,31 +35,29 @@
 
         <!-- Content -->
         <template v-else>
-            <TeacherFilter
+            <AlumniFilter
                 v-model:searchQuery="searchQuery"
-                v-model:selectedStatus="selectedStatus"
                 v-model:sortBy="sortBy"
                 :filteredCount="totalItems"
                 :totalCount="totalItems"
                 :activeFiltersCount="activeFiltersCount"
                 :hasActiveFilters="hasActiveFilters"
                 @clear-filters="clearAllFilters"
-                @add-teacher="openTeacherInput = true"
             />
 
-            <TeachersTableSection
-                :paginated-teachers="teachers"
-                @edit-teacher="editTeacher"
-                @delete-teacher="deleteTeacher"
+            <AlumniTableSection
+                :paginated-alumni="alumni"
+                @view-alumni="viewAlumni"
+                @delete-alumni="deleteAlumni"
             />
 
-            <TeachersEmptyState
-                v-if="teachers.length === 0"
+            <AlumniEmptyState
+                v-if="alumni.length === 0"
                 :search-query="searchQuery"
                 @clear-filters="clearAllFilters"
             />
 
-            <TeachersPaginationSection
+            <AlumniPaginationSection
                 v-if="totalPages > 1"
                 :current-page="currentPage"
                 :total-pages="totalPages"
@@ -74,15 +72,15 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import AdminPageHeader from '~/components/dashboard-admin/shared/AdminPageHeader.vue'
-import TeachersStatsSection from '~/components/dashboard-admin/teachers/TeachersStatsSection.vue'
-import TeachersTableSection from '~/components/dashboard-admin/teachers/TeachersTableSection.vue'
-import TeachersEmptyState from '~/components/dashboard-admin/teachers/TeachersEmptyState.vue'
-import TeachersPaginationSection from '~/components/dashboard-admin/teachers/TeachersPaginationSection.vue'
-import TeacherFilter from '~/components/dashboard-admin/teachers/TeacherFilter.vue'
+import AlumniStatsSection from '~/components/dashboard-admin/alumni/AlumniStatsSection.vue'
+import AlumniTableSection from '~/components/dashboard-admin/alumni/AlumniTableSection.vue'
+import AlumniEmptyState from '~/components/dashboard-admin/alumni/AlumniEmptyState.vue'
+import AlumniPaginationSection from '~/components/dashboard-admin/alumni/AlumniPaginationSection.vue'
+import AlumniFilter from '~/components/dashboard-admin/alumni/AlumniFilter.vue'
 
 import AlertModal from '~/components/modal/basic-modal/AlertModal.vue'
-import type { Teacher } from '~/types/Teacher'
-import TeacherInputPopup from '~/components/modal/admin/dashboard/teacher/TeacherInputPopup.vue'
+import AlumniDetailPopup from '~/components/modal/admin/dashboard/alumni/AlumniDetailPopup.vue'
+import type { Alumni } from '~/types/Alumni'
 
 definePageMeta({
     layout: 'admin-dashboard-layout'
@@ -99,10 +97,10 @@ const alertModal = ref({
 })
 
 // Filter states
-const openTeacherInput = ref(false)
+const openAlumniDetail = ref(false)
 const searchQuery = ref('')
-const selectedStatus = ref('')
 const sortBy = ref('newest')
+const selectedAlumniId = ref()
 
 // Pagination
 const currentPage = ref(1)
@@ -110,7 +108,7 @@ const itemsPerPage = 10
 
 const headers = useRequestHeaders(['cookie'])
 
-// ✅ Build API query with all parameters
+// Build API query with all parameters
 const buildApiQuery = () => {
     const params = new URLSearchParams({
         page: currentPage.value.toString(),
@@ -121,10 +119,6 @@ const buildApiQuery = () => {
         params.append('search', searchQuery.value.trim())
     }
     
-    if (selectedStatus.value) {
-        params.append('status', selectedStatus.value)
-    }
-    
     if (sortBy.value) {
         params.append('sort', sortBy.value)
     }
@@ -132,48 +126,50 @@ const buildApiQuery = () => {
     return params.toString()
 }
 
-// ✅ Fetch data from API
-const { data: teacherData, pending, error, refresh } = await useAsyncData('teacherData', () => 
-    $fetch(`/admin/users/teachers?${buildApiQuery()}`, {
+// Fetch data from API
+const { data: alumniData, pending, error, refresh } = await useAsyncData('alumniData', () => 
+    $fetch(`/admin/users/alumni?${buildApiQuery()}`, {
         baseURL: config.public.apiBase,
         credentials: 'include',
         headers
     }), {
-        watch: [currentPage, searchQuery, selectedStatus, sortBy]
+        watch: [currentPage, searchQuery, sortBy]
     }
 )
 
-// ✅ Use API data directly
-const teachers = computed(() => teacherData.value?.data?.data || [])
-const totalPages = computed(() => teacherData.value?.data?.total_pages || 1)
-const totalItems = computed(() => teacherData.value?.data?.total || 0)
+// Use API data directly
+const alumni = computed(() => alumniData.value?.data?.data || [])
+const totalPages = computed(() => alumniData.value?.data?.total_pages || 1)
+const totalItems = computed(() => alumniData.value?.data?.total || 0)
 
-const teacherStats = computed(() => {
+const alumniStats = computed(() => {
     // For accurate stats, you might need a separate API endpoint
-    const active = teachers.value.filter(t => t.status === 'active').length
+    const newThisMonth = alumni.value.filter(a => {
+        const createdDate = new Date(a.created_at)
+        const now = new Date()
+        return createdDate.getMonth() === now.getMonth() && createdDate.getFullYear() === now.getFullYear()
+    }).length
     
     return {
-        total: totalItems.value, // ✅ Use totalItems from API
-        active,
-        challengeOrganizers: Math.floor(totalItems.value * 0.8)
+        total: totalItems.value,
+        newThisMonth,
+        withCv: alumni.value.filter(a => a.cv_file).length
     }
 })
 
 const hasActiveFilters = computed(() => {
-    return !!(searchQuery.value || selectedStatus.value)
+    return !!(searchQuery.value)
 })
 
 const activeFiltersCount = computed(() => {
     let count = 0
     if (searchQuery.value) count++
-    if (selectedStatus.value) count++
     return count
 })
 
 // Methods
 const clearAllFilters = () => {
     searchQuery.value = ''
-    selectedStatus.value = ''
     currentPage.value = 1
 }
 
@@ -181,25 +177,25 @@ const handlePageChange = (page: number) => {
     currentPage.value = page
 }
 
-const editTeacher = (teacher: Teacher) => {
-    console.log('Edit teacher:', teacher)
-    // You can implement edit logic here
+const viewAlumni = (alumni: Alumni) => {
+    selectedAlumniId.value = alumni.id
+    openAlumniDetail.value = true
 }
 
-const deleteTeacher = async (teacher: Teacher) => {
-    if (confirm('Apakah Anda yakin ingin menghapus guru ini?')) {
+const deleteAlumni = async (alumni: Alumni) => {
+    if (confirm('Apakah Anda yakin ingin menghapus alumni ini?')) {
         try {
-            await $fetch(`/admin/users/teachers/${teacher.id}`, {
+            await $fetch(`/admin/users/alumni/${alumni.id}`, {
                 method: 'DELETE',
                 baseURL: config.public.apiBase,
                 credentials: 'include',
                 headers
             })
-            showSuccessModal('Guru berhasil dihapus')
+            showSuccessModal('Alumni berhasil dihapus')
             refresh()
         } catch (error) {
-            console.error('Error deleting teacher:', error)
-            showErrorModal('Gagal menghapus guru')
+            console.error('Error deleting alumni:', error)
+            showErrorModal('Gagal menghapus alumni')
         }
     }
 }
@@ -230,8 +226,8 @@ const handleAlertOk = () => {
     }
 }
 
-// ✅ Reset page when filters change
-watch([searchQuery, selectedStatus, sortBy], () => {
+// Reset page when filters change
+watch([searchQuery, sortBy], () => {
     currentPage.value = 1
 })
 </script>

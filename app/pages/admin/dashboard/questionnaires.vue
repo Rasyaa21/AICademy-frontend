@@ -32,19 +32,6 @@
 
         <QuestionnairesStatsSection :questionnaire-stats="questionnaireStats" />
 
-        <QuestionnaireFilter
-            v-model:searchQuery="searchQuery"
-            v-model:selectedStatus="selectedStatus"
-            v-model:selectedType="selectedType"
-            v-model:sortBy="sortBy"
-            :filteredCount="filteredQuestionnaires.length"
-            :totalCount="questionnairesData?.data?.total || 0"
-            :activeFiltersCount="activeFiltersCount"
-            :hasActiveFilters="hasActiveFilters"
-            @clear-filters="clearAllFilters"
-            @generate-questionnaire="openQuestionnaireInput = true"
-        />
-
         <!-- Loading State -->
         <div v-if="pending" class="text-center py-8">
             <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
@@ -59,47 +46,61 @@
             </button>
         </div>
 
-        <QuestionnairesTableSection
-            v-else
-            :paginated-questionnaires="paginatedQuestionnaires"
-            @view-responses="viewResponses"
-            @edit-questionnaire="editStatus"
-            @preview-questionnaire="previewQuestionnaire"
-            @delete-questionnaire="deleteQuestionnaire"
-        />
+        <template v-else>
+            <QuestionnaireFilter
+                v-model:searchQuery="searchQuery"
+                v-model:selectedStatus="selectedStatus"
+                v-model:selectedType="selectedType"
+                v-model:sortBy="sortBy"
+                :filteredCount="totalItems"
+                :totalCount="totalItems"
+                :activeFiltersCount="activeFiltersCount"
+                :hasActiveFilters="hasActiveFilters"
+                @clear-filters="clearAllFilters"
+                @generate-questionnaire="openQuestionnaireInput = true"
+            />
 
-        <AdminEmptyState
-            v-if="!pending && !error && filteredQuestionnaires.length === 0"
-            icon="heroicons:document-text-20-solid"
-            title="Tidak ada kuisioner ditemukan"
-            :description="searchQuery ? 'Coba ubah kata kunci pencarian atau filter untuk melihat kuisioner lainnya' : 'Mulai dengan membuat kuisioner'"
-            :show-clear-button="!!searchQuery"
-            @clear-filters="clearAllFilters"
-        >
-            <template #actions>
-                <button 
-                    @click="openQuestionnaireInput = true"
-                    class="px-4 py-2 font-medium text-white rounded-lg bg-primary hover:bg-primary/90"
-                >
-                    Generate dengan AI
-                </button>
-                <button 
-                    @click="openQuestionnaireInput = true"
-                    class="px-4 py-2 font-medium text-white bg-gray-600 rounded-lg hover:bg-gray-700"
-                >
-                    Buat Manual
-                </button>
-            </template>
-        </AdminEmptyState>
+            <QuestionnairesTableSection
+                :paginated-questionnaires="questionnaires"
+                @view-responses="viewResponses"
+                @edit-questionnaire="editStatus"
+                @preview-questionnaire="previewQuestionnaire"
+                @delete-questionnaire="deleteQuestionnaire"
+            />
 
-        <AdminPaginationSection
-            v-if="!pending && !error && totalPages > 1"
-            :current-page="currentPage"
-            :total-pages="totalPages"
-            :total-items="questionnairesData?.data?.total || 0"
-            :items-per-page="itemsPerPage"
-            @page-changed="handlePageChange"
-        />
+            <AdminEmptyState
+                v-if="questionnaires.length === 0"
+                icon="heroicons:document-text-20-solid"
+                title="Tidak ada kuisioner ditemukan"
+                :description="searchQuery ? 'Coba ubah kata kunci pencarian atau filter untuk melihat kuisioner lainnya' : 'Mulai dengan membuat kuisioner'"
+                :show-clear-button="!!searchQuery"
+                @clear-filters="clearAllFilters"
+            >
+                <template #actions>
+                    <button 
+                        @click="openQuestionnaireInput = true"
+                        class="px-4 py-2 font-medium text-white rounded-lg bg-primary hover:bg-primary/90"
+                    >
+                        Generate dengan AI
+                    </button>
+                    <button 
+                        @click="openQuestionnaireInput = true"
+                        class="px-4 py-2 font-medium text-white bg-gray-600 rounded-lg hover:bg-gray-700"
+                    >
+                        Buat Manual
+                    </button>
+                </template>
+            </AdminEmptyState>
+
+            <AdminPaginationSection
+                v-if="totalPages > 1"
+                :current-page="currentPage"
+                :total-pages="totalPages"
+                :total-items="totalItems"
+                :items-per-page="itemsPerPage"
+                @page-changed="handlePageChange"
+            />
+        </template>
     </div>
 </template>
 
@@ -144,82 +145,64 @@ const sortBy = ref('newest')
 const currentPage = ref(1)
 const itemsPerPage = 10
 
+const headers = useRequestHeaders(['cookie'])
 
-const headers = useRequestHeaders(['cookie']) 
+// ✅ FIXED: Build API query with all parameters
+const buildApiQuery = () => {
+    const params = new URLSearchParams({
+        page: currentPage.value.toString(),
+        limit: itemsPerPage.toString()
+    })
+    
+    if (searchQuery.value.trim()) {
+        params.append('search', searchQuery.value.trim())
+    }
+    
+    if (selectedStatus.value) {
+        params.append('status', selectedStatus.value)
+    }
+    
+    if (selectedType.value) {
+        params.append('type', selectedType.value)
+    }
+    
+    if (sortBy.value) {
+        params.append('sort', sortBy.value)
+    }
+    
+    return params.toString()
+}
+
+// ✅ FIXED: Watch all filter parameters
 const { data: questionnairesData, pending, error, refresh } = await useAsyncData('questionnairesData', () => 
-    $fetch(`/admin/questionnaires?page=${currentPage.value}&limit=${itemsPerPage}`, {
+    $fetch(`/admin/questionnaires?${buildApiQuery()}`, {
         baseURL: config.public.apiBase,
         credentials: 'include',
         headers
     }), {
-        watch: [currentPage]
+        watch: [currentPage, searchQuery, selectedStatus, selectedType, sortBy]
     }
 )
 
-// Computed properties based on API response structure
+// ✅ FIXED: Use API data directly (no client-side filtering)
 const questionnaires = computed(() => questionnairesData.value?.data?.data || [])
+const totalPages = computed(() => questionnairesData.value?.data?.total_pages || 1)
+const totalItems = computed(() => questionnairesData.value?.data?.total || 0)
 
-const filteredQuestionnaires = computed(() => {
-    let filtered = [...questionnaires.value]
-
-    if (searchQuery.value) {
-        const query = searchQuery.value.toLowerCase()
-        filtered = filtered.filter(q => 
-            q.title.toLowerCase().includes(query) ||
-            q.description.toLowerCase().includes(query)
-        )
-    }
-
-    if (selectedStatus.value) {
-        const isActive = selectedStatus.value === 'active'
-        filtered = filtered.filter(q => q.active === isActive)
-    }
-
-    if (selectedType.value) {
-        filtered = filtered.filter(q => q.target_roles === selectedType.value)
-    }
-
-    filtered.sort((a, b) => {
-        switch (sortBy.value) {
-            case 'newest':
-                return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-            case 'title':
-                return a.title.localeCompare(b.title)
-            case 'version':
-                return a.version.localeCompare(b.version)
-            default:
-                return 0
-        }
-    })
-
-    return filtered
-})
-
-const paginatedQuestionnaires = computed(() => {
-    if (hasActiveFilters.value) {
-        const start = (currentPage.value - 1) * itemsPerPage
-        const end = start + itemsPerPage
-        return filteredQuestionnaires.value.slice(start, end)
-    }
-    return filteredQuestionnaires.value
-})
-
-const totalPages = computed(() => {
-    if (hasActiveFilters.value) {
-        return Math.ceil(filteredQuestionnaires.value.length / itemsPerPage)
-    }
-    return questionnairesData.value?.data?.total_pages || 1
-})
+// ✅ FIXED: Remove client-side filtering and pagination
+// const filteredQuestionnaires = computed(() => { ... }) // ← HAPUS
+// const paginatedQuestionnaires = computed(() => { ... }) // ← HAPUS
 
 const questionnaireStats = computed(() => {
+    // For accurate stats, you might need a separate API endpoint for all data
     const active = questionnaires.value.filter(q => q.active).length
     const inactive = questionnaires.value.filter(q => !q.active).length
     
     return {
-        total: questionnairesData.value?.data?.total || 0,
+        total: totalItems.value, // ✅ FIXED: Use totalItems from API
         active,
         inactive,
-        draft: inactive // assuming inactive = draft
+        draft: inactive
     }
 })
 
@@ -248,11 +231,9 @@ const handlePageChange = (page: number) => {
 }
 
 const viewResponses = (questionnaire: Questionnaire) => {
-    // selectedQuestionnaire.value = questionnaire
     openResponseModal.value = true
     console.log('View responses:', questionnaire)
 }
-
 
 const previewQuestionnaire = (questionnaire: Questionnaire) => {
     selectedQuestionnaire.value = questionnaire.id
@@ -277,7 +258,6 @@ const deleteQuestionnaire = async (questionnaire: Questionnaire) => {
     }
 }
 
-// Alert modal handlers - sama seperti roles
 const showSuccessModal = (message: string) => {
     alertModal.value = {
         isOpen: true,
@@ -299,16 +279,17 @@ const showErrorModal = (message: string) => {
 const handleAlertOk = () => {
     alertModal.value.isOpen = false
     if (alertModal.value.type === 'success') {
-        refresh() // Refresh data after success
+        refresh()
     }
 }
 
-const editStatus = (data : Questionnaire) => {
+const editStatus = (data: Questionnaire) => {
     selectedQuestionnaire.value = data.id
     openEditQuestionnaireStatus.value = true
 }
 
-watch([searchQuery, selectedStatus, selectedType], () => {
+// ✅ FIXED: Reset page when filters change
+watch([searchQuery, selectedStatus, selectedType, sortBy], () => {
     currentPage.value = 1
 })
 </script>
