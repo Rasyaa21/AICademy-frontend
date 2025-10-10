@@ -169,7 +169,7 @@ const { data: studentData, pending, error, refresh } = await useAsyncData('stude
 )
 
 // ✅ FIXED: Use API data directly (no client-side filtering)
-const students = computed(() => studentData.value?.data?.data || [])
+const students = computed(() => studentData.value?.data || [])
 const totalPages = computed(() => studentData.value?.data?.total_pages || 1)
 const totalItems = computed(() => studentData.value?.data?.total || 0)
 

@@ -144,7 +144,7 @@ const { data: teacherData, pending, error, refresh } = await useAsyncData('teach
 )
 
 // ✅ Use API data directly
-const teachers = computed(() => teacherData.value?.data?.data || [])
+const teachers = computed(() => teacherData.value?.data || [])
 const totalPages = computed(() => teacherData.value?.data?.total_pages || 1)
 const totalItems = computed(() => teacherData.value?.data?.total || 0)
 

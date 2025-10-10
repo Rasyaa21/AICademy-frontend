@@ -159,7 +159,7 @@ const { data: companyData, pending, error, refresh } = await useAsyncData('compa
 )
 
 // ✅ Use API data directly (no client-side filtering)
-const companies = computed(() => companyData.value?.data?.data || [])
+const companies = computed(() => companyData.value?.data || [])
 const totalPages = computed(() => companyData.value?.data?.total_pages || 1)
 const totalItems = computed(() => companyData.value?.data?.total || 0)
 
@@ -171,7 +171,6 @@ const companyStats = computed(() => {
     return {
         total: totalItems.value, // ✅ Use totalItems from API
         active: activeCompanies,
-        challengeSponsors: Math.floor(totalItems.value * 0.6)
     }
 })
 

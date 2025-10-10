@@ -57,8 +57,8 @@ watch(isCollapse, v => localStorage.setItem('sidebar:collapsed', v ? '1' : '0'))
                     :is-selected="false" path="/student/dashboard/roadmap" :collapsed="isCollapse" />
       <SidebarItems icon="heroicons:trophy-solid" label="Challange"
                     :is-selected="false" path="/student/dashboard/challange" :collapsed="isCollapse" />
-            <SidebarItems icon="heroicons:user-group-20-solid" label="Tim"
-                    :is-selected="false" path="/student/dashboard/looking-for-team" :collapsed="isCollapse" />
+      <SidebarItems icon="tabler:clipboard-list" label="Peruhsaaan" :is-selected="false" path="/student/dashboard/internships" />
+
     </ul>
   </aside>
 
@@ -121,7 +121,7 @@ watch(isCollapse, v => localStorage.setItem('sidebar:collapsed', v ? '1' : '0'))
               <SidebarItems icon="tabler:clipboard-list" label="Profiling" path="/student/dashboard/questionnaires" />
               <SidebarItems icon="streamline-plump:arrow-roadmap-solid" label="Roadmap" path="/student/dashboard/roadmap"/>
               <SidebarItems icon="heroicons:trophy-solid" label="Challange" path="/student/dashboard/challange" />
-              <SidebarItems icon="heroicons:user-group-20-solid" label="Tim" path="/student/dashboard/looking-for-team" />
+              <SidebarItems icon="tabler:clipboard-list" label="Peruhsaaan" path="/student/dashboard/internships" />
             </div>
           </div>
         </div>

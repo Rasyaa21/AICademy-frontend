@@ -8,8 +8,6 @@
       </div>
     </div>
 
-    <!-- Stats Cards -->
-    <ChallangeStatsSection :challenge-stats="challengeStats" />
 
     <!-- Filter Section -->
     <ChallangeFilterSection
