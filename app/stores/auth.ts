@@ -14,6 +14,15 @@ interface AuthState {
   isAuthenticated: boolean
 }
 
+interface RefreshResponse {
+  success: boolean
+  data: {
+    access_token: string
+    token_type: 'Bearer'
+    expires_in: number // seconds
+  }
+}
+
 export const useAuthStore = defineStore('auth', {
   state: (): AuthState => ({
     access_token: null,
@@ -31,40 +40,28 @@ export const useAuthStore = defineStore('auth', {
 
   actions: {
     setTokens(access: string, refresh: string, user: User) {
-      // Set store state
+      const isProd = !import.meta.dev
+
       this.access_token = access
       this.refresh_token = refresh
       this.user = user
       this.isAuthenticated = true
 
-      // Set cookies
-      const accessCookie = useCookie<string | null>('access_token', { 
-        maxAge: 15 * 60, // 15 minutes
-        secure: true,
-        sameSite: 'strict'
-      })
-      const refreshCookie = useCookie<string | null>('refresh_token', { 
-        maxAge: 60 * 60 * 24 * 30, // 30 days
-        secure: true,
-        sameSite: 'strict'
-      })
-      const roleCookie = useCookie<string | null>('role', {
-        maxAge: 60 * 60 * 24 * 30, // 30 days
-        secure: true,
-        sameSite: 'strict'
-      })
-      const userCookie = useCookie<User | null>('user', {
-        maxAge: 60 * 60 * 24 * 30, // 30 days
-        secure: true,
-        sameSite: 'strict'
-      })
+      useCookie<string | null>('access_token', { 
+        maxAge: 15 * 60, secure: isProd, sameSite: 'strict' 
+      }).value = access
 
-      accessCookie.value = access
-      refreshCookie.value = refresh
-      roleCookie.value = user.role
-      userCookie.value = user
+      useCookie<string | null>('refresh_token', { 
+        maxAge: 60 * 60 * 24 * 30, secure: isProd, sameSite: 'strict' 
+      }).value = refresh
 
-      console.log('Tokens set successfully:', { access: !!access, refresh: !!refresh, user: user.name })
+      useCookie<string | null>('role', { 
+        maxAge: 60 * 60 * 24 * 30, secure: isProd, sameSite: 'strict' 
+      }).value = user.role
+
+      useCookie<User | null>('user', { 
+        maxAge: 60 * 60 * 24 * 30, secure: isProd, sameSite: 'strict' 
+      }).value = user
     },
 
     loadFromCookies() {
@@ -76,87 +73,57 @@ export const useAuthStore = defineStore('auth', {
       this.refresh_token = refreshCookie.value || null
       this.user = userCookie.value || null
       this.isAuthenticated = !!(this.access_token && this.user)
-
-      console.log('Loaded from cookies:', {
-        hasAccess: !!this.access_token,
-        hasRefresh: !!this.refresh_token,
-        hasUser: !!this.user,
-        isAuth: this.isAuthenticated
-      })
     },
 
     async refreshAccessToken() {
       const config = useRuntimeConfig()
-      
-      console.log('Attempting to refresh token...')
-      console.log('Current refresh token:', !!this.refresh_token)
-      
-      if (!this.refresh_token) {
-        console.error('No refresh token available')
-        throw new Error('No refresh token available')
-      }
+      const isProd = !import.meta.dev
+
+      const refreshToken = this.refresh_token ?? useCookie<string | null>('refresh_token').value
+      if (!refreshToken) return false
 
       try {
-        console.log('Making refresh token request...')
-        const response = await $fetch('/auth/refresh', {
+        const res = await $fetch<RefreshResponse>('/auth/refresh', {
           method: 'POST',
-          body: {
-            refresh_token: this.refresh_token
-          },
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          baseURL: config.public.apiBase
+          baseURL: config.public.apiBase,
+          body: { refresh_token: refreshToken },
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include'
         })
 
-        console.log('Refresh token response:', response)
+        if (res?.success && res?.data?.access_token) {
+          this.access_token = res.data.access_token
+          this.isAuthenticated = !!(this.access_token && (this.user ?? useCookie<User | null>('user').value))
 
-        if (response.success && response.data) {
-          const { access_token, refresh_token, user } = response.data
-          
-          // Update tokens with new access token and refresh token
-          this.setTokens(
-            access_token,
-            refresh_token || this.refresh_token, // Use new refresh token if provided
-            user || this.user! // Use new user data if provided, otherwise keep existing
-          )
-          
-          console.log('Token refreshed successfully')
-          return access_token
-        } else {
-          throw new Error(response?.message || 'Failed to refresh token')
+          // set ulang access_token cookie dengan maxAge baru (default 15 menit kalau tidak dikirim)
+          const maxAge = res.data.expires_in ?? 15 * 60
+          useCookie<string | null>('access_token', { 
+            maxAge, secure: isProd, sameSite: 'strict' 
+          }).value = res.data.access_token
+
+          return true
         }
-      } catch (error) {
-        console.error('Token refresh failed:', error)
-        this.logout()
-        throw error
+        return false
+      } catch (e) {
+        console.error('Failed to refresh access token:', e)
+        // Jangan langsung logout; biarkan UI handle jika perlu
+        return false
       }
     },
 
     logout() {
-      console.log('Logging out...')
-      
-      // Clear store state
+      const isProd = !import.meta.dev
+      useCookie<string | null>('access_token', { secure: isProd, sameSite: 'strict' }).value = null
+      useCookie<string | null>('refresh_token', { secure: isProd, sameSite: 'strict' }).value = null
+      useCookie<User | null>('user', { secure: isProd, sameSite: 'strict' }).value = null
+      this.clear()
+    },
+
+    clear() {
       this.access_token = null
       this.refresh_token = null
       this.user = null
       this.isAuthenticated = false
-
-      // Clear cookies
-      const accessCookie = useCookie('access_token')
-      const refreshCookie = useCookie('refresh_token')
-      const roleCookie = useCookie('role')
-      const userCookie = useCookie('user')
-
-      accessCookie.value = null
-      refreshCookie.value = null
-      roleCookie.value = null
-      userCookie.value = null
-    },
-
-    clear() {
-      this.logout()
     }
   }
 })

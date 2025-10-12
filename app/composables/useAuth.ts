@@ -2,6 +2,8 @@ export const useAuth = () => {
   const authStore = useAuthStore()
   const router = useRouter()
   let refreshTimer: NodeJS.Timeout | null = null
+  let refreshIntervalId: ReturnType<typeof setInterval> | null = null
+  const INTERVAL_MS = 14 * 60 * 1000 // refresh tiap 14 menit
 
   // Clear existing timer
   const clearRefreshTimer = () => {
@@ -13,13 +15,14 @@ export const useAuth = () => {
 
   // Auto refresh token when it's about to expire
   const setupTokenRefresh = () => {
+    stopTokenRefresh()
     // Clear any existing timer first
     clearRefreshTimer()
     
     if (!authStore.access_token) {
       console.log('No access token, skipping refresh setup')
       return
-    }
+   }
 
     // Decode JWT to get expiration time
     try {
@@ -60,6 +63,18 @@ export const useAuth = () => {
     } catch (error) {
       console.error('Error parsing token:', error)
     }
+
+    if (!authStore.isLoggedIn) return
+    refreshIntervalId = setInterval(async () => {
+      await authStore.refreshAccessToken()
+    }, INTERVAL_MS)
+  }
+
+  const stopTokenRefresh = () => {
+    if (refreshIntervalId) {
+      clearInterval(refreshIntervalId)
+      refreshIntervalId = null
+    }
   }
 
   // Manual refresh function
@@ -78,6 +93,7 @@ export const useAuth = () => {
 
   const logout = async () => {
     clearRefreshTimer()
+    stopTokenRefresh()
     
     try {
       console.log('Attempting logout...')

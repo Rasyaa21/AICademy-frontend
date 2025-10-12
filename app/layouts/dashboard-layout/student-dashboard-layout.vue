@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch, onMounted, computed } from 'vue'
 import SidebarItems from '../../components/layout-components/SidebarItems.vue'
 
 const isCollapse = ref(false)
@@ -8,12 +8,38 @@ const isOpen = ref(false)
 const route = useRoute()
 watch(() => route.path, () => { isOpen.value = false })
 
-// (opsional) ingat state collapse antar refresh
-onMounted(() => {
+// Stores
+const authStore = useAuthStore()
+const userStore = useUserStore()
+
+// Fetch student profile after auth is loaded
+onMounted(async () => {
   const saved = localStorage.getItem('sidebar:collapsed')
   if (saved !== null) isCollapse.value = saved === '1'
+
+  if (!userStore.user) {
+    try { await userStore.fetchUser() } catch {}
+  }
 })
 watch(isCollapse, v => localStorage.setItem('sidebar:collapsed', v ? '1' : '0'))
+
+// UI bindings
+const displayName = computed(() =>
+  userStore.user?.fullname || authStore.user?.name || 'User'
+)
+const studentClass = computed(() => userStore.user?.class || '')
+const nis = computed(() => userStore.user?.nis || '')
+const profilePicture = computed(() => userStore.user?.profile_picture || '')
+
+const initials = computed(() => {
+  const name = displayName.value || ''
+  return name
+    .split(' ')
+    .filter(Boolean)
+    .map(w => w[0]?.toUpperCase() || '')
+    .slice(0, 2)
+    .join('') || 'U'
+})
 </script>
 
 <template>
@@ -90,17 +116,26 @@ watch(isCollapse, v => localStorage.setItem('sidebar:collapsed', v ? '1' : '0'))
       </div>
 
       <div class="flex flex-row items-center space-x-3 ml-3">
-        <button class="relative flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors">
-          <Icon name="heroicons:bell-20-solid" class="w-6 h-6" />
-        </button>
 
         <div class="flex items-center gap-x-3">
-          <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-200 shrink-0">
-            <img src="https://i.pravatar.cc/100" alt="Profile" class="w-full h-full object-cover block" />
+          <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-200 shrink-0 flex items-center justify-center bg-gray-100">
+            <img
+              v-if="profilePicture"
+              :src="profilePicture"
+              :alt="displayName"
+              class="w-full h-full object-cover block"
+            />
+            <span v-else class="text-sm font-semibold text-gray-600">{{ initials }}</span>
           </div>
           <div class="hidden md:block">
-            <div class="text-sm font-medium text-gray-700 hidden lg:flex">John Doe</div>
-            <div class="text-xs text-gray-500 hidden lg:flex">Student</div>
+            <div class="text-sm font-medium text-gray-700 hidden lg:flex">
+              {{ displayName }}
+            </div>
+            <div class="text-xs text-gray-500 hidden lg:flex">
+              <span v-if="nis">NIS: {{ nis }}</span>
+              <span v-if="nis && studentClass" class="mx-1">·</span>
+              <span v-if="studentClass">{{ studentClass }}</span>
+            </div>
           </div>
         </div>
       </div>

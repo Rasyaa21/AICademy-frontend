@@ -16,9 +16,12 @@
       <Icon name="heroicons:exclamation-triangle-20-solid" class="w-16 h-16 text-red-500 mx-auto mb-4" />
       <h3 class="text-lg font-semibold text-gray-900 mb-2">Terjadi Kesalahan</h3>
       <p class="text-gray-600 mb-4">Gagal memuat detail internship. Silakan coba lagi.</p>
-      <UniversalButton variant="primary" @click="refresh()" text="Coba Lagi">
-        
-      </UniversalButton>
+      <button
+        class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+        @click="refresh()"
+      >
+        Coba Lagi
+      </button>
     </div>
 
     <!-- Content -->
@@ -26,11 +29,11 @@
       <!-- Navigation -->
       <div class="flex items-center gap-2 text-sm text-gray-600">
         <NuxtLink 
-          to="/student/dashboard/internships" 
+          to="/alumni/dashboard/internships" 
           class="hover:text-blue-600 transition-colors flex items-center gap-1"
         >
           <Icon name="heroicons:arrow-left-20-solid" class="w-4 h-4" />
-          Kembali
+          Kembali ke Daftar
         </NuxtLink>
         <Icon name="heroicons:chevron-right-20-solid" class="w-4 h-4" />
         <span>Detail Internship</span>
@@ -40,34 +43,28 @@
       <div class="bg-white rounded-xl p-6 shadow-sm border">
         <div class="flex items-start justify-between mb-4">
           <div class="flex-1">
-            <div class="flex items-center gap-3 mb-2">
-              <h1 class="text-2xl font-bold text-gray-900">{{ internshipData.title }}</h1>
-              <span 
-                class="text-sm font-medium px-3 py-1 rounded-full"
-                :class="internshipData.type === 'PKL' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'"
-              >
-                {{ internshipData.type }}
-              </span>
-            </div>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ internshipData.title }}</h1>
             <div class="flex items-center gap-4 text-gray-600">
               <div class="flex items-center gap-2">
                 <Icon name="heroicons:building-office-20-solid" class="w-5 h-5" />
-                <span class="font-medium">{{ internshipData.company_profile.company_name }}</span>
+                <span>{{ internshipData.company_profile?.company_name }}</span>
               </div>
               <div class="flex items-center gap-2">
                 <Icon name="heroicons:map-pin-20-solid" class="w-5 h-5" />
-                <span>{{ internshipData.company_profile.company_location }}</span>
+                <span>{{ internshipData.company_profile?.company_location }}</span>
               </div>
             </div>
           </div>
-          <span
-            :class="[
-              'px-3 py-1 rounded-full text-sm font-medium',
-              isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-            ]"
-          >
-            {{ isActive ? 'Aktif' : 'Tutup' }}
-          </span>
+          <div>
+            <span 
+              :class="[
+                'px-4 py-2 rounded-full text-sm font-semibold',
+                isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+              ]"
+            >
+              {{ isActive ? 'Aktif' : 'Tutup' }}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -75,49 +72,40 @@
       <div class="grid md:grid-cols-2 gap-6">
         <!-- Company Info -->
         <div class="bg-white rounded-xl p-6 shadow-sm border">
-          <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
-            <Icon name="heroicons:building-office-20-solid" class="w-5 h-5 text-blue-600" />
-            Tentang Perusahaan
-          </h2>
-          <div class="space-y-3">
+          <h2 class="text-xl font-bold text-gray-900 mb-4">Informasi Perusahaan</h2>
+          <div class="space-y-4">
             <div>
-              <span class="font-medium text-gray-700">Nama:</span>
-              <span class="ml-2">{{ internshipData.company_profile.company_name }}</span>
+              <p class="text-sm text-gray-500 mb-1">Nama Perusahaan</p>
+              <p class="font-medium text-gray-900">{{ internshipData.company_profile?.company_name }}</p>
             </div>
             <div>
-              <span class="font-medium text-gray-700">Lokasi:</span>
-              <span class="ml-2">{{ internshipData.company_profile.company_location }}</span>
+              <p class="text-sm text-gray-500 mb-1">Lokasi</p>
+              <p class="font-medium text-gray-900">{{ internshipData.company_profile?.company_location }}</p>
             </div>
             <div>
-              <span class="font-medium text-gray-700">Deskripsi:</span>
-              <p class="mt-1 text-gray-600">{{ internshipData.company_profile.description }}</p>
+              <p class="text-sm text-gray-500 mb-1">Email</p>
+              <p class="font-medium text-gray-900">{{ internshipData.company_profile?.user?.email }}</p>
             </div>
           </div>
         </div>
 
-        <!-- Timeline -->
+        <!-- Internship Details -->
         <div class="bg-white rounded-xl p-6 shadow-sm border">
-          <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
-            <Icon name="heroicons:clock-20-solid" class="w-5 h-5 text-green-600" />
-            Timeline
-          </h2>
+          <h2 class="text-xl font-bold text-gray-900 mb-4">Detail Internship</h2>
           <div class="space-y-4">
-            <div class="flex items-center gap-3">
-              <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
-              <div>
-                <span class="font-medium text-gray-700">Diposting</span>
-                <p class="text-sm text-gray-600">{{ formatDate(internshipData.posted_at) }}</p>
-              </div>
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Tipe</p>
+              <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
+                {{ internshipData.type }}
+              </span>
             </div>
-            <div class="flex items-center gap-3">
-              <div 
-                class="w-3 h-3 rounded-full"
-                :class="isActive ? 'bg-yellow-500' : 'bg-red-500'"
-              ></div>
-              <div>
-                <span class="font-medium text-gray-700">Deadline</span>
-                <p class="text-sm text-gray-600">{{ formatDate(internshipData.deadline) }}</p>
-              </div>
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Tanggal Posting</p>
+              <p class="font-medium text-gray-900">{{ formatDate(internshipData.posted_at) }}</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Deadline</p>
+              <p class="font-medium text-gray-900">{{ formatDate(internshipData.deadline) }}</p>
             </div>
           </div>
         </div>
@@ -125,31 +113,32 @@
 
       <!-- Description -->
       <div class="bg-white rounded-xl p-6 shadow-sm border">
-        <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
-          <Icon name="heroicons:document-text-20-solid" class="w-5 h-5 text-purple-600" />
-          Deskripsi Posisi
-        </h2>
-        <div class="prose max-w-none">
-          <p class="text-gray-700 leading-relaxed whitespace-pre-line">{{ internshipData.description }}</p>
+        <h2 class="text-xl font-bold text-gray-900 mb-4">Deskripsi</h2>
+        <div class="prose prose-gray max-w-none">
+          <p class="text-gray-600 leading-relaxed whitespace-pre-line">{{ internshipData.description }}</p>
         </div>
       </div>
 
       <!-- Actions -->
       <div class="flex gap-4">
-        <UniversalButton 
-        :text="getApplyButtonText"
-          variant="primary" 
-          @click="handleApply"
-          :disabled="!isActive || isApplyLoading || hasApplied"
-          :loading="isApplyLoading"
-        >
-        </UniversalButton>
-        <UniversalButton 
-        text="Kembali Ke Halaman Perusahaan"
-          variant="secondary" 
+        <button
+          class="px-6 py-3 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
           @click="goBack"
         >
-        </UniversalButton>
+          Kembali
+        </button>
+        <button
+          :disabled="!isActive || hasApplied || isApplyLoading"
+          :class="[
+            'flex-1 px-6 py-3 rounded-lg font-semibold transition-colors',
+            isActive && !hasApplied
+              ? 'bg-primary text-white hover:bg-primary/90'
+              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+          ]"
+          @click="handleApply"
+        >
+          {{ getApplyButtonText }}
+        </button>
       </div>
     </div>
 
@@ -174,7 +163,6 @@
 </template>
 
 <script setup lang="ts">
-import UniversalButton from '~/components/button/UniversalButton.vue'
 import AlertModal from '~/components/modal/basic-modal/AlertModal.vue'
 import ConfirmModal from '~/components/modal/basic-modal/ConfirmModal.vue'
 
@@ -224,13 +212,13 @@ const alertMessage = ref('')
 const isApplyLoading = ref(false)
 const hasApplied = ref(false)
 
-// Data fetching - memperbaiki endpoint dan struktur response
+// Data fetching - CHANGED TO /alumni endpoint
 const { data, pending, error, refresh } = await useAsyncData<ApiResponse>(
-  `internship-${route.params.id}`,
-  () => $fetch(`/student/internship/${route.params.id}`, {
+  `alumni-internship-${route.params.id}`,
+  () => $fetch(`/alumni/internship/${route.params.id}`, {
     baseURL: config.public.apiBase,
     credentials: 'include',
-    headers: process.server ? useRequestHeaders(['cookie']) : undefined,
+    headers: import.meta.server ? useRequestHeaders(['cookie']) : undefined,
   })
 )
 
@@ -276,11 +264,12 @@ const confirmApply = async () => {
   isApplyLoading.value = true
   
   try {
-    await $fetch('/student/internship/apply', {
+    // CHANGED TO /alumni endpoint
+    await $fetch('/alumni/internship/apply', {
       method: 'POST',
       baseURL: config.public.apiBase,
       credentials: 'include',
-      headers: process.server ? useRequestHeaders(['cookie']) : undefined,
+      headers: import.meta.server ? useRequestHeaders(['cookie']) : undefined,
       body: {
         internship_id: internshipData.value.id
       }
@@ -303,6 +292,6 @@ const confirmApply = async () => {
 }
 
 const goBack = () => {
-  router.push('/student/dashboard/internships')
+  router.push('/alumni/dashboard/internships')
 }
 </script>

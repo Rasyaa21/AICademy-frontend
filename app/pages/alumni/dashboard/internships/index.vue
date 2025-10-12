@@ -2,7 +2,7 @@
   <div class="space-y-6">
     <div class="flex flex-col gap-4 justify-between lg:flex-row lg:items-center">
       <div>
-        <h1 class="text-3xl font-bold text-gray-900">Internship untuk Mahasiswa</h1>
+        <h1 class="text-3xl font-bold text-gray-900">Internship untuk Alumni</h1>
         <p class="mt-1 text-gray-600">Temukan peluang magang terbaik untuk mengembangkan karir Anda</p>
       </div>
     </div>
@@ -35,7 +35,6 @@
       <h3 class="text-lg font-semibold text-gray-900 mb-2">Terjadi Kesalahan</h3>
       <p class="text-gray-600 mb-4">Gagal memuat data internship. Silakan coba lagi.</p>
       <UniversalButton variant="primary" @click="refresh()" text="Coba Lagi">
-        
       </UniversalButton>
     </div>
 
@@ -85,9 +84,9 @@
 
 <script setup lang="ts">
 import UniversalButton from "~/components/button/UniversalButton.vue"
-import CompaniesDisplaySection from "~/components/dashboard-student/companies/CompaniesDisplaySection.vue"
-import CompaniesFilterSection from "~/components/dashboard-student/companies/CompaniesFilterSection.vue"
-import CompaniesSortViewSection from "~/components/dashboard-student/companies/CompaniesSortViewSection.vue"
+import CompaniesDisplaySection from "~/components/dashboard-alumni/internship/CompaniesDisplaySection.vue"
+import CompaniesFilterSection from "~/components/dashboard-alumni/internship/CompaniesFilterSection.vue"
+import CompaniesSortViewSection from "~/components/dashboard-alumni/internship/CompaniesSortViewSection.vue"
 
 interface CompanyProfile {
   id: string
@@ -148,19 +147,19 @@ const viewMode = ref<'grid' | 'list'>('grid')
 const currentPage = computed(() => parseInt(route.query.page as string) || 1)
 const limit = 10
 
-// Data fetching dengan endpoint yang benar
+// Data fetching - CHANGED TO /alumni endpoint
 const { data, pending, error, refresh } = await useAsyncData<ApiResponse>(
-  'internships',
-  () => $fetch('/student/internships', {
+  'alumni-internships',
+  () => $fetch('/alumni/internships', {
     baseURL: config.public.apiBase,
     credentials: 'include',
     headers: process.server ? useRequestHeaders(['cookie']) : undefined,
     query: {
       page: currentPage.value,
-      limit,
-      search: route.query.search || '',
-      status: route.query.status || '',
-      sort: route.query.sort || 'newest'
+      limit: limit,
+      search: searchQuery.value || undefined,
+      status: selectedStatus.value || undefined,
+      sort: sortBy.value
     }
   }),
   {
@@ -179,7 +178,7 @@ const { data, pending, error, refresh } = await useAsyncData<ApiResponse>(
   }
 )
 
-// --- Normalizer untuk hindari undefined ---
+// Normalizer untuk hindari undefined
 const pageData = computed(() => {
   const fallback = { list: [], total: 0, total_pages: 0, page: 1 }
   const d = data.value?.data
@@ -193,7 +192,7 @@ const pageData = computed(() => {
   return { list, total, total_pages, page }
 })
 
-// Computed - perbaiki akses data
+// Computed
 const internshipStats = computed(() => {
   const list = pageData.value.list
   if (!list.length) {
@@ -232,7 +231,7 @@ const handleSearch = () => {
       search: searchQuery.value || undefined,
       status: selectedStatus.value || undefined,
       sort: sortBy.value,
-      page: 1
+      page: '1'
     }
   })
 }
@@ -243,7 +242,7 @@ const clearAllFilters = () => {
   sortBy.value = 'newest'
   router.push({
     query: {
-      page: 1
+      page: '1'
     }
   })
 }
@@ -252,7 +251,7 @@ const goToPage = (page: number) => {
   router.push({
     query: {
       ...route.query,
-      page
+      page: page.toString()
     }
   })
 }

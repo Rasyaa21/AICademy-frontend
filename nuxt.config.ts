@@ -1,5 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import 'pinia-plugin-persistedstate'
 export default defineNuxtConfig({
+  pinia: {
+    autoImports: ['defineStore']
+  },
   pages: true,
   runtimeConfig: {
     public: {

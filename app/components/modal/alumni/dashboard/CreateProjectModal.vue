@@ -21,7 +21,7 @@
       </div>
 
       <form class="p-6 space-y-4" @submit.prevent="submitProject">
-        <!-- Basic fields -->
+        <!-- Basic fields (same as student) -->
         <MainTextfield
           v-model="projectData.project_name"
           name="project_name"
@@ -141,15 +141,15 @@
             class="p-3 mb-3 border rounded-lg bg-gray-50"
           >
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <!-- Student searchable dropdown -->
+              <!-- Student searchable dropdown - CHANGED TO /alumni -->
               <div class="relative">
-                <label class="block text-xs font-medium text-gray-600 mb-1">Siswa</label>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Alumni</label>
                 <div class="flex items-center gap-2">
                   <input
                     v-model="row.studentQuery"
                     type="text"
                     class="w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                    placeholder="Cari siswa berdasarkan nama..."
+                    placeholder="Cari alumni berdasarkan nama..."
                     @input="onStudentInput(row)"
                     @focus="openStudentDropdown(row)"
                   />
@@ -158,7 +158,7 @@
                     type="button"
                     class="px-2 text-xs text-gray-500 hover:text-gray-700"
                     @click="clearStudent(row)"
-                    title="Hapus pilihan siswa"
+                    title="Hapus pilihan alumni"
                   >
                     Clear
                   </button>
@@ -187,7 +187,7 @@
                 </p>
               </div>
 
-              <!-- Role searchable dropdown -->
+              <!-- Role searchable dropdown - CHANGED TO /alumni -->
               <div class="relative">
                 <label class="block text-xs font-medium text-gray-600 mb-1">Role</label>
                 <div class="flex items-center gap-2">
@@ -269,7 +269,6 @@
 </template>
 
 <script setup lang="ts">
-// filepath: /Users/rasya2121/Documents/code/pkl/JHIC/aicademy-frontend/app/components/modal/student/dashboard/CreateProjectModal.vue
 import MainTextfield from '~/components/textfield/MainTextfield.vue'
 import type { CreateProjectRequest, UpdateProjectRequest, Project } from '~/types/Profile'
 
@@ -337,11 +336,9 @@ const contributors = ref<ContributorRow[]>([
 ])
 
 function cryptoRandomId() {
-  // minimal random id for v-for keys
   return Math.random().toString(36).slice(2, 10)
 }
 
-// Watch for edit project changes
 watch(
   () => props.editProject,
   (project) => {
@@ -353,8 +350,6 @@ watch(
         start_date: project.start_date.split('T')[0],
         end_date: project.end_date.split('T')[0]
       }
-      // If you have project.contributors from API, prefill here (optional)
-      // contributors.value = mapFromProject(project.contributors)
     }
   },
   { immediate: true }
@@ -435,9 +430,9 @@ const removeContributor = (idx: number) => {
   contributors.value.splice(idx, 1)
 }
 
-/* Search Students */
+/* Search Students - CHANGED TO /alumni */
 const fetchStudents = async (query: string) => {
-  const url = `/student/users/students?page=1&limit=10&search=${encodeURIComponent(query || '')}`
+  const url = `/alumni/users/students?page=1&limit=10&search=${encodeURIComponent(query || '')}`
   const res = await $fetch<{ success: boolean; data: StudentOption[] }>(url, {
     baseURL: config.public.apiBase,
     credentials: 'include'
@@ -470,9 +465,9 @@ const clearStudent = (row: ContributorRow) => {
   row.studentQuery = ''
 }
 
-/* Search Roles */
+/* Search Roles - CHANGED TO /alumni */
 const fetchRoles = async (query: string) => {
-  const url = `/student/questionnaires/target-roles?page=1&limit=10&search=${encodeURIComponent(query || '')}`
+  const url = `/alumni/questionnaires/target-roles?page=1&limit=10&search=${encodeURIComponent(query || '')}`
   const res = await $fetch<{
     success: boolean
     data: { data: RoleOption[] }
@@ -505,7 +500,7 @@ const clearRole = (row: ContributorRow) => {
   row.roleQuery = ''
 }
 
-/* Submit */
+/* Submit - CHANGED TO /alumni endpoints */
 const submitProject = async () => {
   if (isSubmitting.value) return
 
@@ -526,7 +521,7 @@ const submitProject = async () => {
         ...projectData.value,
         contributors: contributorsPayload
       }
-      const response = await $fetch(`/student/projects/${props.editProject?.id}`, {
+      const response = await $fetch(`/alumni/projects/${props.editProject?.id}`, {
         method: 'PUT',
         body,
         baseURL: config.public.apiBase,
@@ -548,7 +543,7 @@ const submitProject = async () => {
       // contributors as JSON string
       formData.append('contributors', JSON.stringify(contributorsPayload))
 
-      const response = await $fetch('/student/projects', {
+      const response = await $fetch('/alumni/projects', {
         method: 'POST',
         body: formData,
         baseURL: config.public.apiBase,
@@ -571,7 +566,6 @@ const submitProject = async () => {
   }
 }
 
-// Reset form when modal closes
 watch(
   () => props.isOpen,
   (isOpen) => {
