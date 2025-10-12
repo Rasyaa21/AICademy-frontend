@@ -23,8 +23,6 @@
     </div>
 
     <div class="space-y-6">
-      <Calendar />
-      <QuickActions />
       <RecentActivity />
     </div>
   </div>
@@ -34,8 +32,6 @@
 import ChallengeTable from "~/components/dashboard-admin/index/ChallangeTable.vue";
 import ParticipationChart from "~/components/dashboard-admin/index/ParticipationChart.vue";
 import ChallangeChart from "~/components/dashboard-admin/index/ChallangeChart.vue";
-import Calendar from "~/components/calendar/Calendar.vue";
-import QuickActions from "~/components/dashboard-admin/index/QuickAction.vue";
 import RecentActivity from "~/components/dashboard-admin/index/RecentActivity.vue";
 import type { Challenge } from "~/types/Challenge";
 

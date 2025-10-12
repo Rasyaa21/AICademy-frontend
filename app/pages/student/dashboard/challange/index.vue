@@ -55,7 +55,6 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from "vue";
-import ChallangeStatsSection from "~/components/dashboard-student/challange/ChallangeStatsSection.vue";
 import ChallangeFilterSection from "~/components/dashboard-student/challange/ChallangeFilterSection.vue";
 import ChallangeSortViewSection from "~/components/dashboard-student/challange/ChallangeSortViewSection.vue";
 import ChallangeDisplaySection from "~/components/dashboard-student/challange/ChallangeDisplaySection.vue";

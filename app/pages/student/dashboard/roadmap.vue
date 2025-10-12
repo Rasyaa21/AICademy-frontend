@@ -2,9 +2,76 @@
     <RoadmapPopuup 
         v-model:is-open="isRoadmapPopupOpen"
         :selected-item="selectedRoadmapItem"
-        @submit-task="handleSubmitTask"
+        @refresh-roadmap="handleRefreshRoadmap"
     />
-    <section class="overflow-hidden relative py-6 -m-6 min-h-screen bg-gradient-to-b to-red-700 min-w-screen md:py-8 from-primary">
+    
+    <!-- Loading State -->
+    <div v-if="pending" class="flex justify-center items-center min-h-screen bg-gradient-to-b from-primary to-red-700">
+        <div class="text-center">
+            <div class="animate-spin w-12 h-12 mx-auto mb-4 border-4 border-white border-t-transparent rounded-full"></div>
+            <p class="text-white">Memuat roadmap...</p>
+        </div>
+    </div>
+
+    <!-- Profiling CTA Section -->
+    <section v-else-if="!roadmapData" class="overflow-hidden relative py-6 -m-6 min-h-screen bg-gradient-to-b to-red-700 min-w-screen md:py-8 from-primary">
+        <!-- Background Elements -->
+        <div class="absolute -top-10 -left-10 w-48 h-48 rounded-full blur-3xl md:w-72 md:h-72 bg-white/10"></div>
+        <div class="absolute -right-10 -bottom-20 w-64 h-64 rounded-full blur-3xl md:w-96 md:h-96 bg-pink-400/20"></div>
+        
+        <div class="container px-4 py-8 mx-auto md:py-16">
+            <div class="max-w-2xl mx-auto text-center">
+                <!-- Icon -->
+                <div class="mb-8">
+                    <div class="p-6 w-24 h-24 mx-auto rounded-full shadow-lg backdrop-blur-sm bg-white/10">
+                        <Icon name="heroicons:clipboard-document-list-20-solid" class="w-full h-full text-white" />
+                    </div>
+                </div>
+
+                <!-- Title & Description -->
+                <h1 class="mb-4 text-3xl font-bold text-white md:text-4xl">
+                    Roadmap Pembelajaran Anda
+                </h1>
+                <p class="mb-8 text-lg text-white/90 leading-relaxed">
+                    {{ errorMessage || 'Silakan lengkapi questionnaire profiling karir terlebih dahulu untuk melihat roadmap yang sesuai dengan minat dan kemampuan Anda' }}
+                </p>
+
+                <!-- CTA Button -->
+                <UniversalButton
+                    text="Mulai Profiling Karir"
+                    size="lg"
+                    class="mx-auto"
+                    @click="navigateToProfile"
+                >
+                    <template #icon>
+                        <Icon name="heroicons:arrow-right-20-solid" class="w-5 h-5" />
+                    </template>
+                </UniversalButton>
+
+                <!-- Additional Info -->
+                <div class="mt-12 p-6 rounded-2xl backdrop-blur-sm bg-white/10">
+                    <h3 class="mb-4 text-xl font-semibold text-white">Mengapa Profiling Penting?</h3>
+                    <div class="grid gap-4 md:grid-cols-3">
+                        <div class="text-center">
+                            <Icon name="heroicons:target-20-solid" class="w-8 h-8 mx-auto mb-2 text-white/80" />
+                            <p class="text-sm text-white/80">Pembelajaran yang Tepat Sasaran</p>
+                        </div>
+                        <div class="text-center">
+                            <Icon name="heroicons:chart-bar-20-solid" class="w-8 h-8 mx-auto mb-2 text-white/80" />
+                            <p class="text-sm text-white/80">Progress yang Terukur</p>
+                        </div>
+                        <div class="text-center">
+                            <Icon name="heroicons:academic-cap-20-solid" class="w-8 h-8 mx-auto mb-2 text-white/80" />
+                            <p class="text-sm text-white/80">Karir yang Terarah</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Roadmap Section -->
+    <section v-else class="overflow-hidden relative py-6 -m-6 min-h-screen bg-gradient-to-b to-red-700 min-w-screen md:py-8 from-primary">
         <!-- Background Elements - Adjusted for mobile -->
         <div class="absolute -top-10 -left-10 w-48 h-48 rounded-full blur-3xl md:w-72 md:h-72 bg-white/10"></div>
         <div class="absolute -right-10 -bottom-20 w-64 h-64 rounded-full blur-3xl md:w-96 md:h-96 bg-pink-400/20"></div>
@@ -37,17 +104,33 @@
             <!-- Header - Responsive text sizes -->
             <div class="mb-8 text-center md:mb-16">
                 <h1 class="px-4 mb-2 text-2xl font-bold text-white md:text-3xl lg:text-4xl md:mb-4">
-                    Frontend Development Roadmap
+                    {{ roadmapData?.roadmap_name || 'Roadmap Pembelajaran' }}
                 </h1>
                 <p class="px-4 mx-auto max-w-2xl text-sm text-white/80 md:text-base lg:text-lg">
-                    Ikuti perjalanan pembelajaran yang terstruktur untuk menjadi Frontend Developer yang kompeten
+                    {{ roadmapData?.description || 'Ikuti perjalanan pembelajaran yang terstruktur' }}
                 </p>
+                
+                <!-- Progress Info -->
+                <div v-if="roadmapData?.progress" class="mt-6 p-4 mx-auto max-w-md rounded-xl backdrop-blur-sm bg-white/10">
+                    <div class="flex justify-between items-center mb-2 text-sm text-white/90">
+                        <span>Progress</span>
+                        <span>{{ roadmapData.progress.completed_steps }}/{{ roadmapData.progress.total_steps }}</span>
+                    </div>
+                    <div class="w-full h-2 rounded-full bg-white/20">
+                        <div 
+                            class="h-full rounded-full bg-gradient-to-r from-green-400 to-blue-500 transition-all duration-300"
+                            :style="{ width: `${roadmapData.progress.progress_percent}%` }"
+                        ></div>
+                    </div>
+                    <p class="mt-1 text-xs text-white/70">{{ roadmapData.progress.progress_percent }}% Complete</p>
+                </div>
             </div>
             
             <!-- Timeline Container -->
             <RoadmapTimeline 
                 :timeline-items="timelineItems"
                 @learn-more="handleLearnMore"
+                @start-step="handleStartStep"
             />
         </div>
     </section>
@@ -56,7 +139,8 @@
 <script setup lang="ts">
 import RoadmapTimeline from '~/components/dashboard-student/roadmap/RoadmapTimeline.vue'
 import RoadmapPopuup from '~/components/modal/RoadmapPopuup.vue';
-import type { RoadmapTimelineItem, Task } from '~/types/RoadmapTimeline';
+import UniversalButton from '~/components/button/UniversalButton.vue';
+import type { RoadmapTimelineItem } from '~/types/RoadmapTimeline';
 
 definePageMeta({
     layout: 'dashboard-layout-student-dashboard-layout'
@@ -64,84 +148,98 @@ definePageMeta({
 
 const selectedRoadmapItem = ref<RoadmapTimelineItem | null>(null)
 const isRoadmapPopupOpen = ref(false)
+const roadmapData = ref<any>(null)
+const errorMessage = ref<string>('')
+const config = useRuntimeConfig()
+
+// Fetch roadmap data using useAsyncData
+const { data, pending, error, refresh } = await useAsyncData('my-roadmap', () => 
+    $fetch('/student/my-roadmap', {
+        method: 'GET',
+        credentials: 'include',
+        baseURL: config.public.apiBase,
+    })
+)
+
+// Handle API response
+watchEffect(() => {
+    if (data.value?.success) {
+        if (data.value.data) {
+            roadmapData.value = data.value.data
+        } else {
+            errorMessage.value = data.value.message
+        }
+    } else if (error.value) {
+        errorMessage.value = error.value.message || 'Terjadi kesalahan saat memuat roadmap'
+    }
+})
+
+// Convert API data to timeline items
+const timelineItems = computed(() => {
+    if (!roadmapData.value?.steps) return []
+    
+    return roadmapData.value.steps.map((step: any, index: number) => ({
+        title: step.title,
+        description: step.description,
+        duration: `${step.estimated_duration} hari`,
+        icon: getStepIcon(step.difficulty_level),
+        isActive: step.status === 'unlocked' || step.status === 'in_progress',
+        isCompleted: step.status === 'completed',
+        isLocked: step.is_locked,
+        learningObjectives: step.learning_objectives ? [step.learning_objectives] : [],
+        tasks: [], 
+        submissions: [],
+        resources: step.resource_links ? JSON.parse(step.resource_links).map((link: string, idx: number) => ({
+            id: `res${idx}`,
+            title: `Resource ${idx + 1}`,
+            type: 'documentation',
+            url: link
+        })) : [],
+        stepData: step
+    }))
+})
+
+// Helper function to get icon based on difficulty
+const getStepIcon = (difficulty: string) => {
+    switch (difficulty) {
+        case 'beginner': return 'heroicons:play-circle-20-solid'
+        case 'intermediate': return 'heroicons:puzzle-piece-20-solid'
+        case 'advanced': return 'heroicons:rocket-launch-20-solid'
+        default: return 'heroicons:book-open-20-solid'
+    }
+}
 
 const handleLearnMore = (item: RoadmapTimelineItem) => {
     selectedRoadmapItem.value = item
     isRoadmapPopupOpen.value = true
 }
 
-const timelineItems = ref<RoadmapTimelineItem[]>([
-    {
-        title: "HTML & CSS Fundamentals",
-        description: "Pelajari dasar-dasar struktur HTML dan styling CSS. Kuasai semantic HTML, CSS Grid, Flexbox, dan prinsip responsive design.",
-        duration: "1 Month",
-        icon: "heroicons:code-bracket-square-20-solid",
-        isActive: true,
-        learningObjectives: [
-            "Memahami struktur dasar HTML dan semantic elements",
-            "Menguasai CSS selectors, properties, dan values", 
-            "Mengimplementasikan responsive design dengan CSS Grid dan Flexbox",
-            "Membuat layout yang modern dan accessible"
-        ],
-        tasks: [
-            {
-                id: "1",
-                title: "HTML Structure Assignment",
-                description: "Buat struktur HTML untuk website portfolio pribadi",
-                type: "assignment",
-                deadline: "2024-01-15",
-                isCompleted: true,
-            },
-            {
-                id: "2", 
-                title: "CSS Styling Project",
-                description: "Style website portfolio menggunakan CSS modern",
-                type: "project",
-                deadline: "2024-01-20",
-                isCompleted: false,
-            },
-            {
-                id: "3",
-                title: "Responsive Design Quiz",
-                description: "Quiz tentang prinsip responsive design",
-                type: "quiz",
-                deadline: "2024-01-25",
-                isCompleted: false,
+const handleStartStep = async (item: RoadmapTimelineItem) => {
+    if (item.stepData?.id && item.stepData?.can_start) {
+        try {
+            const response = await $fetch('/student/roadmaps/steps/start', {
+                method: 'POST',
+                body: { step_id: item.stepData.id },
+                baseURL: config.public.apiBase,
+                credentials: 'include'
+            })
+            
+            if (response.success) {
+                await refresh()
+                console.log('Step started successfully')
             }
-        ],
-        submissions: [
-            {
-                id: "sub1",
-                taskId: "1",
-                title: "Portfolio HTML Structure",
-                description: "Submitted HTML structure for personal portfolio",
-                fileUrl: "portfolio.html",
-                submittedAt: "2024-01-14",
-                status: "graded",
-            }
-        ],
-        resources: [
-            {
-                id: "res1",
-                title: "HTML & CSS Crash Course",
-                type: "video",
-                url: "https://youtube.com/watch?v=example",
-                duration: "2 hours"
-            },
-            {
-                id: "res2",
-                title: "MDN HTML Documentation",
-                type: "documentation", 
-                url: "https://developer.mozilla.org/en-US/docs/Web/HTML"
-            }
-        ]
-    },
-    // Add more timeline items as needed
-])
+        } catch (error) {
+            console.error('Error starting step:', error)
+        }
+    }
+}
 
-const handleSubmitTask = (task: Task) => {
-    console.log('Submit task:', task)
-    // Handle submission logic here
+const handleRefreshRoadmap = async () => {
+    await refresh()
+}
+
+const navigateToProfile = () => {
+    navigateTo('/student/dashboard/questionnaires')
 }
 </script>
 

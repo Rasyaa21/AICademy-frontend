@@ -8,7 +8,6 @@ const isOpen = ref(false)
 const route = useRoute()
 watch(() => route.path, () => { isOpen.value = false })
 
-// (opsional) ingat state collapse antar refresh
 onMounted(() => {
   const saved = localStorage.getItem('sidebar:collapsed')
   if (saved !== null) isCollapse.value = saved === '1'
@@ -17,7 +16,6 @@ watch(isCollapse, v => localStorage.setItem('sidebar:collapsed', v ? '1' : '0'))
 </script>
 
 <template>
-  <!-- Sidebar (desktop) -->
   <aside
     class="fixed top-0 left-0 h-screen hidden lg:flex bg-white border-r flex-col transition-all duration-300"
     :class="isCollapse ? 'w-20 p-4 items-center' : 'w-64 p-6'"
@@ -49,24 +47,22 @@ watch(isCollapse, v => localStorage.setItem('sidebar:collapsed', v ? '1' : '0'))
     </h2>
 
     <ul class="space-y-2 w-full">
-      <SidebarItems icon="heroicons:home-solid" label="Dashboard" :is-selected="true"
-                    path="/student/dashboard" :collapsed="isCollapse" />
-      <SidebarItems icon="tabler:clipboard-list" label="Profiling"
-                    :is-selected="false" path="/student/dashboard/questionnaires" :collapsed="isCollapse" />
-      <SidebarItems icon="streamline-plump:arrow-roadmap-solid" label="Roadmap"
-                    :is-selected="false" path="/student/dashboard/roadmap" :collapsed="isCollapse" />
+      <SidebarItems icon="heroicons:home-solid" label="Home" :is-selected="true"
+                    path="/teacher/dashboard" :collapsed="isCollapse" />
       <SidebarItems icon="heroicons:trophy-solid" label="Challange"
-                    :is-selected="false" path="/student/dashboard/challange" :collapsed="isCollapse" />
-      <SidebarItems icon="tabler:clipboard-list" label="Peruhsaaan" :is-selected="false" path="/student/dashboard/internships" />
-      <SidebarItems icon="heroicons:trophy-solid" label="Profile"
-                    :is-selected="false" path="/student/dashboard/Profile" :collapsed="isCollapse" />
+                    :is-selected="false" path="/teacher/dashboard/challange" :collapsed="isCollapse" />
+      <SidebarItems icon="streamline-plump:arrow-roadmap-solid" label="Roadmap" :is-selected="false" path="/teacher/dashboard/roadmap" :collapsed="isCollapse"/>
+
     </ul>
   </aside>
 
+  <!-- Content wrapper: margin mengikuti lebar sidebar -->
   <div :class="isCollapse ? 'lg:ml-20' : 'lg:ml-64'" class="ml-0">
+    <!-- Header -->
     <header
       class="sticky top-0 z-30 h-16 bg-white/80 backdrop-blur border-b px-6 flex items-center justify-between">
       <div class="flex items-center gap-3 w-full max-w-screen-md">
+        <!-- Hamburger (mobile only) -->
         <button
           class="lg:hidden inline-flex items-center justify-center"
           @click="isOpen = !isOpen"
@@ -91,17 +87,14 @@ watch(isCollapse, v => localStorage.setItem('sidebar:collapsed', v ? '1' : '0'))
 
       <div class="flex flex-row items-center space-x-3 ml-3">
         <button class="relative flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors">
-          <Icon name="heroicons:bell-20-solid" class="w-6 h-6" />
+            <Icon name="heroicons:bell-20-solid" class="w-6 h-6" />
         </button>
 
         <div class="flex items-center gap-x-3">
-          <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-200 shrink-0">
-            <img src="https://i.pravatar.cc/100" alt="Profile" class="w-full h-full object-cover block" />
-          </div>
-          <div class="hidden md:block">
-            <div class="text-sm font-medium text-gray-700 hidden lg:flex">John Doe</div>
-            <div class="text-xs text-gray-500 hidden lg:flex">Student</div>
-          </div>
+            <div class="hidden md:block">
+                <div class="text-sm font-medium text-gray-700 hidden lg:flex">John Doe</div>
+                <div class="text-xs text-gray-500 hidden lg:flex">Superteacher</div>
+            </div>
         </div>
       </div>
 
@@ -117,13 +110,10 @@ watch(isCollapse, v => localStorage.setItem('sidebar:collapsed', v ? '1' : '0'))
         <div v-if="isOpen" id="mobile-menu"
              class="absolute left-0 right-0 top-full z-20 md:hidden bg-white backdrop-blur border-t">
           <div class="px-4 py-3">
-            <div class="flex flex-col">
-              <SidebarItems icon="heroicons:home-solid" label="Dashboard" path="/student/dashboard" />
-              <SidebarItems icon="tabler:clipboard-list" label="Profiling" path="/student/dashboard/questionnaires" />
-              <SidebarItems icon="streamline-plump:arrow-roadmap-solid" label="Roadmap" path="/student/dashboard/roadmap"/>
-              <SidebarItems icon="heroicons:trophy-solid" label="Challange" path="/student/dashboard/challange" />
-              <SidebarItems icon="tabler:clipboard-list" label="Peruhsaaan" path="/student/dashboard/internships" />
-              <SidebarItems icon="heroicons:trophy-solid" label="Profile" path="/student/dashboard/Profile"/>
+            <div class="flex flex-col gap-2">
+                <SidebarItems icon="heroicons:home-solid" label="Home" path="/teacher/dashboard" />
+                <SidebarItems icon="heroicons:trophy-solid" label="Challange" :is-selected="false" path="/teacher/dashboard/challange" />
+                <SidebarItems icon="streamline-plump:arrow-roadmap-solid" label="Roadmap" :is-selected="false" path="/teacher/dashboard/roadmap"/>
             </div>
           </div>
         </div>

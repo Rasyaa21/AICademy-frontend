@@ -10,7 +10,8 @@ const selectedCategory = ref("All");
 const challenges = ref<Challenge[]>([
   {
     id: "550e8400-e29b-41d4-a716-446655440001",
-    thumbnail_image: "/assets/images/challenges/api-perpustakaan.jpg",
+    thumbnail_image: "/assets/images/smk-telkom.jpeg",
+
     title: "API Perpustakaan",
     description: "Buatlah REST API untuk sistem perpustakaan dengan skema database yang telah ditentukan",
     organizer: "Agus Dwi Cahaya S.Kom",
@@ -21,7 +22,8 @@ const challenges = ref<Challenge[]>([
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440002",
-    thumbnail_image: "/assets/images/challenges/react-portfolio.jpg",
+    thumbnail_image: "/assets/images/smk-telkom.jpeg",
+
     title: "React JS Portfolio",
     description: "Buat portfolio website menggunakan React JS dengan design yang responsive dan modern",
     organizer: "Siti Nurhasanah S.Pd",
@@ -32,7 +34,7 @@ const challenges = ref<Challenge[]>([
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440003",
-    thumbnail_image: "/assets/images/challenges/ui-design.jpg",
+    thumbnail_image: "/assets/images/smk-telkom.jpeg",
     title: "UI Design Challenge",
     description: "Desain interface aplikasi mobile untuk e-commerce dengan fokus pada user experience",
     organizer: "Ahmad Rizki M.Kom",
@@ -43,7 +45,8 @@ const challenges = ref<Challenge[]>([
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440004",
-    thumbnail_image: "/assets/images/challenges/ctf-security.jpg",
+    thumbnail_image: "/assets/images/smk-telkom.jpeg",
+
     title: "CTF Web Security",
     description: "Selesaikan tantangan keamanan web dengan berbagai teknik penetration testing",
     organizer: "Agus Dwi Cahaya S.Kom",
