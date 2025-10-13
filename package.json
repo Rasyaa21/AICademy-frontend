@@ -3,12 +3,12 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
+    "build": "nuxt build --no-eslint",
+    "dev": "nuxt dev --no-eslint",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "start": "nuxt start"
+    "start": "node .output/server/index.mjs"
   },
   "dependencies": {
     "@internationalized/date": "^3.9.0",
