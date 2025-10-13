@@ -28,27 +28,27 @@
                 <FeatureRow
                     title="Profiling Role & Karir"
                     description="Temukan role dan karir impianmu! Isi kuesioner singkat dan cari tahu apa yang sebenarnya kamu suka"
-                    icon-src="/assets/images/book-icon.png"
+                    :icon-src="`${objectStorageUrl}/assets/book-icon.webp`"
                     align="left"
                 />
                 <FeatureRow
                     title="Roadmap & Project"
                     description="Buka roadmap karir pilihanmu, lihat progres pembelajaran, dan asah kemampuanmu lewat berbagai projek yang ada"
-                    icon-src="/assets/images/book-icon.png"
+                    :icon-src="`${objectStorageUrl}/assets/book-icon.webp`"
                     align="right"
                     offset="-mt-8 lg:-mt-16"
                 />
                 <FeatureRow
                     title="Tim & Challenge"
                     description="Bentuk tim dengan temanmu, selesaikan challenge sebanyak-banyaknya, dan raih peringkat di leaderboard"
-                    icon-src="/assets/images/book-icon.png"
+                    :icon-src="`${objectStorageUrl}/assets/book-icon.webp`"
                     align="left"
                     offset="-mt-4 lg:-mt-10"
                 />
                 <FeatureRow
                     title="CV & Perusahaan"
                     description="Susun CV yang profesional dan bangun pengalaman melalui PKL di perusahaan yang terverifikasi"
-                    icon-src="/assets/images/book-icon.png"
+                    :icon-src="`${objectStorageUrl}/assets/book-icon.webp`"
                     align="right"
                     offset="-mt-8 lg:-mt-20"
                 />
@@ -60,11 +60,14 @@
 <script setup lang="ts">
 import FeatureRow from '../FeatureRow.vue';
 
+const config = useRuntimeConfig()
+const objectStorageUrl = config.public.objectStorageUrl || process.env.OBJECT_STORAGE_URL
+
 const props = withDefaults(defineProps<{backgroundUrl?: string}>(), {
-    backgroundUrl: "/assets/images/bg-fitur.png"
+    backgroundUrl: ""
 })
 
 const sectionBgStyle = computed(() => ({
-    backgroundImage: `url('${props.backgroundUrl}')`
+    backgroundImage: `url('${objectStorageUrl}/assets/bg-fitur.webp')`
 }))
 </script>

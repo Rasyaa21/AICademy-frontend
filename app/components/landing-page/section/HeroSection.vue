@@ -14,19 +14,43 @@
 
             <div class="absolute top-24 left-32 lg:left-48 animate-float">
                 <div class="w-[100px] h-[100px] bg-transparent backdrop-blur-sm rounded-full p-3 shadow-lg">
-                    <img src="/assets/images/home-icon.png" alt="Settings" class="w-full h-full object-contain opacity-80" />
+                    <NuxtImg 
+                        :src="`${objectStorageUrl}/assets/home-icon.webp`" 
+                        alt="Settings" 
+                        class="w-full h-full object-contain opacity-80"
+                        loading="lazy"
+                        width="100"
+                        height="100"
+                        format="webp"
+                    />
                 </div>
             </div>
 
             <div class="absolute top-1/3 right-24 lg:right-32 animate-float-delayed">
                 <div class="w-[100px] h-[100px] bg-transparen backdrop-blur-sm rounded-full p-3 shadow-lg">
-                    <img src="/assets/images/book-icon.png" alt="Book" class="w-full h-full object-contain opacity-80" />
+                    <NuxtImg 
+                        :src="`${objectStorageUrl}/assets/book-icon.webp`" 
+                        alt="Book" 
+                        class="w-full h-full object-contain opacity-80"
+                        loading="lazy"
+                        width="100"
+                        height="100"
+                        format="webp"
+                    />
                 </div>
             </div>
 
             <div class="absolute bottom-40 left-16 animate-float-slow">
                 <div class="w-[100px] h-[100px] bg-transparen backdrop-blur-sm rounded-full p-3 shadow-lg">
-                    <img src="/assets/images/gear-icon.png" alt="Settings" class="w-full h-full object-contain opacity-80" />
+                    <NuxtImg 
+                        :src="`${objectStorageUrl}/assets/gear-icon.webp`" 
+                        alt="Settings" 
+                        class="w-full h-full object-contain opacity-80"
+                        loading="lazy"
+                        width="100"
+                        height="100"
+                        format="webp"
+                    />
                 </div>
             </div>
 
@@ -50,10 +74,12 @@
             <div class="flex items-center space-x-6 mt-4 mb-8 z-10 relative">
                 <div class="flex items-center space-x-2">
                     <div class="flex -space-x-2">
-                        <div class="w-8 h-8 bg-[url(/assets/images/profile/sigma-2.jpeg)] bg-cover rounded-full border-2 border-white"></div>
-                        <div class="w-8 h-8 bg-[url(/assets/images/profile/sigma.jpeg)] bg-cover rounded-full border-2 border-white"></div>
-                        <div class="w-8 h-8 bg-[url(/assets/images/profile/sigma-3.jpeg)] bg-cover rounded-full border-2 border-white"></div>
-                        <div class="w-8 h-8 bg-[url(/assets/images/profile/axel.jpeg)] bg-cover rounded-full border-2 border-white flex items-center justify-center">
+                        <div class="w-8 h-8 bg-cover rounded-full border-2 border-white" :style="{ backgroundImage: `url(${objectStorageUrl}/assets/sigma-2.webp)` }"></div>
+                        <div class="w-8 h-8 bg-cover rounded-full border-2 border-white" :style="{ backgroundImage: `url(${objectStorageUrl}/assets/sigma.webp)` }"></div>
+                        <div class="w-8 h-8 bg-cover rounded-full border-2 border-white" :style="{ backgroundImage: `url(${objectStorageUrl}/assets/sigma-3.webp)` }"></div>
+                        <div class="w-8 h-8 bg-cover rounded-full border-2 border-white flex items-center justify-center" :style="{ backgroundImage: `url(${objectStorageUrl}/assets/axel.webp)` }">
+                            <span class="text-xs text-white font-bold">5K+</span>
+                        </div>
                             <span class="text-xs text-white font-bold">5K+</span>
                         </div>
                     </div>
@@ -80,31 +106,43 @@
                 :duration="22"
             >
                 <div class="shrink-0 mx-10">
-                <img src="/assets/images/logo_smk_telkom_pwt.png" alt="SMK Telkom Purwokerto" class="h-14 md:h-16 object-contain" />
+                    <NuxtImg 
+                        :src="`${objectStorageUrl}/assets/logo_smk.webp`" 
+                        alt="SMK Telkom Purwokerto" 
+                        class="h-14 md:h-16 object-contain"
+                        loading="lazy"
+                        height="64"
+                        format="webp"
+                    />
                 </div>
                 <div class="shrink-0 mx-10">
-                <img src="/assets/images/1000sd.png" alt="1000sd" class="h-14 md:h-18 object-contain" />
+                <img :src="`${objectStorageUrl}/assets/1000sd.webp`" alt="1000sd" class="h-14 md:h-18 object-contain" />
                 </div>
                 <div class="shrink-0 mx-10">
-                <img src="/assets/images/komdigi.png" alt="Komdigi" class="h-14 md:h-18 object-contain" />
+                <img :src="`${objectStorageUrl}/assets/komdigi.webp`" alt="Komdigi" class="h-14 md:h-18 object-contain" />
                 </div>
                 <div class="shrink-0 mx-10">
-                <img src="/assets/images/jagoan-hosting.png" alt="Jagoan Hosting" class="h-14 md:h-18 object-contain" />
+                <img :src="`${objectStorageUrl}/assets/jagoan-hosting.webp`" alt="Jagoan Hosting" class="h-14 md:h-18 object-contain" />
                 </div>
                 <div class="shrink-0 mx-10">
-                <img src="/assets/images/maspion-it.png" alt="Maspion IT" class="h-14 md:h-18 object-contain" />
+                <img :src="`${objectStorageUrl}/assets/maspion-it.webp`" alt="Maspion IT" class="h-14 md:h-18 object-contain" />
                 </div>
             </NuxtMarquee>
         </div>
 
         <div class="w-full bg-light relative lg:pt-96 pt-12 items-center justify-center flex pb-20">
+            <!-- Dashboard Image - Prioritas Tinggi -->
             <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
                 <div class="relative w-screen flex justify-center px-8">
                     <div class="relative">
-                        <img
-                            src="/assets/images/dashboard.png"
+                        <NuxtImg
+                            :src="`${objectStorageUrl}/assets/dashboard.webp`"
                             alt="Dashboard"
                             class="w-full max-w-6xl h-auto"
+                            loading="eager"
+                            fetchpriority="high"
+                            sizes="sm:100vw md:90vw lg:80vw xl:1536px"
+                            format="webp"
                         />
                     </div>
                 </div>
@@ -155,7 +193,7 @@
                     </div>
                     <div class="flex justify-center lg:justify-end">
                         <div class="relative">
-                            <img src="/assets/images/dashboard.png" alt="">
+                            <img :src="`${objectStorageUrl}/assets/dashboard.webp`" alt="">
                         </div>
                     </div>
                 </div>
@@ -201,5 +239,6 @@
 </style>
 
 <script setup>
-
+const config = useRuntimeConfig()
+const objectStorageUrl = config.public.objectStorageUrl || process.env.OBJECT_STORAGE_URL
 </script>
