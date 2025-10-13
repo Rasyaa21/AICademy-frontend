@@ -1,0 +1,624 @@
+
+{
+	"info": {
+		"_postman_id": "338a5c69-38f9-47fb-9630-0bc8c467844e",
+		"name": "JSON",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33491616",
+		"_collection_link": "https://nyampah-backend.postman.co/workspace/Nyampah-Backend-Workspace~0cf5bfd9-2a39-4efe-a5c3-1cc73221988e/collection/33491616-338a5c69-38f9-47fb-9630-0bc8c467844e?action=share&source=collection_link&creator=33491616"
+	},
+	"item": [
+		{
+			"name": "Roadmap Step Copy",
+			"item": [
+				{
+					"name": "Create / Add Roadmap Step",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Python Begineet\",\r\n    \"description\": \"Learn the basics of Python for CLI based application development\",\r\n    \"learning_objectives\": \"Understand python principles\",\r\n    \"submission_guidelines\": \"Create a calculator. Submit the GitHub repository link.\",\r\n    \"resource_links\": \"[\\\"https://www.w3schools.com/python\\\", \\\"https://developers.google.com/edu/python?hl=id\\\"]\",\r\n    \"estimated_duration\": 40,\r\n    \"difficulty_level\": \"beginner\"\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/roadmaps/{{roadmap_id}}/steps",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"roadmaps",
+								"{{roadmap_id}}",
+								"steps"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create / Add Roadmap Step",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"Python Begineet\",\r\n    \"description\": \"Learn the basics of Python for CLI based application development\",\r\n    \"learning_objectives\": \"Understand python principles\",\r\n    \"submission_guidelines\": \"Create a calculator. Submit the GitHub repository link.\",\r\n    \"resource_links\": \"[\\\"https://www.w3schools.com/python\\\", \\\"https://developers.google.com/edu/python?hl=id\\\"]\",\r\n    \"estimated_duration\": 40,\r\n    \"difficulty_level\": \"beginner\"\r\n  }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/admin/roadmaps/{{roadmap_id}}/steps",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"admin",
+										"roadmaps",
+										"{{roadmap_id}}",
+										"steps"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "Fiber"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 09 Oct 2025 15:59:01 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "677"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Step berhasil dibuat\",\n    \"data\": {\n        \"id\": \"806dee04-6ece-40f1-ab6a-e8f580802bca\",\n        \"roadmap_id\": \"e0f71f16-cf0d-4b8e-897c-a832f1b9b100\",\n        \"step_order\": 2,\n        \"title\": \"Python Begineet\",\n        \"description\": \"Learn the basics of Python for CLI based application development\",\n        \"learning_objectives\": \"Understand python principles\",\n        \"submission_guidelines\": \"Create a calculator. Submit the GitHub repository link.\",\n        \"resource_links\": \"[\\\"https://www.w3schools.com/python\\\", \\\"https://developers.google.com/edu/python?hl=id\\\"]\",\n        \"estimated_duration\": 40,\n        \"difficulty_level\": \"beginner\",\n        \"created_at\": \"2025-10-09T22:59:01.949259472+07:00\",\n        \"updated_at\": \"2025-10-09T22:59:01.949259472+07:00\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Roadmap Steps",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"Begineer Python\",\r\n  \"description\": \"Advanced Python concepts includes OOP\",\r\n  \"estimated_duration\": 50,\r\n  \"difficulty_level\": \"intermediate\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/roadmaps/steps/{{steps_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"roadmaps",
+								"steps",
+								"{{steps_id}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Update Roadmap Steps",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"title\": \"Begineer Python\",\r\n  \"description\": \"Advanced Python concepts includes OOP\",\r\n  \"estimated_duration\": 50,\r\n  \"difficulty_level\": \"intermediate\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/admin/roadmaps/steps/{{steps_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"admin",
+										"roadmaps",
+										"steps",
+										"{{steps_id}}"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "Fiber"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 09 Oct 2025 15:59:36 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "655"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Step berhasil diperbarui\",\n    \"data\": {\n        \"id\": \"806dee04-6ece-40f1-ab6a-e8f580802bca\",\n        \"roadmap_id\": \"e0f71f16-cf0d-4b8e-897c-a832f1b9b100\",\n        \"step_order\": 2,\n        \"title\": \"Begineer Python\",\n        \"description\": \"Advanced Python concepts includes OOP\",\n        \"learning_objectives\": \"Understand python principles\",\n        \"submission_guidelines\": \"Create a calculator. Submit the GitHub repository link.\",\n        \"resource_links\": \"[\\\"https://www.w3schools.com/python\\\", \\\"https://developers.google.com/edu/python?hl=id\\\"]\",\n        \"estimated_duration\": 50,\n        \"difficulty_level\": \"intermediate\",\n        \"created_at\": \"2025-10-09T22:59:01.949259+07:00\",\n        \"updated_at\": \"2025-10-09T22:59:36.840063418+07:00\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Roadmap Step",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"Advanced Python\",\r\n  \"description\": \"Advanced Python concepts includes OOP\",\r\n  \"estimated_duration\": 50,\r\n  \"difficulty_level\": \"intermediate\"\r\n}\r\n"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/roadmaps/steps/{{steps_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"roadmaps",
+								"steps",
+								"{{steps_id}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Delete Roadmap Step",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"title\": \"Advanced Python\",\r\n  \"description\": \"Advanced Python concepts includes OOP\",\r\n  \"estimated_duration\": 50,\r\n  \"difficulty_level\": \"intermediate\"\r\n}\r\n"
+								},
+								"url": {
+									"raw": "{{base_url}}/admin/roadmaps/steps/{{steps_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"admin",
+										"roadmaps",
+										"steps",
+										"{{steps_id}}"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "Fiber"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 09 Oct 2025 16:00:31 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "50"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Step berhasil dihapus\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Roadmap Management Copy",
+			"item": [
+				{
+					"name": "Get Roadmaps",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/roadmaps",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"roadmaps"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Roadmaps",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/admin/roadmaps",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"admin",
+										"roadmaps"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "Fiber"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 09 Oct 2025 16:05:00 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "929"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Data roadmap berhasil diambil\",\n    \"data\": {\n        \"data\": [\n            {\n                \"id\": \"e0f71f16-cf0d-4b8e-897c-a832f1b9b100\",\n                \"profiling_role_id\": \"a3421f62-2eb3-41da-9119-c200b1fbf235\",\n                \"roadmap_name\": \"Full Stack Developer Learning Path\",\n                \"description\": \"Comprehensive learning path for becoming a full stack developer\",\n                \"status\": \"draft\",\n                \"created_by\": \"f6aa148c-c853-4747-9e40-1f509243ac17\",\n                \"total_steps\": 1,\n                \"created_at\": \"2025-10-09T22:58:11.011536+07:00\",\n                \"updated_at\": \"2025-10-09T22:58:11.011536+07:00\"\n            },\n            {\n                \"id\": \"77d9499d-4f87-43e8-8c5a-8aff11476010\",\n                \"profiling_role_id\": \"a3421f62-2eb3-41da-9119-c200b1fbf235\",\n                \"roadmap_name\": \"Updated Full Stack Developer Path\",\n                \"description\": \"Updated comprehensive learning path\",\n                \"status\": \"active\",\n                \"created_by\": \"f6aa148c-c853-4747-9e40-1f509243ac17\",\n                \"total_steps\": 2,\n                \"created_at\": \"2025-10-09T22:54:12.610035+07:00\",\n                \"updated_at\": \"2025-10-09T23:01:11.07085+07:00\"\n            }\n        ],\n        \"total\": 2,\n        \"page\": 1,\n        \"limit\": 10,\n        \"total_pages\": 1\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Roadmap by Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/roadmaps/{{roadmap_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"roadmaps",
+								"{{roadmap_id}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Roadmap by Id",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/admin/roadmaps/{{roadmap_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"admin",
+										"roadmaps",
+										"{{roadmap_id}}"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "Fiber"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 09 Oct 2025 16:00:47 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1726"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Detail roadmap berhasil diambil\",\n    \"data\": {\n        \"id\": \"77d9499d-4f87-43e8-8c5a-8aff11476010\",\n        \"profiling_role_id\": \"a3421f62-2eb3-41da-9119-c200b1fbf235\",\n        \"roadmap_name\": \"Full Stack Developer Learning Path\",\n        \"description\": \"Comprehensive learning path for becoming a full stack developer\",\n        \"status\": \"draft\",\n        \"created_by\": \"f6aa148c-c853-4747-9e40-1f509243ac17\",\n        \"total_steps\": 2,\n        \"created_at\": \"2025-10-09T22:54:12.610035+07:00\",\n        \"updated_at\": \"2025-10-09T22:54:12.610035+07:00\",\n        \"steps\": [\n            {\n                \"id\": \"640de5de-e694-46b1-8160-39e5d50c03c1\",\n                \"roadmap_id\": \"77d9499d-4f87-43e8-8c5a-8aff11476010\",\n                \"step_order\": 1,\n                \"title\": \"Python Basic\",\n                \"description\": \"Learn the basics of Python for CLI based application development\",\n                \"learning_objectives\": \"Understand python principles\",\n                \"submission_guidelines\": \"Create a calculator. Submit the GitHub repository link.\",\n                \"resource_links\": \"[\\\"https://www.w3schools.com/python\\\", \\\"https://developers.google.com/edu/python?hl=id\\\"]\",\n                \"estimated_duration\": 40,\n                \"difficulty_level\": \"beginner\",\n                \"created_at\": \"2025-10-09T22:54:35.648636+07:00\",\n                \"updated_at\": \"2025-10-09T22:54:35.648636+07:00\"\n            },\n            {\n                \"id\": \"7658060f-e269-4456-a6e9-ef1f8060992c\",\n                \"roadmap_id\": \"77d9499d-4f87-43e8-8c5a-8aff11476010\",\n                \"step_order\": 2,\n                \"title\": \"Python Intermidiate\",\n                \"description\": \"Learn the basics of Python for CLI based application development\",\n                \"learning_objectives\": \"Understand python principles\",\n                \"submission_guidelines\": \"Create a calculator. Submit the GitHub repository link.\",\n                \"resource_links\": \"[\\\"https://www.w3schools.com/python\\\", \\\"https://developers.google.com/edu/python?hl=id\\\"]\",\n                \"estimated_duration\": 40,\n                \"difficulty_level\": \"beginner\",\n                \"created_at\": \"2025-10-09T22:56:12.831845+07:00\",\n                \"updated_at\": \"2025-10-09T22:56:12.831845+07:00\"\n            }\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Create Roadmap",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"profiling_role_id\": \"a3421f62-2eb3-41da-9119-c200b1fbf235\",\r\n    \"roadmap_name\": \"Full Stack Developer Learning Path\",\r\n    \"description\": \"Comprehensive learning path for becoming a full stack developer\"\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/roadmaps",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"roadmaps"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create Roadmap",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"profiling_role_id\": \"a3421f62-2eb3-41da-9119-c200b1fbf235\",\r\n    \"roadmap_name\": \"Full Stack Developer Learning Path\",\r\n    \"description\": \"Comprehensive learning path for becoming a full stack developer\"\r\n  }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/admin/roadmaps",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"admin",
+										"roadmaps"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "Fiber"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 09 Oct 2025 15:58:10 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "483"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Roadmap berhasil dibuat\",\n    \"data\": {\n        \"id\": \"e0f71f16-cf0d-4b8e-897c-a832f1b9b100\",\n        \"profiling_role_id\": \"a3421f62-2eb3-41da-9119-c200b1fbf235\",\n        \"roadmap_name\": \"Full Stack Developer Learning Path\",\n        \"description\": \"Comprehensive learning path for becoming a full stack developer\",\n        \"status\": \"draft\",\n        \"created_by\": \"f6aa148c-c853-4747-9e40-1f509243ac17\",\n        \"total_steps\": 0,\n        \"created_at\": \"2025-10-09T22:58:11.011536629+07:00\",\n        \"updated_at\": \"2025-10-09T22:58:11.011536629+07:00\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Roadmap",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"roadmap_name\": \"Updated Full Stack Developer Path\",\r\n    \"description\": \"Updated comprehensive learning path\",\r\n    \"status\": \"active\"\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/roadmaps/{{roadmap_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"roadmaps",
+								"{{roadmap_id}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Update Roadmap",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"roadmap_name\": \"Updated Full Stack Developer Path\",\r\n    \"description\": \"Updated comprehensive learning path\",\r\n    \"status\": \"active\"\r\n  }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/admin/roadmaps/{{roadmap_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"admin",
+										"roadmaps",
+										"{{roadmap_id}}"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "Fiber"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 09 Oct 2025 16:01:10 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "456"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Roadmap berhasil diperbarui\",\n    \"data\": {\n        \"id\": \"77d9499d-4f87-43e8-8c5a-8aff11476010\",\n        \"profiling_role_id\": \"a3421f62-2eb3-41da-9119-c200b1fbf235\",\n        \"roadmap_name\": \"Updated Full Stack Developer Path\",\n        \"description\": \"Updated comprehensive learning path\",\n        \"status\": \"active\",\n        \"created_by\": \"f6aa148c-c853-4747-9e40-1f509243ac17\",\n        \"total_steps\": 2,\n        \"created_at\": \"2025-10-09T22:54:12.610035+07:00\",\n        \"updated_at\": \"2025-10-09T23:01:11.070850587+07:00\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Roadmap",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/roadmaps/{{roadmap_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"roadmaps",
+								"{{roadmap_id}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Delete Roadmap",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/admin/roadmaps/{{roadmap_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"admin",
+										"roadmaps",
+										"{{roadmap_id}}"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "Fiber"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 09 Oct 2025 16:01:35 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "53"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Roadmap berhasil dihapus\"\n}"
+						}
+					]
+				}
+			]
+		}
+	]
+}

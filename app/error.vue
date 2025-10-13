@@ -30,7 +30,7 @@
     </div>
 
     <!-- Main Content -->
-    <div class="text-center relative z-10">
+    <div class="text-center relative z-10 p-4">
       <!-- Error Code dengan styling mirip hero title -->
       <div class="mb-8">
         <h1 class="text-8xl md:text-9xl font-bold text-white/80 select-none drop-shadow-lg animate-pulse">
@@ -53,7 +53,7 @@
         <h2 class="text-3xl md:text-4xl font-bold text-white mb-6 leading-tight drop-shadow-lg">
           {{ getErrorTitle() }}
         </h2>
-        <div class="max-w-2xl mx-auto">
+        <div class="max-w-2xl mx-auto p-4">
           <p class="text-lg md:text-xl text-white/90 leading-relaxed">
             {{ getErrorMessage() }}
           </p>
@@ -61,7 +61,7 @@
       </div>
       
       <!-- Actions dengan styling mirip CTA buttons -->
-      <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+      <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8 mx-4">
         <button 
           @click="handleError"
           class="group relative px-8 py-4 bg-white text-primary rounded-2xl font-bold text-lg hover:bg-gray-50 transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 min-w-[200px]"

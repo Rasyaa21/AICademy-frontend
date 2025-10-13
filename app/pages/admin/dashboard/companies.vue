@@ -1,5 +1,22 @@
 <template>
-    <CompanyInputPopup v-model:is-open="openCompanyInput"/>
+    <AlertModal 
+        v-model:isOpen="alertModal.isOpen"
+        :type="alertModal.type"
+        :title="alertModal.title"
+        :message="alertModal.message"
+        @ok="handleAlertOk"
+    />
+    <CompanyInputPopup 
+        v-model:is-open="openCompanyInput"
+        :edit-data="editingCompany"
+        @show-success-modal="showSuccessModal"
+        @show-error-modal="showErrorModal"
+    />
+    <CompanyDetailPopup
+        v-model:is-open="openCompanyDetail"
+        :company-id="selectedCompanyId"
+    />
+    
     <div class="space-y-6">
         <AdminPageHeader
             title="Companies Management"
@@ -8,39 +25,57 @@
 
         <CompaniesStatsSection :company-stats="companyStats" />
 
-        <CompanyFilter
-            v-model:searchQuery="searchQuery"
-            v-model:selectedLocation="selectedLocation"
-            v-model:selectedStatus="selectedStatus"
-            v-model:sortBy="sortBy"
-            :filteredCount="filteredCompanies.length"
-            :totalCount="companies.length"
-            :activeFiltersCount="activeFiltersCount"
-            :hasActiveFilters="hasActiveFilters"
-            @clear-filters="clearAllFilters"
-            @add-company="openCompanyInput = true"
-        />
+        <!-- Loading State -->
+        <div v-if="pending" class="text-center py-8">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+            <p class="text-gray-500 mt-2">Memuat data perusahaan...</p>
+        </div>
 
-        <CompaniesTableSection
-            :paginated-companies="paginatedCompanies"
-            @view-company="viewCompany"
-            @edit-company="editCompany"
-            @delete-company="deleteCompany"
-        />
+        <!-- Error State -->
+        <div v-else-if="error" class="text-center py-8">
+            <p class="text-red-500">Error: {{ error.message }}</p>
+            <button @click="refresh()" class="mt-2 px-4 py-2 bg-primary text-white rounded-lg">
+                Coba Lagi
+            </button>
+        </div>
 
-        <CompaniesEmptyState
-            v-if="filteredCompanies.length === 0"
-            :search-query="searchQuery"
-            @clear-filters="clearAllFilters"
-        />
+        <!-- Content -->
+        <template v-else>
+            <CompanyFilter
+                v-model:searchQuery="searchQuery"
+                v-model:selectedLocation="selectedLocation"
+                v-model:selectedStatus="selectedStatus"
+                v-model:sortBy="sortBy"
+                :filteredCount="totalItems"
+                :totalCount="totalItems"
+                :activeFiltersCount="activeFiltersCount"
+                :hasActiveFilters="hasActiveFilters"
+                @clear-filters="clearAllFilters"
+                @add-company="openCompanyInput = true"
+            />
 
-        <CompaniesPaginationSection
-            :current-page="currentPage"
-            :total-pages="totalPages"
-            :total-items="filteredCompanies.length"
-            :items-per-page="itemsPerPage"
-            @page-changed="(page: number) => currentPage = page"
-        />
+            <CompaniesTableSection
+                :paginated-companies="companies"
+                @view-company="viewCompany"
+                @edit-company="editCompany"
+                @delete-company="deleteCompany"
+            />
+
+            <CompaniesEmptyState
+                v-if="companies.length === 0"
+                :search-query="searchQuery"
+                @clear-filters="clearAllFilters"
+            />
+
+            <CompaniesPaginationSection
+                v-if="totalPages > 1"
+                :current-page="currentPage"
+                :total-pages="totalPages"
+                :total-items="totalItems"
+                :items-per-page="itemsPerPage"
+                @page-changed="handlePageChange"
+            />
+        </template>
     </div>
 </template>
 
@@ -52,119 +87,90 @@ import CompaniesTableSection from '~/components/dashboard-admin/companies/Compan
 import CompaniesEmptyState from '~/components/dashboard-admin/companies/CompaniesEmptyState.vue'
 import CompaniesPaginationSection from '~/components/dashboard-admin/companies/CompaniesPaginationSection.vue'
 import CompanyFilter from '~/components/dashboard-admin/companies/CompaniesFilter.vue'
-import CompanyInputPopup from '~/components/modal/CompanyInputPopup.vue'
+import CompanyInputPopup from '~/components/modal/admin/dashboard/company/CompanyInputPopup.vue'
+import AlertModal from '~/components/modal/basic-modal/AlertModal.vue'
+import CompanyDetailPopup from '~/components/modal/admin/dashboard/company/CompanyDetailPopup.vue'
 import type { Company } from '~/types/Company'
 
 definePageMeta({
     layout: 'admin-dashboard-layout'
 })
 
-// Types
+const config = useRuntimeConfig()
 
+const alertModal = ref({
+    isOpen: false,
+    type: 'success' as 'success' | 'error' | 'warning' | 'info',
+    title: '',
+    message: ''
+})
 
 // Filter states
 const openCompanyInput = ref(false)
+const openCompanyDetail = ref(false)
 const searchQuery = ref('')
 const selectedLocation = ref('')
 const selectedStatus = ref('')
 const sortBy = ref('newest')
+const selectedCompanyId = ref<string | null>(null)
+const editingCompany = ref(null)
 
 // Pagination
 const currentPage = ref(1)
 const itemsPerPage = 10
 
-// Sample data
-const companies = ref<Company[]>([
-    {
-        id: '1',
-        user_id: 'user1',
-        company_name: 'PT. Telkom Indonesia',
-        company_location: 'Jakarta',
-        description: 'Leading telecommunications company in Indonesia',
-        email: 'partnership@telkom.co.id',
-        status: 'active',
-        created_at: '2024-01-10T08:00:00Z'
-    },
-    {
-        id: '2',
-        user_id: 'user2',
-        company_name: 'PT. Gojek Indonesia',
-        company_location: 'Jakarta',
-        description: 'Super app platform and on-demand services',
-        email: 'talent@gojek.com',
-        status: 'active',
-        created_at: '2024-01-12T08:00:00Z'
-    },
-    {
-        id: '3',
-        user_id: 'user3',
-        company_name: 'PT. Tokopedia',
-        company_location: 'Jakarta',
-        description: 'Leading e-commerce platform in Indonesia',
-        email: 'careers@tokopedia.com',
-        status: 'inactive',
-        created_at: '2024-01-15T08:00:00Z'
-    }
-])
+const headers = useRequestHeaders(['cookie'])
 
-// Computed properties
-const filteredCompanies = computed(() => {
-    let filtered = companies.value
-
-    // Search filter
-    if (searchQuery.value) {
-        const query = searchQuery.value.toLowerCase()
-        filtered = filtered.filter(company => 
-            company.company_name.toLowerCase().includes(query) ||
-            company.email.toLowerCase().includes(query) ||
-            (company.description && company.description.toLowerCase().includes(query))
-        )
-    }
-
-    // Location filter
-    if (selectedLocation.value) {
-        filtered = filtered.filter(c => c.company_location === selectedLocation.value)
-    }
-
-    // Status filter
-    if (selectedStatus.value) {
-        filtered = filtered.filter(c => c.status === selectedStatus.value)
-    }
-
-    // Sort
-    filtered.sort((a, b) => {
-        switch (sortBy.value) {
-            case 'newest':
-                return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-            case 'name':
-                return a.company_name.localeCompare(b.company_name)
-            case 'location':
-                return (a.company_location || '').localeCompare(b.company_location || '')
-            default:
-                return 0
-        }
+// ✅ Build API query with all parameters
+const buildApiQuery = () => {
+    const params = new URLSearchParams({
+        page: currentPage.value.toString(),
+        limit: itemsPerPage.toString()
     })
+    
+    if (searchQuery.value.trim()) {
+        params.append('search', searchQuery.value.trim())
+    }
+    
+    if (selectedLocation.value) {
+        params.append('location', selectedLocation.value)
+    }
+    
+    if (selectedStatus.value) {
+        params.append('status', selectedStatus.value)
+    }
+    
+    if (sortBy.value) {
+        params.append('sort', sortBy.value)
+    }
+    
+    return params.toString()
+}
 
-    return filtered
-})
+// ✅ Fetch data from API
+const { data: companyData, pending, error, refresh } = await useAsyncData('companyData', () => 
+    $fetch(`/admin/users/companies?${buildApiQuery()}`, {
+        baseURL: config.public.apiBase,
+        credentials: 'include',
+        headers
+    }), {
+        watch: [currentPage, searchQuery, selectedLocation, selectedStatus, sortBy]
+    }
+)
 
-const paginatedCompanies = computed(() => {
-    const start = (currentPage.value - 1) * itemsPerPage
-    const end = start + itemsPerPage
-    return filteredCompanies.value.slice(start, end)
-})
+// ✅ Use API data directly (no client-side filtering)
+const companies = computed(() => companyData.value?.data || [])
+const totalPages = computed(() => companyData.value?.data?.total_pages || 1)
+const totalItems = computed(() => companyData.value?.data?.total || 0)
 
-const totalPages = computed(() => {
-    return Math.ceil(filteredCompanies.value.length / itemsPerPage)
-})
-
+// ✅ Company stats from API data
 const companyStats = computed(() => {
-    const active = companies.value.filter(c => c.status === 'active').length
+    // For accurate stats, you might need a separate API endpoint for all data
+    const activeCompanies = companies.value.filter(c => c.status === 'active').length
     
     return {
-        total: companies.value.length,
-        active,
-        challengeSponsors: Math.floor(companies.value.length * 0.6)
+        total: totalItems.value, // ✅ Use totalItems from API
+        active: activeCompanies,
     }
 })
 
@@ -188,38 +194,75 @@ const clearAllFilters = () => {
     currentPage.value = 1
 }
 
-const getInitials = (name: string) => {
-    return name
-        .split(' ')
-        .map(word => word.charAt(0))
-        .join('')
-        .toUpperCase()
-        .slice(0, 2)
-}
-
-const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('id-ID', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric'
-    })
+// ✅ Proper page change handler
+const handlePageChange = (page: number) => {
+    currentPage.value = page
 }
 
 // Action handlers
 const viewCompany = (company: Company) => {
-    console.log('View company:', company)
+    selectedCompanyId.value = company.id
+    openCompanyDetail.value = true
 }
 
 const editCompany = (company: Company) => {
-    console.log('Edit company:', company)
+    editingCompany.value = {
+        id: company.id,
+        company_name: company.company_name,
+        company_logo: company.company_logo,
+        company_location: company.company_location,
+        description: company.description,
+        email: company.email
+    }
+    openCompanyInput.value = true
 }
 
-const deleteCompany = (company: Company) => {
-    console.log('Delete company:', company)
+const deleteCompany = async (company: Company) => {
+    if (confirm('Apakah Anda yakin ingin menghapus perusahaan ini?')) {
+        try {
+            await $fetch(`/admin/users/companies/${company.id}`, {
+                method: 'DELETE',
+                baseURL: config.public.apiBase,
+                credentials: 'include',
+                headers
+            })
+            showSuccessModal('Perusahaan berhasil dihapus')
+            refresh()
+        } catch (error) {
+            console.error('Error deleting company:', error)
+            showErrorModal('Gagal menghapus perusahaan')
+        }
+    }
 }
 
-// Watch for filter changes to reset pagination
-watch([searchQuery, selectedLocation, selectedStatus], () => {
+// Alert modal handlers
+const showSuccessModal = (message: string) => {
+    alertModal.value = {
+        isOpen: true,
+        type: 'success',
+        title: 'Berhasil',
+        message: message
+    }
+}
+
+const showErrorModal = (message: string) => {
+    alertModal.value = {
+        isOpen: true,
+        type: 'error',
+        title: 'Gagal',
+        message: message
+    }
+}
+
+const handleAlertOk = () => {
+    alertModal.value.isOpen = false
+    if (alertModal.value.type === 'success') {
+        refresh()
+    }
+}
+
+// ✅ Reset page when filters change
+watch([searchQuery, selectedLocation, selectedStatus, sortBy], () => {
     currentPage.value = 1
 })
 </script>

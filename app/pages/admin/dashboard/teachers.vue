@@ -1,5 +1,16 @@
 <template>
-    <TeacherInputPopup v-model:is-open="openTeacherInput"/>
+    <AlertModal 
+        v-model:isOpen="alertModal.isOpen"
+        :type="alertModal.type"
+        :title="alertModal.title"
+        :message="alertModal.message"
+        @ok="handleAlertOk"
+    />
+    <TeacherInputPopup 
+        v-model:is-open="openTeacherInput"
+        @show-success-modal="showSuccessModal"
+        @show-error-modal="showErrorModal"
+    />
     <div class="space-y-6">
         <AdminPageHeader
             title="Teachers Management"
@@ -8,38 +19,55 @@
 
         <TeachersStatsSection :teacher-stats="teacherStats" />
 
-        <TeacherFilter
-            v-model:searchQuery="searchQuery"
-            v-model:selectedStatus="selectedStatus"
-            v-model:sortBy="sortBy"
-            :filteredCount="filteredTeachers.length"
-            :totalCount="teachers.length"
-            :activeFiltersCount="activeFiltersCount"
-            :hasActiveFilters="hasActiveFilters"
-            @clear-filters="clearAllFilters"
-            @add-teacher="openTeacherInput = true"
-        />
+        <!-- Loading State -->
+        <div v-if="pending" class="text-center py-8">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+            <p class="text-gray-500 mt-2">Memuat data guru...</p>
+        </div>
 
-        <TeachersTableSection
-            :paginated-teachers="paginatedTeachers"
-            @view-teacher="viewTeacher"
-            @edit-teacher="editTeacher"
-            @delete-teacher="deleteTeacher"
-        />
+        <!-- Error State -->
+        <div v-else-if="error" class="text-center py-8">
+            <p class="text-red-500">Error: {{ error.message }}</p>
+            <button @click="refresh()" class="mt-2 px-4 py-2 bg-primary text-white rounded-lg">
+                Coba Lagi
+            </button>
+        </div>
 
-        <TeachersEmptyState
-            v-if="filteredTeachers.length === 0"
-            :search-query="searchQuery"
-            @clear-filters="clearAllFilters"
-        />
+        <!-- Content -->
+        <template v-else>
+            <TeacherFilter
+                v-model:searchQuery="searchQuery"
+                v-model:selectedStatus="selectedStatus"
+                v-model:sortBy="sortBy"
+                :filteredCount="totalItems"
+                :totalCount="totalItems"
+                :activeFiltersCount="activeFiltersCount"
+                :hasActiveFilters="hasActiveFilters"
+                @clear-filters="clearAllFilters"
+                @add-teacher="openTeacherInput = true"
+            />
 
-        <TeachersPaginationSection
-            :current-page="currentPage"
-            :total-pages="totalPages"
-            :total-items="filteredTeachers.length"
-            :items-per-page="itemsPerPage"
-            @page-changed="(page: number) => currentPage = page"
-        />
+            <TeachersTableSection
+                :paginated-teachers="teachers"
+                @edit-teacher="editTeacher"
+                @delete-teacher="deleteTeacher"
+            />
+
+            <TeachersEmptyState
+                v-if="teachers.length === 0"
+                :search-query="searchQuery"
+                @clear-filters="clearAllFilters"
+            />
+
+            <TeachersPaginationSection
+                v-if="totalPages > 1"
+                :current-page="currentPage"
+                :total-pages="totalPages"
+                :total-items="totalItems"
+                :items-per-page="itemsPerPage"
+                @page-changed="handlePageChange"
+            />
+        </template>
     </div>
 </template>
 
@@ -51,15 +79,24 @@ import TeachersTableSection from '~/components/dashboard-admin/teachers/Teachers
 import TeachersEmptyState from '~/components/dashboard-admin/teachers/TeachersEmptyState.vue'
 import TeachersPaginationSection from '~/components/dashboard-admin/teachers/TeachersPaginationSection.vue'
 import TeacherFilter from '~/components/dashboard-admin/teachers/TeacherFilter.vue'
-import TeacherInputPopup from '~/components/modal/TeacherInputPopup.vue'
+
+import AlertModal from '~/components/modal/basic-modal/AlertModal.vue'
 import type { Teacher } from '~/types/Teacher'
+import TeacherInputPopup from '~/components/modal/admin/dashboard/teacher/TeacherInputPopup.vue'
 
 definePageMeta({
     layout: 'admin-dashboard-layout'
 })
 
-// Types
+const config = useRuntimeConfig()
 
+// Alert modal state
+const alertModal = ref({
+    isOpen: false,
+    type: 'success' as 'success' | 'error' | 'warning' | 'info',
+    title: '',
+    message: ''
+})
 
 // Filter states
 const openTeacherInput = ref(false)
@@ -71,89 +108,54 @@ const sortBy = ref('newest')
 const currentPage = ref(1)
 const itemsPerPage = 10
 
-// Sample data
-const teachers = ref<Teacher[]>([
-    {
-        id: '1',
-        user_id: 'user1',
-        fullname: 'Dr. Agus Dwi Cahaya S.Kom',
-        email: 'agus.dwi@teacher.smk.sch.id',
-        role: 'Guru Pengampu',
-        status: 'active',
-        created_at: '2024-01-10T08:00:00Z'
-    },
-    {
-        id: '2',
-        user_id: 'user2',
-        fullname: 'Siti Nurhasanah S.Pd',
-        email: 'siti.nur@teacher.smk.sch.id',
-        role: 'Guru Pengampu',
-        status: 'active',
-        created_at: '2024-01-12T08:00:00Z'
-    },
-    {
-        id: '3',
-        user_id: 'user3',
-        fullname: 'Ahmad Rizki M.Kom',
-        email: 'ahmad.rizki@teacher.smk.sch.id',
-        role: 'Guru Pengampu',
-        status: 'inactive',
-        created_at: '2024-01-15T08:00:00Z'
-    }
-])
+const headers = useRequestHeaders(['cookie'])
 
-// Computed properties
-const filteredTeachers = computed(() => {
-    let filtered = teachers.value
-
-    // Search filter
-    if (searchQuery.value) {
-        const query = searchQuery.value.toLowerCase()
-        filtered = filtered.filter(teacher => 
-            teacher.fullname.toLowerCase().includes(query) ||
-            teacher.email.toLowerCase().includes(query)
-        )
-    }
-
-    // Status filter
-    if (selectedStatus.value) {
-        filtered = filtered.filter(t => t.status === selectedStatus.value)
-    }
-
-    // Sort
-    filtered.sort((a, b) => {
-        switch (sortBy.value) {
-            case 'newest':
-                return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-            case 'name':
-                return a.fullname.localeCompare(b.fullname)
-            case 'email':
-                return a.email.localeCompare(b.email)
-            default:
-                return 0
-        }
+// ✅ Build API query with all parameters
+const buildApiQuery = () => {
+    const params = new URLSearchParams({
+        page: currentPage.value.toString(),
+        limit: itemsPerPage.toString()
     })
+    
+    if (searchQuery.value.trim()) {
+        params.append('search', searchQuery.value.trim())
+    }
+    
+    if (selectedStatus.value) {
+        params.append('status', selectedStatus.value)
+    }
+    
+    if (sortBy.value) {
+        params.append('sort', sortBy.value)
+    }
+    
+    return params.toString()
+}
 
-    return filtered
-})
+// ✅ Fetch data from API
+const { data: teacherData, pending, error, refresh } = await useAsyncData('teacherData', () => 
+    $fetch(`/admin/users/teachers?${buildApiQuery()}`, {
+        baseURL: config.public.apiBase,
+        credentials: 'include',
+        headers
+    }), {
+        watch: [currentPage, searchQuery, selectedStatus, sortBy]
+    }
+)
 
-const paginatedTeachers = computed(() => {
-    const start = (currentPage.value - 1) * itemsPerPage
-    const end = start + itemsPerPage
-    return filteredTeachers.value.slice(start, end)
-})
-
-const totalPages = computed(() => {
-    return Math.ceil(filteredTeachers.value.length / itemsPerPage)
-})
+// ✅ Use API data directly
+const teachers = computed(() => teacherData.value?.data || [])
+const totalPages = computed(() => teacherData.value?.data?.total_pages || 1)
+const totalItems = computed(() => teacherData.value?.data?.total || 0)
 
 const teacherStats = computed(() => {
+    // For accurate stats, you might need a separate API endpoint
     const active = teachers.value.filter(t => t.status === 'active').length
     
     return {
-        total: teachers.value.length,
+        total: totalItems.value, // ✅ Use totalItems from API
         active,
-        challengeOrganizers: Math.floor(teachers.value.length * 0.8)
+        challengeOrganizers: Math.floor(totalItems.value * 0.8)
     }
 })
 
@@ -175,21 +177,61 @@ const clearAllFilters = () => {
     currentPage.value = 1
 }
 
-// Utility functions moved to TeachersTableSection component
-
-const viewTeacher = (teacher: Teacher) => {
-    console.log('View teacher:', teacher)
+const handlePageChange = (page: number) => {
+    currentPage.value = page
 }
 
 const editTeacher = (teacher: Teacher) => {
     console.log('Edit teacher:', teacher)
+    // You can implement edit logic here
 }
 
-const deleteTeacher = (teacher: Teacher) => {
-    console.log('Delete teacher:', teacher)
+const deleteTeacher = async (teacher: Teacher) => {
+    if (confirm('Apakah Anda yakin ingin menghapus guru ini?')) {
+        try {
+            await $fetch(`/admin/users/teachers/${teacher.id}`, {
+                method: 'DELETE',
+                baseURL: config.public.apiBase,
+                credentials: 'include',
+                headers
+            })
+            showSuccessModal('Guru berhasil dihapus')
+            refresh()
+        } catch (error) {
+            console.error('Error deleting teacher:', error)
+            showErrorModal('Gagal menghapus guru')
+        }
+    }
 }
 
-watch([searchQuery, selectedStatus], () => {
+// Alert modal handlers
+const showSuccessModal = (message: string) => {
+    alertModal.value = {
+        isOpen: true,
+        type: 'success',
+        title: 'Berhasil',
+        message: message
+    }
+}
+
+const showErrorModal = (message: string) => {
+    alertModal.value = {
+        isOpen: true,
+        type: 'error',
+        title: 'Gagal',
+        message: message
+    }
+}
+
+const handleAlertOk = () => {
+    alertModal.value.isOpen = false
+    if (alertModal.value.type === 'success') {
+        refresh()
+    }
+}
+
+// ✅ Reset page when filters change
+watch([searchQuery, selectedStatus, sortBy], () => {
     currentPage.value = 1
 })
 </script>

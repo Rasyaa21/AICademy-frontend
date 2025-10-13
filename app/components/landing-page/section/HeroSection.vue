@@ -80,13 +80,19 @@
                 :duration="22"
             >
                 <div class="shrink-0 mx-10">
-                <img src="/assets/images/logo_smk_telkom_pwt.png" alt="SMK Telkom Purwokerto" class="h-14 md:h-20 object-contain" />
+                <img src="/assets/images/logo_smk_telkom_pwt.png" alt="SMK Telkom Purwokerto" class="h-14 md:h-16 object-contain" />
                 </div>
                 <div class="shrink-0 mx-10">
-                <img src="/assets/images/telkom_school.png" alt="Telkom Schools" class="h-14 md:h-16 object-contain" />
+                <img src="/assets/images/1000sd.png" alt="1000sd" class="h-14 md:h-18 object-contain" />
                 </div>
                 <div class="shrink-0 mx-10">
-                <img src="/assets/images/logo_smk_telkom_pwt.png" alt="Dicoding" class="h-14 md:h-16 object-contain" />
+                <img src="/assets/images/komdigi.png" alt="Komdigi" class="h-14 md:h-18 object-contain" />
+                </div>
+                <div class="shrink-0 mx-10">
+                <img src="/assets/images/jagoan-hosting.png" alt="Jagoan Hosting" class="h-14 md:h-18 object-contain" />
+                </div>
+                <div class="shrink-0 mx-10">
+                <img src="/assets/images/maspion-it.png" alt="Maspion IT" class="h-14 md:h-18 object-contain" />
                 </div>
             </NuxtMarquee>
         </div>

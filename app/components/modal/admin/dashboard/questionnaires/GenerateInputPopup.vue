@@ -1,0 +1,256 @@
+<template>
+    <div v-if="isOpen" class="flex fixed inset-0 z-50 justify-center items-center bg-black bg-opacity-50">
+        <div class="mx-4 w-full max-w-2xl bg-white rounded-xl shadow-xl">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        {{ isEditing ? 'Edit Kuisioner' : 'Tambah Kuisioner Baru' }}
+                    </h3>
+                    <button 
+                        @click="closeModal"
+                        class="text-gray-400 hover:text-gray-600"
+                    >
+                        <Icon name="heroicons:x-mark-20-solid" class="w-5 h-5" />
+                    </button>
+                </div>
+            </div>
+
+            <form  class="p-6 space-y-4" @submit.prevent="handleSubmit">
+                <MainTextfield 
+                    v-model="formData.name"
+                    name="name" 
+                    placeholder="Nama Kuisioner" 
+                    label="Nama Kuisioner"
+                    required
+                >
+                    <template #icon>
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 5.25A2.25 2.25 0 0111.25 3h1.5A2.25 2.25 0 0115 5.25V6h1.5A2.5 2.5 0 0119 8.5v9A2.5 2.5 0 0116.5 20h-9A2.5 2.5 0 015 17.5v-9A2.5 2.5 0 017.5 6H9v-.75zM8.5 11h7m-7 4h7" />
+                        </svg>
+                    </template>
+                </MainTextfield>
+
+                <MainTextfield 
+                    v-model="formData.question_count"
+                    name="question_count" 
+                    type="number"
+                    placeholder="Jumlah Kuisioner" 
+                    label="Jumlah Kuisioner"
+                >
+                    <template #icon>
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3.75 6.75A2.25 2.25 0 016 4.5h12a2.25 2.25 0 012.25 2.25v10.5A2.25 2.25 0 0118 19.5H6a2.25 2.25 0 01-2.25-2.25V6.75z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8.25 10.5a1.75 1.75 0 103.5 0 1.75 1.75 0 00-3.5 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 15l-4.5-4.5a1.5 1.5 0 00-2.121 0L9 15" />
+                        </svg>
+                    </template>
+                </MainTextfield>
+
+                <MainTextfield 
+                    v-model="formData.difficulty_level"
+                    name="Tingkat Kesulitan" 
+                    placeholder="basic, intermediate, advanced" 
+                    label="Tingkat Kesulitan"
+                    :is-textarea="true"
+                    rows="3"
+                >
+                    <template #icon>
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 4.5h7.5L19.5 9V19a2 2 0 01-2 2H7a2 2 0 01-2-2V6.5a2 2 0 012-2z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 13h6m-6 4h6" />
+                        </svg>
+                    </template>
+                </MainTextfield>
+
+                <MainTextfield 
+                    v-if="!isEditing"
+                    v-model="formData.ai_personality"
+                    name="ai_personality" 
+                    placeholder="profesional" 
+                    label="Personalitas AI"
+                    :is-custom_instructions="true"
+                    required
+                >
+                    <template #icon>
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 4l1.2 3.6L14 9l-3.8 1.4L9 14l-1.2-3.6L4 9l3.8-1.4L9 4zM17 10l.9 2.7L21 14l-3.1 1.3L17 18l-.9-2.7L13 14l3.1-1.3L17 10zM12 17l.6 1.8L14 20l-1.4.6L12 22l-.6-1.4L10 20l1.4-1.2L12 17z" />
+                        </svg>
+                    </template>
+                </MainTextfield>
+
+                <MainTextfield 
+                    v-if="!isEditing"
+                    v-model="formData.custom_instructions"
+                    name="custom_instructions" 
+                    placeholder="Instruksi Khusus" 
+                    label="Instruksi Khusus"
+                    :is-custom_instructions="true"
+                    required
+                >
+                    <template #icon>
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 4l1.2 3.6L14 9l-3.8 1.4L9 14l-1.2-3.6L4 9l3.8-1.4L9 4zM17 10l.9 2.7L21 14l-3.1 1.3L17 18l-.9-2.7L13 14l3.1-1.3L17 10zM12 17l.6 1.8L14 20l-1.4.6L12 22l-.6-1.4L10 20l1.4-1.2L12 17z" />
+                        </svg>
+                    </template>
+                </MainTextfield>
+
+                <div class="flex gap-3 pt-4">
+                    <button
+                        type="button"
+                        @click="closeModal"
+                        class="flex-1 px-4 py-2 text-gray-700 rounded-lg border border-gray-300 transition-colors hover:bg-gray-50"
+                    >
+                    Batal
+                    </button>
+                    <button
+                        type="submit"
+                        class="flex-1 px-4 py-2 text-white rounded-lg transition-colors bg-primary hover:bg-primary/90"
+                        >
+                        {{ isEditing ? 'Update' : 'Simpan' }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</template>
+
+<script setup lang="ts">
+import { ref, watch } from 'vue'
+import MainTextfield from '~/components/textfield/MainTextfield.vue';
+import type { QuestionInputData } from '~/types/Questionnaire';
+
+const config = useRuntimeConfig();
+const props = defineProps<{
+    isOpen: boolean
+    editData?: QuestionInputData
+}>()
+
+const emit = defineEmits<{
+    'update:isOpen': [value: boolean]
+    'submit': [data: QuestionInputData]
+    'show-success-modal': [message: string]
+    'show-error-modal': [message: string]
+}>()
+
+const isEditing = computed(() => !!props.editData)
+
+const formData = ref({
+    name: '',
+    question_count: 0,
+    difficulty_level: '',
+    ai_personality: '',
+    custom_instructions: ''
+})
+
+const resetForm = () => {
+    formData.value = {
+        name: '',
+        question_count: 0,
+        difficulty_level: '',
+        ai_personality: '',
+        custom_instructions: ''
+    }
+}
+
+const closeModal = () => {
+    emit('update:isOpen', false)
+    resetForm()
+}
+
+const handleSubmit = async () => {
+    const payload = {
+        name: formData.value.name,
+        question_count: parseInt(formData.value.question_count.toString() || '0', 10), 
+        difficulty_level: formData.value.difficulty_level,
+        ai_personality: formData.value.ai_personality,
+        custom_instructions: formData.value.custom_instructions
+    }
+
+    
+    try {
+        console.log('Payload being sent:', payload)
+        const res = await $fetch('/admin/questionnaires/generate', {
+            method: 'POST',
+            body: payload,
+            credentials: 'include',
+             headers: {
+                'Content-Type' : 'application/json'
+            },
+            baseURL: config.public.apiBase
+        })
+
+        if (res) {
+            closeModal()
+            emit('update:isOpen', false)
+            emit('show-success-modal', 'berhasil menambahkan kuisioner silahkan menunggu hingga proses ai generated selesai')
+        }
+    } catch (error) {
+         emit('update:isOpen', false)
+        console.error('Error submitting student data:', error)
+        
+        const err = error as { status?: number; statusCode?: number; data?: { message?: string; error?: string; field?: string }; message?: string }
+        
+        let errorMessage = 'Terjadi kesalahan saat menyimpan data siswa'
+        
+        // Handle specific error status codes
+        if (err.status === 409 || err.statusCode === 409) {
+            // Conflict - data already exists
+            if (err.data?.message) {
+                errorMessage = err.data.message
+            } else if (err.data?.field) {
+                const field = err.data.field
+                const fieldNames: Record<string, string> = {
+                    'description': 'description',
+                    'email': 'Email',
+                    'name': 'Nama lengkap'
+                }
+                errorMessage = `${fieldNames[field] || field} sudah terdaftar dalam sistem`
+            } else {
+                errorMessage = 'Data siswa sudah ada dalam sistem'
+            }
+        } else if (err.status === 400 || err.statusCode === 400) {
+            // Bad request - validation error
+            if (err.data?.message) {
+                errorMessage = err.data.message
+            } else {
+                errorMessage = 'Data yang dimasukkan tidak valid'
+            }
+        } else if (err.status === 500 || err.statusCode === 500) {
+            // Server error
+            errorMessage = 'Terjadi kesalahan pada server, silakan coba lagi'
+        } else if (err.data?.message) {
+            errorMessage = err.data.message
+        } else if (err.message) {
+            errorMessage = err.message
+        }
+        
+        emit('show-error-modal', errorMessage)
+    }
+}
+
+watch(() => props.editData, (newData) => {
+    if (newData) {
+        formData.value = {
+            name: newData.name || '',
+            question_count: newData.question_count || 0,
+            difficulty_level: newData.difficulty_level || '',
+            ai_personality: newData.ai_personality || '',
+            custom_instructions: ''
+        }
+    }
+}, { immediate: true })
+
+watch(() => props.isOpen, (isOpen) => {
+    if (!isOpen) {
+        resetForm()
+    }
+})
+</script>

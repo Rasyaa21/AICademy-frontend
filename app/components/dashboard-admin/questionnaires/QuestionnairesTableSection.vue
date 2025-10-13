@@ -7,90 +7,65 @@
                         <div class="flex justify-center items-center w-10 h-10 rounded-lg bg-primary/10">
                             <Icon name="heroicons:document-text-20-solid" class="w-5 h-5 text-primary" />
                         </div>
-                        <div>
-                            <div class="text-sm font-medium text-gray-900">{{ questionnaire.title }}</div>
-                            <div class="text-xs text-gray-500">{{ questionnaire.description }}</div>
-                        </div>
                     </div>
                 </td>
                 <td class="px-6 py-4">
-                    <span 
-                        :class="[
-                            'px-2 py-1 rounded-full text-xs font-medium',
-                            questionnaire.type === 'ai-generated' 
-                                ? 'bg-purple-100 text-purple-800' 
-                                : 'bg-blue-100 text-blue-800'
-                        ]"
-                    >
-                        {{ questionnaire.type === 'ai-generated' ? 'AI Generated' : 'Manual' }}
+                    <span class="text-sm font-medium text-gray-900">
+                        {{ questionnaire.name }}
                     </span>
                 </td>
-                <td class="px-6 py-4 text-sm text-gray-600">{{ questionnaire.questions_count }} pertanyaan</td>
+                <td class="px-6 py-4 text-sm text-gray-600">{{ questionnaire.version }}</td>
                 <td class="px-6 py-4">
                     <div class="flex gap-2 items-center">
                         <span 
                             :class="[
                                 'px-2 py-1 rounded-full text-xs font-medium',
-                                questionnaire.status === 'active' 
+                                questionnaire.active === true
                                     ? 'bg-green-100 text-green-800' 
                                     : 'bg-gray-100 text-gray-800'
                             ]"
                         >
-                            {{ questionnaire.status === 'active' ? 'Aktif' : 'Draft' }}
+                            {{ questionnaire.active === true ? 'Aktif' : 'Draft' }}
                         </span>
-                        <button 
-                            @click="$emit('toggle-status', questionnaire)"
-                            class="text-xs text-gray-500 hover:text-gray-700"
-                        >
-                            Toggle
-                        </button>
-                    </div>
-                </td>
-                <td class="px-6 py-4 text-sm text-gray-600">
-                    <div class="flex gap-2 items-center">
-                        <span>{{ questionnaire.responses_count }}</span>
-                        <button 
-                            v-if="questionnaire.responses_count > 0"
-                            @click="$emit('view-responses', questionnaire)"
-                            class="text-xs text-primary hover:text-primary/80"
-                        >
-                            Lihat
-                        </button>
                     </div>
                 </td>
                 <td class="px-6 py-4 text-sm text-gray-600">
                     {{ formatDate(questionnaire.created_at) }}
                 </td>
-                <td class="px-6 py-4">
-                    <AdminActionButtons
-                        :item="questionnaire"
-                        :show-view="true"
-                        :show-edit="false"
-                        :show-delete="true"
-                        @view="$emit('preview-questionnaire', $event)"
-                        @delete="$emit('delete-questionnaire', $event)"
-                    />
-                </td>
-            </tr>
-        </template>
-    </AdminTableSection>
+                <td class="py-4 px-6">
+                            <div class="flex items-center gap-1">
+                                <button 
+                                    @click="$emit('preview-questionnaire', questionnaire)"
+                                    class="p-1 rounded hover:bg-gray-200"
+                                    title="Lihat Detail"
+                                >
+                                    <Icon name="heroicons:eye-20-solid" class="w-4 h-4 text-gray-600" />
+                                </button>
+                                <button 
+                                    @click="$emit('edit-questionnaire', questionnaire)"
+                                    class="p-1 hover:bg-gray-200 rounded"
+                                    title="Edit"
+                                >
+                                    <Icon name="heroicons:pencil-20-solid" class="w-4 h-4 text-gray-600" />
+                                </button>
+                                <button 
+                                    @click="$emit('delete-questionnaire', questionnaire)"
+                                    class="p-1 hover:bg-gray-200 rounded"
+                                    title="Hapus"
+                                >
+                                    <Icon name="heroicons:trash-20-solid" class="w-4 h-4 text-red-600" />
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+            </template>
+        </AdminTableSection>
 </template>
 
 <script setup lang="ts">
 import AdminTableSection from '~/components/dashboard-admin/shared/AdminTableSection.vue'
-import AdminActionButtons from '~/components/dashboard-admin/shared/AdminActionButtons.vue'
+import type { Questionnaire } from '~/types/Questionnaire';
 
-interface Questionnaire {
-    id: string
-    title: string
-    description: string
-    type: string
-    status: string
-    questions_count: number
-    responses_count: number
-    created_at: string
-    updated_at: string
-}
 
 defineProps<{
     paginatedQuestionnaires: Questionnaire[]
@@ -99,16 +74,16 @@ defineProps<{
 defineEmits<{
     'toggle-status': [questionnaire: Questionnaire]
     'view-responses': [questionnaire: Questionnaire]
+    'edit-questionnaire': [questionnaire: Questionnaire]
     'preview-questionnaire': [questionnaire: Questionnaire]
     'delete-questionnaire': [questionnaire: Questionnaire]
 }>()
 
 const tableColumns = [
     { key: 'questionnaire', label: 'Kuisioner' },
-    { key: 'type', label: 'Tipe' },
-    { key: 'questions', label: 'Jumlah Pertanyaan' },
+    { key: 'title', label: 'Nama' },
+    { key: 'version', label: 'Versi' },
     { key: 'status', label: 'Status' },
-    { key: 'responses', label: 'Respons' },
     { key: 'created', label: 'Dibuat' },
     { key: 'actions', label: 'Aksi' }
 ]

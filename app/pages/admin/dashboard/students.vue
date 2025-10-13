@@ -14,6 +14,11 @@
         @show-success-modal="showSuccessModal"
         @show-error-modal="showErrorModal"
     />
+    <StudentDetailPopup
+        v-model:is-open="openStudentDetail"
+        :student-id="selectedStudentId"
+    />
+    
     <div class="space-y-6">
         <div class="flex flex-col gap-4 justify-between lg:flex-row lg:items-center">
             <div>
@@ -26,62 +31,83 @@
 
         <StudentsStatsSection :student-stats="studentStats" />
 
-        <!-- Filter Component -->
-        <StudentFilter
-            v-model:searchQuery="searchQuery"
-            v-model:selectedClass="selectedClass"
-            v-model:selectedStatus="selectedStatus"
-            v-model:sortBy="sortBy"
-            :filteredCount="filteredStudents.length"
-            :totalCount="students.length"
-            :activeFiltersCount="activeFiltersCount"
-            :hasActiveFilters="hasActiveFilters"
-            @clear-filters="clearAllFilters"
-            @import-csv="openCsvPopup = true"
-            @add-student="openStudentInput = true"
-        />
+        <!-- Loading State -->
+        <div v-if="pending" class="text-center py-8">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+            <p class="text-gray-500 mt-2">Memuat data siswa...</p>
+        </div>
 
-        <!-- Students Table -->
-        <StudentsTableSection 
-            :paginated-students="paginatedStudents"
-            @view-student="viewStudent"
-            @edit-student="editStudent"
-            @delete-student="deleteStudent"
-        />
+        <!-- Error State -->
+        <div v-else-if="error" class="text-center py-8">
+            <p class="text-red-500">Error: {{ error.message }}</p>
+            <button @click="refresh()" class="mt-2 px-4 py-2 bg-primary text-white rounded-lg">
+                Coba Lagi
+            </button>
+        </div>
 
-        <!-- Empty State -->
-        <StudentsEmptyState 
-            v-if="filteredStudents.length === 0"
-            :search-query="searchQuery"
-            @clear-filters="clearAllFilters"
-        />
+        <!-- Content -->
+        <template v-else>
+            <!-- Filter Component -->
+            <StudentFilter
+                v-model:searchQuery="searchQuery"
+                v-model:selectedClass="selectedClass"
+                v-model:selectedStatus="selectedStatus"
+                v-model:sortBy="sortBy"
+                :filteredCount="totalItems"
+                :totalCount="totalItems"
+                :hasActiveFilters="hasActiveFilters"
+                @clear-filters="clearAllFilters"
+                @import-csv="openCsvPopup = true"
+                @add-student="openStudentInput = true"
+            />
 
-        <!-- Pagination -->
-        <StudentsPaginationSection
-            :current-page="currentPage"
-            :total-pages="totalPages"
-            :total-items="filteredStudents.length"
-            :items-per-page="itemsPerPage"
-            @page-changed="(page: number) => currentPage = page"
-        />
+            <!-- Students Table -->
+            <StudentsTableSection 
+                :paginated-students="students"
+                @view-student="viewStudent"
+                @edit-student="editStudent"
+                @delete-student="deleteStudent"
+            />
+
+            <!-- Empty State -->
+            <StudentsEmptyState 
+                v-if="students.length === 0"
+                :search-query="searchQuery"
+                @clear-filters="clearAllFilters"
+            />
+
+            <!-- Pagination -->
+            <StudentsPaginationSection
+                v-if="totalPages > 1"
+                :current-page="currentPage"
+                :total-pages="totalPages"
+                :total-items="totalItems"
+                :items-per-page="itemsPerPage"
+                @page-changed="handlePageChange"
+            />
+        </template>
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import StudentFilter from '~/components/dashboard-admin/students/StudentFilter.vue'
-import StudentInputPopup from '~/components/modal/StudentInputPopup.vue'
+
 import UploadCsvPopup from '~/components/modal/UploadCsvPopup.vue'
 import AlertModal from '~/components/modal/basic-modal/AlertModal.vue'
 import StudentsStatsSection from '~/components/dashboard-admin/students/StudentsStatsSection.vue'
 import StudentsTableSection from '~/components/dashboard-admin/students/StudentsTableSection.vue'
 import StudentsEmptyState from '~/components/dashboard-admin/students/StudentsEmptyState.vue'
 import StudentsPaginationSection from '~/components/dashboard-admin/students/StudentsPaginationSection.vue'
+import StudentDetailPopup from '~/components/modal/admin/dashboard/student/StudentDetailPopup.vue'
 import type { Student } from '~/types/Student'
+import StudentInputPopup from '~/components/modal/admin/dashboard/student/StudentInputPopup.vue'
 
 definePageMeta({
     layout: 'admin-dashboard-layout'
 })
+
+const config = useRuntimeConfig()
 
 const alertModal = ref({
     isOpen: false,
@@ -92,111 +118,67 @@ const alertModal = ref({
 
 const openCsvPopup = ref(false)
 const openStudentInput = ref(false)
+const openStudentDetail = ref(false)
 const searchQuery = ref('')
 const selectedClass = ref('')
 const selectedStatus = ref('')
 const sortBy = ref('newest')
+const selectedStudentId = ref()
 
 // Pagination
 const currentPage = ref(1)
 const itemsPerPage = 10
 
-// Sample data
-const students = ref<Student[]>([
-    {
-        id: '1',
-        nis: '2024001',
-        name: 'Ahmad Rizki Pratama',
-        username: 'ahmadrizki',
-        email: 'ahmad.rizki@student.smk.sch.id',
-        class: 'XII RPL 1',
-        status: 'active',
-        created_at: '2024-01-15T08:00:00Z'
-    },
-    {
-        id: '2',
-        nis: '2024002',
-        name: 'Siti Nurhaliza',
-        username: 'sitinur',
-        email: 'siti.nur@student.smk.sch.id',
-        class: 'XII RPL 1',
-        status: 'active',
-        created_at: '2024-01-16T08:00:00Z'
-    },
-    {
-        id: '3',
-        nis: '2024003',
-        name: 'Budi Santoso',
-        username: 'budisantoso',
-        email: 'budi.santoso@student.smk.sch.id',
-        class: 'XI RPL 2',
-        status: 'inactive',
-        created_at: '2024-02-01T08:00:00Z'
-    },
-    {
-        id: '4',
-        nis: '2024004',
-        name: 'Dewi Sartika',
-        username: 'dewisartika',
-        email: 'dewi.sartika@student.smk.sch.id',
-        class: 'XII RPL 2',
-        status: 'active',
-        created_at: '2024-02-15T08:00:00Z'
-    }
-])
+const headers = useRequestHeaders(['cookie'])
 
-const filteredStudents = computed(() => {
-    let filtered = students.value
-
-    if (searchQuery.value) {
-        const query = searchQuery.value.toLowerCase()
-        filtered = filtered.filter(student => 
-            student.name.toLowerCase().includes(query) ||
-            student.nis.toLowerCase().includes(query) ||
-            student.email.toLowerCase().includes(query) ||
-            student.username.toLowerCase().includes(query)
-        )
-    }
-
-    if (selectedClass.value) {
-        filtered = filtered.filter(s => s.class === selectedClass.value)
-    }
-
-    if (selectedStatus.value) {
-        filtered = filtered.filter(s => s.status === selectedStatus.value)
-    }
-
-    // Sort
-    filtered.sort((a, b) => {
-        switch (sortBy.value) {
-            case 'newest':
-                return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-            case 'name':
-                return a.name.localeCompare(b.name)
-            case 'nis':
-                return a.nis.localeCompare(b.nis)
-            case 'class':
-                return a.class.localeCompare(b.class)
-            default:
-                return 0
-        }
+// ✅ FIXED: Build API query with all parameters
+const buildApiQuery = () => {
+    const params = new URLSearchParams({
+        page: currentPage.value.toString(),
+        limit: itemsPerPage.toString()
     })
+    
+    if (searchQuery.value.trim()) {
+        params.append('search', searchQuery.value.trim())
+    }
+    
+    if (selectedClass.value) {
+        params.append('class', selectedClass.value)
+    }
+    
+    if (selectedStatus.value) {
+        params.append('status', selectedStatus.value)
+    }
+    
+    if (sortBy.value) {
+        params.append('sort', sortBy.value)
+    }
+    
+    return params.toString()
+}
 
-    return filtered
-})
+// ✅ FIXED: Watch all filter parameters
+const { data: studentData, pending, error, refresh } = await useAsyncData('studentData', () => 
+    $fetch(`/admin/users/students?${buildApiQuery()}`, {
+        baseURL: config.public.apiBase,
+        credentials: 'include',
+        headers
+    }), {
+        watch: [currentPage, searchQuery, selectedClass, selectedStatus, sortBy]
+    }
+)
 
-const paginatedStudents = computed(() => {
-    const start = (currentPage.value - 1) * itemsPerPage
-    const end = start + itemsPerPage
-    return filteredStudents.value.slice(start, end)
-})
+// ✅ FIXED: Use API data directly (no client-side filtering)
+const students = computed(() => studentData.value?.data || [])
+const totalPages = computed(() => studentData.value?.data?.total_pages || 1)
+const totalItems = computed(() => studentData.value?.data?.total || 0)
 
-const totalPages = computed(() => {
-    return Math.ceil(filteredStudents.value.length / itemsPerPage)
-})
+// ✅ FIXED: Remove client-side filtering and pagination
+// const filteredStudents = computed(() => { ... }) // ← HAPUS
+// const paginatedStudents = computed(() => { ... }) // ← HAPUS
 
 const studentStats = computed(() => {
-    const active = students.value.filter(s => s.status === 'active').length
+    // For accurate stats, you might need a separate API endpoint
     const newThisMonth = students.value.filter(s => {
         const createdDate = new Date(s.created_at)
         const now = new Date()
@@ -204,23 +186,14 @@ const studentStats = computed(() => {
     }).length
     
     return {
-        total: students.value.length,
-        active,
+        total: totalItems.value, // ✅ FIXED: Use totalItems from API
         newThisMonth,
-        challengeParticipants: Math.floor(students.value.length * 0.7)
+        challengeParticipants: Math.floor(totalItems.value * 0.7)
     }
 })
 
 const hasActiveFilters = computed(() => {
     return !!(searchQuery.value || selectedClass.value || selectedStatus.value)
-})
-
-const activeFiltersCount = computed(() => {
-    let count = 0
-    if (searchQuery.value) count++
-    if (selectedClass.value) count++
-    if (selectedStatus.value) count++
-    return count
 })
 
 // Methods
@@ -231,20 +204,37 @@ const clearAllFilters = () => {
     currentPage.value = 1
 }
 
-// Action handlers
+// ✅ FIXED: Proper page change handler
+const handlePageChange = (page: number) => {
+    currentPage.value = page
+}
+
 const viewStudent = (student: Student) => {
-    console.log('View student:', student)
-    // Implement view student logic
+    selectedStudentId.value = student.id
+    openStudentDetail.value = true
 }
 
 const editStudent = (student: Student) => {
     console.log('Edit student:', student)
-    // Implement edit student logic
+    // You can implement edit logic here
 }
 
-const deleteStudent = (student: Student) => {
-    console.log('Delete student:', student)
-    // Implement delete student logic
+const deleteStudent = async (student: Student) => {
+    if (confirm('Apakah Anda yakin ingin menghapus siswa ini?')) {
+        try {
+            await $fetch(`/admin/users/students/${student.id}`, {
+                method: 'DELETE',
+                baseURL: config.public.apiBase,
+                credentials: 'include',
+                headers
+            })
+            showSuccessModal('Siswa berhasil dihapus')
+        refresh()
+        } catch (error) {
+            console.error('Error deleting student:', error)
+            showErrorModal('Gagal menghapus siswa')
+        }
+    }
 }
 
 // Alert modal handlers
@@ -268,17 +258,13 @@ const showErrorModal = (message: string) => {
 
 const handleAlertOk = () => {
     alertModal.value.isOpen = false
-    // Optionally refresh data after successful operation
     if (alertModal.value.type === 'success') {
-        // You could refresh the student list here
-        // await refreshStudentList()
+        refresh()
     }
 }
 
-// Watch for filter changes to reset pagination
-watch([searchQuery, selectedClass, selectedStatus], () => {
+// ✅ FIXED: Reset page when filters change
+watch([searchQuery, selectedClass, selectedStatus, sortBy], () => {
     currentPage.value = 1
 })
-
-
 </script>

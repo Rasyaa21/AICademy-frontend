@@ -1,5 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import 'pinia-plugin-persistedstate'
 export default defineNuxtConfig({
+  pinia: {
+    autoImports: ['defineStore']
+  },
   pages: true,
   runtimeConfig: {
     public: {
@@ -20,6 +24,7 @@ export default defineNuxtConfig({
     'nuxt-charts',
     '@vueuse/nuxt',
     '@nuxt/eslint',
+    '@pinia/nuxt',
   ], 
   googleFonts: {
     families: {

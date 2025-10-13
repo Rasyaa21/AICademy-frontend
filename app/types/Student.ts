@@ -1,10 +1,13 @@
 export interface Student {
     id: string
+    user_id: string
+    fullname: string
     nis: string
-    name: string
-    username: string
-    email: string
     class: string
-    status: 'active' | 'inactive'
+    profile_picture: string
+    headline: string
+    bio: string
+    cv_file: string
+    email: string
     created_at: string
 }

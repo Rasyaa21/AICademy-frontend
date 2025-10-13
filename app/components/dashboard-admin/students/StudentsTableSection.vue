@@ -8,7 +8,6 @@
                         <th class="px-6 py-3 text-sm font-semibold text-left text-gray-900">NIS</th>
                         <th class="px-6 py-3 text-sm font-semibold text-left text-gray-900">Kelas</th>
                         <th class="px-6 py-3 text-sm font-semibold text-left text-gray-900">Email</th>
-                        <th class="px-6 py-3 text-sm font-semibold text-left text-gray-900">Status</th>
                         <th class="px-6 py-3 text-sm font-semibold text-left text-gray-900">Bergabung</th>
                         <th class="px-6 py-3 text-sm font-semibold text-left text-gray-900">Aksi</th>
                     </tr>
@@ -18,29 +17,16 @@
                         <td class="px-6 py-4">
                             <div class="flex gap-3 items-center">
                                 <div class="flex justify-center items-center w-10 h-10 rounded-full bg-primary/10">
-                                    <span class="text-sm font-semibold text-primary">{{ getInitials(student.name) }}</span>
+                                    <span class="text-sm font-semibold text-primary">A</span>
                                 </div>
                                 <div>
-                                    <div class="text-sm font-medium text-gray-900">{{ student.name }}</div>
-                                    <div class="text-xs text-gray-500">{{ student.username }}</div>
+                                    <div class="text-sm font-medium text-gray-900">{{ student.fullname }}</div>
                                 </div>
                             </div>
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-600">{{ student.nis }}</td>
                         <td class="px-6 py-4 text-sm text-gray-600">{{ student.class }}</td>
                         <td class="px-6 py-4 text-sm text-gray-600">{{ student.email }}</td>
-                        <td class="px-6 py-4">
-                            <span 
-                                :class="[
-                                    'px-2 py-1 rounded-full text-xs font-medium',
-                                    student.status === 'active' 
-                                        ? 'bg-green-100 text-green-800' 
-                                        : 'bg-red-100 text-red-800'
-                                ]"
-                            >
-                                {{ student.status === 'active' ? 'Aktif' : 'Tidak Aktif' }}
-                            </span>
-                        </td>
                         <td class="px-6 py-4 text-sm text-gray-600">
                             {{ formatDate(student.created_at) }}
                         </td>

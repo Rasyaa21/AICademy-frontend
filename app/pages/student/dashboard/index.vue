@@ -29,7 +29,6 @@ import Calendar from '~/components/calendar/Calendar.vue';
 import MyChallange from '~/components/dashboard-student/index/MyChallange.vue';
 import MyProgress from '~/components/dashboard-student/index/MyProgress.vue';
 import ProfilingBanner from '~/components/dashboard-student/index/ProfilingBanner.vue';
-import Team from '~/components/dashboard-student/Team.vue';
 
 
 

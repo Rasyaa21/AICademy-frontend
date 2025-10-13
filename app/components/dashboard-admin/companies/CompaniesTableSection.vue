@@ -7,7 +7,6 @@
                         <th class="px-6 py-3 text-sm font-semibold text-left text-gray-900">Perusahaan</th>
                         <th class="px-6 py-3 text-sm font-semibold text-left text-gray-900">Email</th>
                         <th class="px-6 py-3 text-sm font-semibold text-left text-gray-900">Lokasi</th>
-                        <th class="px-6 py-3 text-sm font-semibold text-left text-gray-900">Status</th>
                         <th class="px-6 py-3 text-sm font-semibold text-left text-gray-900">Bergabung</th>
                         <th class="px-6 py-3 text-sm font-semibold text-left text-gray-900">Aksi</th>
                     </tr>
@@ -16,29 +15,30 @@
                     <tr v-for="company in paginatedCompanies" :key="company.id" class="border-b border-gray-100 hover:bg-gray-50">
                         <td class="px-6 py-4">
                             <div class="flex gap-3 items-center">
-                                <div class="flex justify-center items-center w-10 h-10 rounded-full bg-primary/10">
-                                    <span class="text-sm font-semibold text-primary">{{ getInitials(company.company_name) }}</span>
+                                <!-- Company Logo/Avatar -->
+                                <div class="flex justify-center items-center w-12 h-12 rounded-full overflow-hidden bg-primary/10 flex-shrink-0">
+                                    <img 
+                                        v-if="company.company_logo" 
+                                        :src="company.company_logo" 
+                                        :alt="company.company_name"
+                                        class="w-full h-full object-cover"
+                                        @error="onImageError"
+                                    />
+                                    <span 
+                                        v-else 
+                                        class="text-sm font-semibold text-primary"
+                                    >
+                                        {{ getInitials(company.company_name) }}
+                                    </span>
                                 </div>
-                                <div>
-                                    <div class="text-sm font-medium text-gray-900">{{ company.company_name }}</div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="text-sm font-medium text-gray-900 truncate">{{ company.company_name }}</div>
                                     <div class="text-xs text-gray-500 truncate max-w-[200px]">{{ company.description || 'No description' }}</div>
                                 </div>
                             </div>
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-600">{{ company.email }}</td>
                         <td class="px-6 py-4 text-sm text-gray-600">{{ company.company_location || '-' }}</td>
-                        <td class="px-6 py-4">
-                            <span 
-                                :class="[
-                                    'px-2 py-1 rounded-full text-xs font-medium',
-                                    company.status === 'active' 
-                                        ? 'bg-green-100 text-green-800' 
-                                        : 'bg-red-100 text-red-800'
-                                ]"
-                            >
-                                {{ company.status === 'active' ? 'Aktif' : 'Tidak Aktif' }}
-                            </span>
-                        </td>
                         <td class="px-6 py-4 text-sm text-gray-600">
                             {{ formatDate(company.created_at) }}
                         </td>
@@ -103,4 +103,14 @@ const formatDate = (dateString: string) => {
         year: 'numeric'
     })
 }
-</script> 
+
+const onImageError = (event: Event) => {
+    const target = event.target as HTMLImageElement
+    target.style.display = 'none'
+    // Show initials fallback
+    const parent = target.parentElement
+    if (parent) {
+        parent.innerHTML = `<span class="text-sm font-semibold text-primary">${getInitials(target.alt || 'Company')}</span>`
+    }
+}
+</script>

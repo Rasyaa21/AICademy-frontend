@@ -55,10 +55,15 @@ watch(isCollapse, v => localStorage.setItem('sidebar:collapsed', v ? '1' : '0'))
                     :is-selected="false" path="/admin/dashboard/teachers" :collapsed="isCollapse" />
       <SidebarItems icon="heroicons:users-16-solid" label="Data Perusahaan"
                     :is-selected="false" path="/admin/dashboard/companies" :collapsed="isCollapse" />
+      <SidebarItems icon="heroicons:users-16-solid" label="Data Alumni"
+                    :is-selected="false" path="/admin/dashboard/alumni" :collapsed="isCollapse" />
       <SidebarItems icon="heroicons:trophy-solid" label="Challange"
                     :is-selected="false" path="/admin/dashboard/challange" :collapsed="isCollapse" />
       <SidebarItems icon="tabler:clipboard-list" label="Profiling Kuisioner"
                     :is-selected="false" path="/admin/dashboard/questionnaires" :collapsed="isCollapse" />
+      <SidebarItems icon="tabler:clipboard-list" label="Role" :is-selected="false" path="/admin/dashboard/roles" :collapsed="isCollapse"/>
+      <SidebarItems icon="streamline-plump:arrow-roadmap-solid" label="Roadmap" :is-selected="false" path="/admin/dashboard/roadmap" :collapsed="isCollapse"/>
+
     </ul>
   </aside>
 
@@ -118,11 +123,16 @@ watch(isCollapse, v => localStorage.setItem('sidebar:collapsed', v ? '1' : '0'))
           <div class="px-4 py-3">
             <div class="flex flex-col gap-2">
               <SidebarItems icon="heroicons:home-solid" label="Home" path="/admin/dashboard" />
-              <SidebarItems icon="heroicons:home-solid" label="Profiling" :is-selected="false" path="/admin/dashboard" />
+              <SidebarItems icon="heroicons:users-16-solid" label="Data Siswa" :is-selected="false" path="/admin/dashboard/students"/>
               <SidebarItems icon="heroicons:users-16-solid" label="Data Guru" :is-selected="false" path="/admin/dashboard/teachers"/>
               <SidebarItems icon="heroicons:users-16-solid" label="Data Perusahaan" :is-selected="false" path="/admin/dashboard/companies"/>
+                    <SidebarItems icon="heroicons:users-16-solid" label="Data Alumni"
+                    :is-selected="false" path="/admin/dashboard/alumni" />
               <SidebarItems icon="heroicons:trophy-solid" label="Challange" :is-selected="false" path="/admin/dashboard/challange" />
               <SidebarItems icon="tabler:clipboard-list" label="Profiling Kuisioner" :is-selected="false" path="/admin/dashboard/questionnaires" />
+              <SidebarItems icon="tabler:clipboard-list" label="Role" :is-selected="false" path="/admin/dashboard/roles" />
+         <SidebarItems icon="streamline-plump:arrow-roadmap-solid" label="Roadmap" :is-selected="false" path="/admin/dashboard/roadmap"/>
+
             </div>
           </div>
         </div>

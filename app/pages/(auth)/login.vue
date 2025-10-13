@@ -129,6 +129,9 @@ import AlertModal from '~/components/modal/basic-modal/AlertModal.vue';
 import MainTextfield from '~/components/textfield/MainTextfield.vue'
 
 const config = useRuntimeConfig();
+const authStore = useAuthStore()
+const userStore = useUserStore() // Add user store
+const { setupTokenRefresh } = useAuth()
 
 definePageMeta({
     layout: false
@@ -183,65 +186,58 @@ const getDashboardUrl = (roleValue: string | null): string => {
 }
 
 const handleLogin = async () => {
+  const payload = {
+    email: form.value.email,
+    password: form.value.password
+  }
 
-    const payload = {          
-        email: form.value.email,
-        password: form.value.password,
+  try {
+    const res = await $fetch('/auth/login', {
+      method: 'POST',
+      body: payload,
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      baseURL: config.public.apiBase
+    })
+
+    if (res?.success && res?.data) {
+      const { access_token, refresh_token, user, require_password_change } = res.data
+      authStore.setTokens(access_token, refresh_token, user)
+
+      if (user.role === 'student') {
+        await userStore.fetchUser()
+      }
+
+      // Mulai auto-refresh token
+      setupTokenRefresh()
+
+      if (require_password_change === true) {
+        showSuccessModal('Login berhasil! Anda akan dialihkan ke halaman reset password')
+        setTimeout(() => navigateTo('/reset-default-user-password'), 1200)
+        return
+      }
+
+      const dashboardUrl = getDashboardUrl(user.role)
+      showSuccessModal('Login berhasil! Anda akan dialihkan ke dashboard')
+      setTimeout(() => navigateTo(dashboardUrl), 1200)
+    } else {
+      throw new Error(res?.message || 'Login gagal')
     }
-
-    try {
-        const res = await $fetch('/auth/login', {
-            method: 'POST',
-            body: payload,
-            credentials: 'include',
-            headers: {
-                'Content-Type' : 'application/json'
-            },
-            baseURL: config.public.apiBase
-        });
-        console.log(res)
-        const roleRef = useCookie<'admin'|'teacher'|'student'|'alumni'|'company'|null>('role')
-        const role = roleRef.value
-        const isPasswordReset = res.data.require_password_change
-        console.log(`is password reset ${isPasswordReset}`)
-
-        if(isPasswordReset == true) {
-            showSuccessModal('Login berhasil! Anda akan dialihkan ke page reset password')
-            setTimeout(() => {
-                navigateTo('/reset-default-user-password')
-            }, 1500)
-            return;
-        }
-        
-        if(roleRef != useCookie<'student'>('role')) {
-            showSuccessModal('Login berhasil! Anda akan dialihkan ke dashboard')
-            setTimeout(() => {
-                navigateTo(getDashboardUrl(role))
-            }, 1500)
-            return;
-        }
-        
-        
-        
-    } catch (error: unknown) {
-        const err = error as { status?: number; statusCode?: number; data?: { message?: string; error?: string }; message?: string }
-        
-        let errorMessage = 'Password atau email yang anda masukan salah'
-        
-        if (err.status === 401 || err.statusCode === 401) {
-            errorMessage = 'Email atau password tidak valid'
-        } else if (err.status === 404 || err.statusCode === 404) {
-            errorMessage = 'Akun tidak ditemukan'
-        } else if (err.data?.message) {
-            errorMessage = err.data.message
-        } else if (err.message) {
-            errorMessage = err.message
-        }
-        
-        showErrorModal(errorMessage)
-        console.error('Error submitting post:', error)
-    }
+  } catch (error: unknown) {
+    const err = error as { status?: number; statusCode?: number; data?: { message?: string }; message?: string }
+    let msg = 'Password atau email yang anda masukan salah'
+    if (err.status === 401 || err.statusCode === 401) msg = 'Email atau password tidak valid'
+    else if (err.status === 404 || err.statusCode === 404) msg = 'Akun tidak ditemukan'
+    else if (err.data?.message) msg = err.data.message
+    else if (err.message) msg = err.message
+    showErrorModal(msg)
+    console.error('Login error:', error)
+  }
 }
+
+onMounted(() => {
+    authStore.loadFromCookies()
+})
 </script>
 
 <style scoped>
