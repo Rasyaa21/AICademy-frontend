@@ -8,6 +8,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000/api/v1',
+      objectStorageUrl: process.env.NUXT_PUBLIC_OBJECT_STORAGE_URL
     },
   },
   compatibilityDate: '2025-07-15',
@@ -45,5 +46,9 @@ export default defineNuxtConfig({
       xl: 1280,
       xxl: 1536,
     },
+    // optional: jika ingin remote optimization, daftarkan domain CDN
+    domains: process.env.NUXT_PUBLIC_OBJECT_STORAGE_URL
+      ? [new URL(process.env.NUXT_PUBLIC_OBJECT_STORAGE_URL).hostname]
+      : []
   }
 })

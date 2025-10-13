@@ -17,7 +17,6 @@ const isActive = (deadline: string) => new Date(deadline) > new Date();
 </script>
 
 <template>
-  <!-- Gunakan NuxtLink agar navigasi otomatis -->
   <NuxtLink
     :to="`/student/dashboard/challange/${challenge.id}`"
     class="group block relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:-translate-y-2 focus:outline-none focus:ring-2 focus:ring-primary/40"

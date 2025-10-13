@@ -82,21 +82,22 @@
         <div class="hidden absolute right-16 top-1/4 w-8 h-8 rounded-lg rotate-12 sm:block md:w-12 md:h-12 bg-white/5"></div>
 
         <!-- Floating Icons - Responsive positioning -->
+                <!-- Floating Icons - Responsive positioning -->
         <div class="absolute left-8 top-16 md:top-24 md:left-32 lg:left-48 animate-float">
             <div class="p-2 w-12 h-12 rounded-full shadow-lg backdrop-blur-sm md:w-16 md:h-16 lg:w-20 lg:h-20 bg-white/10 md:p-3">
-                <Icon name="heroicons:academic-cap-20-solid" class="w-full h-full text-white opacity-80" />
+                <NuxtImg :src="`${objectStorageUrl}/assets/home-icon.webp`" alt="Home" class="object-contain w-full h-full opacity-80" provider="none" />
             </div>
         </div>
 
         <div class="absolute right-8 top-1/3 md:right-24 lg:right-32 animate-float-delayed">
             <div class="p-2 w-12 h-12 rounded-full shadow-lg backdrop-blur-sm md:w-16 md:h-16 lg:w-20 lg:h-20 bg-white/10 md:p-3">
-                <Icon name="heroicons:book-open-20-solid" class="w-full h-full text-white opacity-80" />
+                <NuxtImg :src="`${objectStorageUrl}/assets/book-icon.webp`" alt="Book" class="object-contain w-full h-full opacity-80" provider="none" />
             </div>
         </div>
 
         <div class="absolute left-4 bottom-32 md:bottom-40 md:left-16 animate-float-slow">
             <div class="p-2 w-12 h-12 rounded-full shadow-lg backdrop-blur-sm md:w-16 md:h-16 lg:w-20 lg:h-20 bg-white/10 md:p-3">
-                <Icon name="heroicons:light-bulb-20-solid" class="w-full h-full text-white opacity-80" />
+                <NuxtImg :src="`${objectStorageUrl}/assets/gear-icon.webp`" alt="Settings" class="object-contain w-full h-full opacity-80" provider="none" />
             </div>
         </div>
 
@@ -151,6 +152,7 @@ const isRoadmapPopupOpen = ref(false)
 const roadmapData = ref<any>(null)
 const errorMessage = ref<string>('')
 const config = useRuntimeConfig()
+const objectStorageUrl = config.public.objectStorageUrl
 
 // Fetch roadmap data using useAsyncData
 const { data, pending, error, refresh } = await useAsyncData('my-roadmap', () => 
