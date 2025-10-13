@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import ProjectCard from '../ProjectCard.vue';
 
+const config = useRuntimeConfig()
+const objectStorageUrl = config.public.objectStorageUrl || process.env.OBJECT_STORAGE_URL
+
 const projects = ref([
   {
     id: 1,
@@ -9,11 +12,11 @@ const projects = ref([
     category: 'Web Application',
     rank: 1,
     author: {
-      avatar: '/assets/images/project/pregnacare.jpeg',
+      avatar: `${objectStorageUrl}/assets/pregnacare.webp`,
       team: 'IntechCode'
     },
     tech: ['Next.js', 'Express.js', 'Prisma', 'PosgresSQL'],
-    image: '/assets/images/project/pregnacare.jpeg',
+    image: `${objectStorageUrl}/assets/pregnacare.webp`,
     githubUrl: 'https://github.com/Rasyaa21/Nyampah_Dinacom',
     liveUrl: 'https://dodolan.example.com'
   },
@@ -24,11 +27,11 @@ const projects = ref([
     category: 'Mobile Application',
     rank: 2,
     author: {
-      avatar: '/assets/images/project/dinacom.png',
+      avatar: `${objectStorageUrl}/assets/dinacom.webp`,
       team: 'klub_realitas.dart'
     },
     tech: ['Flutter', 'Gemini AI', 'Laravel', 'MySQL'],
-    image: '/assets/images/project/dinacom.png',
+    image: `${objectStorageUrl}/assets/dinacom.webp`,
     githubUrl: 'https://github.com/Rasyaa21/Nyampah_Dinacom',
     liveUrl: 'https://edutrack.example.com'
   },
@@ -39,11 +42,11 @@ const projects = ref([
     category: 'Web Application',
     rank: 3,
     author: {
-      avatar: '/assets/images/project/dodolan-img.png',
+      avatar: `${objectStorageUrl}/assets/dodolan-img.webp`,
       team: 'IntechCode'
     },
     tech: ['Next.js'],
-    image: '/assets/images/project/agriloka.jpeg',
+    image: `${objectStorageUrl}/assets/agriloka.webp`,
     githubUrl: 'https://github.com/Rasyaa21/dodolan-final-web',
     liveUrl: 'https://agriloka-intech.vercel.app/'
   }

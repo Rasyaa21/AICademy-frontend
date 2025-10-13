@@ -23,7 +23,7 @@ const isActive = (deadline: string) => new Date(deadline) > new Date();
     class="group block relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:-translate-y-2 focus:outline-none focus:ring-2 focus:ring-primary/40"
   >
     <div class="h-32 relative overflow-hidden">
-      <img :src="challenge.thumbnail_image" :alt="challenge.title" class="w-full h-full object-cover" loading="lazy" />
+      <NuxtImg :src="challenge.thumbnail_image" :alt="challenge.title" class="w-full h-full object-cover" loading="lazy" />
       <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
 
       <div class="absolute top-4 right-4">

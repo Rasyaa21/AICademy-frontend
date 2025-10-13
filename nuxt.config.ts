@@ -25,6 +25,7 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@nuxt/eslint',
     '@pinia/nuxt',
+    '@nuxt/image',
   ], 
   googleFonts: {
     families: {
@@ -33,4 +34,16 @@ export default defineNuxtConfig({
     display: "swap",
     preconnect: true,
   },
+  image: {
+    quality: 80,
+    format: ['webp', 'avif', 'png', 'jpg'],
+    screens: {
+      xs: 320,
+      sm: 640,
+      md: 768,
+      lg: 1024,
+      xl: 1280,
+      xxl: 1536,
+    },
+  }
 })

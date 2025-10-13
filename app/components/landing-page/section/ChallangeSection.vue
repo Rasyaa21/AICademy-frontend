@@ -4,14 +4,16 @@ import SegmentedControl from "../SegmentedControl.vue";
 import ChallengeCard from "../../card/ChallengeCard.vue";
 import type { Challenge } from "~/types/Challenge";
 
+const config = useRuntimeConfig()
+const objectStorageUrl = config.public.objectStorageUrl || process.env.OBJECT_STORAGE_URL
+
 const selectedCategory = ref("All");
 
 // Simple mock data sesuai backend structure
 const challenges = ref<Challenge[]>([
   {
     id: "550e8400-e29b-41d4-a716-446655440001",
-    thumbnail_image: "/assets/images/smk-telkom.jpeg",
-
+    thumbnail_image: `${objectStorageUrl}/assets/smk-telkom.webp`,
     title: "API Perpustakaan",
     description: "Buatlah REST API untuk sistem perpustakaan dengan skema database yang telah ditentukan",
     organizer: "Agus Dwi Cahaya S.Kom",
@@ -22,8 +24,7 @@ const challenges = ref<Challenge[]>([
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440002",
-    thumbnail_image: "/assets/images/smk-telkom.jpeg",
-
+    thumbnail_image: `${objectStorageUrl}/assets/smk-telkom.webp`,
     title: "React JS Portfolio",
     description: "Buat portfolio website menggunakan React JS dengan design yang responsive dan modern",
     organizer: "Siti Nurhasanah S.Pd",
@@ -34,7 +35,7 @@ const challenges = ref<Challenge[]>([
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440003",
-    thumbnail_image: "/assets/images/smk-telkom.jpeg",
+    thumbnail_image: `${objectStorageUrl}/assets/smk-telkom.webp`,
     title: "UI Design Challenge",
     description: "Desain interface aplikasi mobile untuk e-commerce dengan fokus pada user experience",
     organizer: "Ahmad Rizki M.Kom",
@@ -45,8 +46,7 @@ const challenges = ref<Challenge[]>([
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440004",
-    thumbnail_image: "/assets/images/smk-telkom.jpeg",
-
+    thumbnail_image: `${objectStorageUrl}/assets/smk-telkom.webp`,
     title: "CTF Web Security",
     description: "Selesaikan tantangan keamanan web dengan berbagai teknik penetration testing",
     organizer: "Agus Dwi Cahaya S.Kom",

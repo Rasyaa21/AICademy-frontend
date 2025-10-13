@@ -34,7 +34,7 @@ const rankColors = {
          project.rank === 1 ? 'ring-4 ring-yellow-400/50' : ''
        ]">
     <div class="h-48 relative overflow-hidden">
-      <img :src="project.image" :alt="project.title" 
+      <NuxtImg :src="project.image" :alt="project.title" 
            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
       
       <!-- Overlay -->
@@ -71,8 +71,8 @@ const rankColors = {
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-3">
           <div class="relative">
-            <img :src="project.author.avatar" :alt="project.author.team" 
-                 class="w-12 h-12 rounded-full object-cover ring-2 ring-primary/20">
+            <NuxtImg :src="project.author.avatar" :alt="project.author.team" 
+                 class="w-12 h-12 rounded-full object-cover ring-2 ring-primary/20" />
             <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white"></div>
           </div>
           <div>
