@@ -17,19 +17,19 @@
 
         <div class="absolute top-24 left-32 lg:left-48 animate-float">
             <div class="w-[80px] h-[80px] bg-white/10 backdrop-blur-sm rounded-full p-3 shadow-lg">
-                <img src="/assets/images/home-icon.png" alt="Home" class="object-contain w-full h-full opacity-80" />
+                <NuxtImg :src="`${objectStorageUrl}/assets/home-icon.webp`" alt="Home" class="object-contain w-full h-full opacity-80" provider="none" />
             </div>
         </div>
 
         <div class="absolute right-24 top-1/3 lg:right-32 animate-float-delayed">
             <div class="w-[80px] h-[80px] bg-white/10 backdrop-blur-sm rounded-full p-3 shadow-lg">
-                <img src="/assets/images/book-icon.png" alt="Book" class="object-contain w-full h-full opacity-80" />
+                <NuxtImg :src="`${objectStorageUrl}/assets/book-icon.webp`" alt="Book" class="object-contain w-full h-full opacity-80" provider="none" />
             </div>
         </div>
 
         <div class="absolute left-16 bottom-40 animate-float-slow">
             <div class="w-[80px] h-[80px] bg-white/10 backdrop-blur-sm rounded-full p-3 shadow-lg">
-                <img src="/assets/images/gear-icon.png" alt="Settings" class="object-contain w-full h-full opacity-80" />
+                <NuxtImg :src="`${objectStorageUrl}/assets/gear-icon.webp`" alt="Settings" class="object-contain w-full h-full opacity-80" provider="none" />
             </div>
         </div>
 
@@ -76,6 +76,7 @@ definePageMeta({
 })
 
 const config = useRuntimeConfig()
+const objectStorageUrl = config.public.objectStorageUrl
 
 const form = ref({
     password: '',

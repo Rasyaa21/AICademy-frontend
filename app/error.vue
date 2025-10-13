@@ -13,19 +13,43 @@
     <!-- Floating Icons (sama seperti HeroSection) -->
     <div class="absolute top-24 left-32 lg:left-48 animate-float">
       <div class="w-[80px] h-[80px] bg-transparent backdrop-blur-sm rounded-full p-3 shadow-lg">
-        <img src="/assets/images/home-icon.png" alt="Home" class="w-full h-full object-contain opacity-60" />
+        <NuxtImg 
+          :src="`${objectStorageUrl}/assets/home-icon.webp`" 
+          alt="Home" 
+          class="w-full h-full object-contain opacity-60"
+          loading="lazy"
+          width="80"
+          height="80"
+          format="webp"
+        />
       </div>
     </div>
 
     <div class="absolute top-1/3 right-24 lg:right-32 animate-float-delayed">
       <div class="w-[80px] h-[80px] bg-transparent backdrop-blur-sm rounded-full p-3 shadow-lg">
-        <img src="/assets/images/book-icon.png" alt="Book" class="w-full h-full object-contain opacity-60" />
+        <NuxtImg 
+          :src="`${objectStorageUrl}/assets/book-icon.webp`" 
+          alt="Book" 
+          class="w-full h-full object-contain opacity-60"
+          loading="lazy"
+          width="80"
+          height="80"
+          format="webp"
+        />
       </div>
     </div>
 
     <div class="absolute bottom-40 left-16 animate-float-slow">
       <div class="w-[80px] h-[80px] bg-transparent backdrop-blur-sm rounded-full p-3 shadow-lg">
-        <img src="/assets/images/gear-icon.png" alt="Settings" class="w-full h-full object-contain opacity-60" />
+        <NuxtImg 
+          :src="`${objectStorageUrl}/assets/gear-icon.webp`" 
+          alt="Settings" 
+          class="w-full h-full object-contain opacity-60"
+          loading="lazy"
+          width="80"
+          height="80"
+          format="webp"
+        />
       </div>
     </div>
 
@@ -146,6 +170,10 @@ interface NuxtError {
 const props = defineProps<{
   error: NuxtError
 }>()
+
+// Setup runtime config untuk CDN
+const config = useRuntimeConfig()
+const objectStorageUrl = config.public.objectStorageUrl || process.env.OBJECT_STORAGE_URL
 
 const isDev = import.meta.dev
 

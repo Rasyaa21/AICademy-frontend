@@ -5,7 +5,7 @@ import ChallengeCard from "../../card/ChallengeCard.vue";
 import type { Challenge } from "~/types/Challenge";
 
 const config = useRuntimeConfig()
-const objectStorageUrl = config.public.objectStorageUrl || process.env.OBJECT_STORAGE_URL
+const objectStorageUrl = config.public.NUXT_PUBLIC_OBJECT_STORAGE_URL || process.env.NUXT_PUBLIC_OBJECT_STORAGE_URL
 
 const selectedCategory = ref("All");
 
