@@ -203,5 +203,5 @@
 <script setup>
 // Setup runtime config untuk CDN
 const config = useRuntimeConfig()
-const objectStorageUrl = config.public.objectStorageUrl || process.env.OBJECT_STORAGE_URL
+const objectStorageUrl = config.public.NUXT_PUBLIC_OBJECT_STORAGE_URL || process.env.NUXT_PUBLIC_OBJECT_STORAGE_URL
 </script>
