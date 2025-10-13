@@ -14,15 +14,19 @@ const formatDeadline = (deadline: string) =>
   });
 
 const isActive = (deadline: string) => new Date(deadline) > new Date();
+
+
+const { public: publicConfig } = useRuntimeConfig()
+const objectStorageUrl = publicConfig.objectStorageUrl
 </script>
 
 <template>
   <NuxtLink
-    :to="`/student/dashboard/challange/${challenge.id}`"
+    :to="`/student/dashboard/challanges/${challenge.id}`"
     class="group block relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:-translate-y-2 focus:outline-none focus:ring-2 focus:ring-primary/40"
   >
     <div class="h-32 relative overflow-hidden">
-      <NuxtImg :src="challenge.thumbnail_image" :alt="challenge.title" class="w-full h-full object-cover" loading="lazy" />
+      <NuxtImg :src="`${objectStorageUrl}/assets/smk-telkom.webp`" :alt="challenge.title" class="w-full h-full object-cover" loading="lazy" />
       <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
 
       <div class="absolute top-4 right-4">

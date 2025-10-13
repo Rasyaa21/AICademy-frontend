@@ -1,0 +1,1080 @@
+{
+	"info": {
+		"_postman_id": "338a5c69-38f9-47fb-9630-0bc8c467844e",
+		"name": "JSON",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33491616",
+		"_collection_link": "https://nyampah-backend.postman.co/workspace/Nyampah-Backend-Workspace~0cf5bfd9-2a39-4efe-a5c3-1cc73221988e/collection/33491616-338a5c69-38f9-47fb-9630-0bc8c467844e?action=share&source=collection_link&creator=33491616"
+	},
+	"item": [
+		{
+			"name": "Challenge",
+			"item": [
+				{
+					"name": "Teacher",
+					"item": []
+				},
+				{
+					"name": "Admin",
+					"item": [
+						{
+							"name": "Create Challenge",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"Web Development Challenge 2025\",\n    \"description\": \"Buat aplikasi web inovatif menggunakan teknologi terbaru\",\n    \"deadline\": \"2025-12-31T23:59:59Z\",\n    \"prize\": \"Rp 10.000.000\",\n    \"max_participants\": 100\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/admin/challenges",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"admin",
+										"challenges"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Create Challenge",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"title\": \"Web Development Challenge 2025\",\n    \"description\": \"Buat aplikasi web inovatif menggunakan teknologi terbaru\",\n    \"deadline\": \"2025-12-31T23:59:59Z\",\n    \"prize\": \"Rp 10.000.000\",\n    \"max_participants\": 100\n}"
+										},
+										"url": {
+											"raw": "{{base_url}}/admin/challenges",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"admin",
+												"challenges"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Server",
+											"value": "Fiber"
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 11 Oct 2025 12:52:38 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "546"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"success\": true,\n    \"message\": \"Challenge created successfully\",\n    \"data\": {\n        \"id\": \"8ac4e4cd-bb96-4a6f-9911-e5d75b8beca2\",\n        \"title\": \"Web Development Challenge 2025\",\n        \"description\": \"Buat aplikasi web inovatif menggunakan teknologi terbaru\",\n        \"deadline\": \"2025-12-31T23:59:59Z\",\n        \"prize\": \"Rp 10.000.000\",\n        \"max_participants\": 100,\n        \"current_participants\": 0,\n        \"winner_team_id\": null,\n        \"created_by_admin_id\": \"2d4ed357-b031-42ce-a4eb-299eb319b5da\",\n        \"created_by_teacher_id\": null,\n        \"created_at\": \"2025-10-11T19:52:39.744428171+07:00\",\n        \"updated_at\": \"2025-10-11T19:52:39.744428296+07:00\"\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Get All Challenge",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/admin/challenges",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"admin",
+										"challenges"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Get All Challenge",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/admin/challenges",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"admin",
+												"challenges"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Server",
+											"value": "Fiber"
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 11 Oct 2025 12:53:07 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "603"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"success\": true,\n    \"message\": \"Data tantangan berhasil diambil\",\n    \"data\": {\n        \"data\": [\n            {\n                \"id\": \"8ac4e4cd-bb96-4a6f-9911-e5d75b8beca2\",\n                \"title\": \"Web Development Challenge 2025\",\n                \"description\": \"Buat aplikasi web inovatif menggunakan teknologi terbaru\",\n                \"deadline\": \"2026-01-01T06:59:59+07:00\",\n                \"prize\": \"Rp 10.000.000\",\n                \"max_participants\": 100,\n                \"current_participants\": 0,\n                \"winner_team_id\": null,\n                \"created_by_admin_id\": \"2d4ed357-b031-42ce-a4eb-299eb319b5da\",\n                \"created_by_teacher_id\": null,\n                \"created_at\": \"2025-10-11T19:52:39.744428+07:00\",\n                \"updated_at\": \"2025-10-11T19:52:39.744428+07:00\"\n            }\n        ],\n        \"total\": 1,\n        \"page\": 1,\n        \"limit\": 10,\n        \"total_pages\": 1\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Get All Submission",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/admin/challenges/78f0913e-5134-48e1-b239-7ee1530f63dd/submissions",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"admin",
+										"challenges",
+										"78f0913e-5134-48e1-b239-7ee1530f63dd",
+										"submissions"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Get All Submission By Challenge ID",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/admin/challenges/78f0913e-5134-48e1-b239-7ee1530f63dd/submissions",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"admin",
+												"challenges",
+												"78f0913e-5134-48e1-b239-7ee1530f63dd",
+												"submissions"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Server",
+											"value": "Fiber"
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 11 Oct 2025 16:00:16 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "572"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"success\": true,\n    \"message\": \"Submissions retrieved successfully\",\n    \"data\": {\n        \"data\": [\n            {\n                \"id\": \"e510ccea-efa8-4ad2-b0c8-f2e787934cfb\",\n                \"challenge_id\": \"78f0913e-5134-48e1-b239-7ee1530f63dd\",\n                \"challenge_name\": \"Web Development Challenge 2025\",\n                \"team_name\": \"Intech Code\",\n                \"github_url\": \"https://github.com/team/project\",\n                \"live_url\": \"https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/challenge-docs/93e74983-75e0-4483-a080-26becdf4d4e1.pdf\",\n                \"description\": \"Amazing Web Application\",\n                \"points\": 0,\n                \"submitted_at\": \"2025-10-11T22:57:40.060657+07:00\"\n            }\n        ],\n        \"total\": 1,\n        \"page\": 1,\n        \"limit\": 10,\n        \"total_pages\": 1\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Get Challenge By ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/admin/challenges/78f0913e-5134-48e1-b239-7ee1530f63dd",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"admin",
+										"challenges",
+										"78f0913e-5134-48e1-b239-7ee1530f63dd"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Get Challenge By ID",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/admin/challenges/78f0913e-5134-48e1-b239-7ee1530f63dd",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"admin",
+												"challenges",
+												"78f0913e-5134-48e1-b239-7ee1530f63dd"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Server",
+											"value": "Fiber"
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 11 Oct 2025 16:01:23 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "2004"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"success\": true,\n    \"message\": \"Challenge retrieved successfully\",\n    \"data\": {\n        \"id\": \"78f0913e-5134-48e1-b239-7ee1530f63dd\",\n        \"title\": \"Web Development Challenge 2025\",\n        \"description\": \"Buat aplikasi web inovatif menggunakan teknologi terbaru\",\n        \"deadline\": \"2026-01-01T06:59:59+07:00\",\n        \"prize\": \"Rp 10.000.000\",\n        \"max_participants\": 100,\n        \"current_participants\": 1,\n        \"winner_team_id\": null,\n        \"created_by_admin_id\": \"7f80ea70-c7ed-42fb-92b9-b92b896996e4\",\n        \"created_by_teacher_id\": null,\n        \"created_at\": \"2025-10-11T22:26:45.90627+07:00\",\n        \"updated_at\": \"2025-10-11T22:54:27.731366+07:00\",\n        \"submissions\": [\n            {\n                \"id\": \"e510ccea-efa8-4ad2-b0c8-f2e787934cfb\",\n                \"challenge_id\": \"78f0913e-5134-48e1-b239-7ee1530f63dd\",\n                \"title\": \"Amazing Web Application\",\n                \"team_id\": \"72e209ef-758e-4c0a-b9d8-874a215ca0dd\",\n                \"student_profile_id\": null,\n                \"image_url\": null,\n                \"repo_url\": \"https://github.com/team/project\",\n                \"docs_url\": \"https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/challenge-docs/93e74983-75e0-4483-a080-26becdf4d4e1.pdf\",\n                \"submitted_at\": \"2025-10-11T22:57:40.060657+07:00\",\n                \"points\": 0,\n                \"scored_by_admin_id\": null,\n                \"scored_by_teacher_id\": null,\n                \"scored_at\": null,\n                \"team\": {\n                    \"id\": \"72e209ef-758e-4c0a-b9d8-874a215ca0dd\",\n                    \"team_name\": \"Intech Code\",\n                    \"about\": \"Tim yang berfokus pada pengembangan aplikasi mobile\",\n                    \"team_profile_picture\": null,\n                    \"created_by_student_profile_id\": \"43b2e1fb-8e87-4887-a223-9914eb732c36\",\n                    \"created_at\": \"2025-10-11T22:21:40.285876+07:00\",\n                    \"members\": [\n                        {\n                            \"team_id\": \"72e209ef-758e-4c0a-b9d8-874a215ca0dd\",\n                            \"student_profile_id\": \"43b2e1fb-8e87-4887-a223-9914eb732c36\",\n                            \"member_role\": \"Leader\",\n                            \"profiling_role_id\": null,\n                            \"joined_at\": \"2025-10-11T22:21:40.309014+07:00\"\n                        },\n                        {\n                            \"team_id\": \"72e209ef-758e-4c0a-b9d8-874a215ca0dd\",\n                            \"student_profile_id\": \"5dcd1bc3-bfec-4caa-9d4a-1696aa7cc121\",\n                            \"member_role\": \"Member\",\n                            \"profiling_role_id\": null,\n                            \"joined_at\": \"2025-10-11T22:21:40.309025+07:00\"\n                        },\n                        {\n                            \"team_id\": \"72e209ef-758e-4c0a-b9d8-874a215ca0dd\",\n                            \"student_profile_id\": \"54ecf0eb-bbdc-43b7-bbae-c33a618f5dba\",\n                            \"member_role\": \"Member\",\n                            \"profiling_role_id\": null,\n                            \"joined_at\": \"2025-10-11T22:21:40.309031+07:00\"\n                        }\n                    ]\n                }\n            }\n        ]\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Submit Score",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"submission_id\" : \"78f0913e-5134-48e1-b239-7ee1530f63dd\",\n    \"points\" : 90\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/admin/challenges/submissions/score",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"admin",
+										"challenges",
+										"submissions",
+										"score"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Submit Score",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"submission_id\" : \"78f0913e-5134-48e1-b239-7ee1530f63dd\",\n    \"points\" : 90\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}/admin/challenges/submissions/score",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"admin",
+												"challenges",
+												"submissions",
+												"score"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Server",
+											"value": "Fiber"
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 11 Oct 2025 16:23:34 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "59"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"success\": true,\n    \"message\": \"Submission scored successfully\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Update Challenge",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"Web Development Challenge 2027\",\n    \"description\": \"Buat aplikasi web inovatif menggunakan teknologi terbaru\",\n    \"deadline\": \"2025-12-31T23:59:59Z\",\n    \"prize\": \"Rp 10.000.000\",\n    \"max_participants\": 100\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/admin/challenges/78f0913e-5134-48e1-b239-7ee1530f63dd",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"admin",
+										"challenges",
+										"78f0913e-5134-48e1-b239-7ee1530f63dd"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Put Challenge",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"title\": \"Web Development Challenge 2027\",\n    \"description\": \"Buat aplikasi web inovatif menggunakan teknologi terbaru\",\n    \"deadline\": \"2025-12-31T23:59:59Z\",\n    \"prize\": \"Rp 10.000.000\",\n    \"max_participants\": 100\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}/admin/challenges/78f0913e-5134-48e1-b239-7ee1530f63dd",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"admin",
+												"challenges",
+												"78f0913e-5134-48e1-b239-7ee1530f63dd"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Server",
+											"value": "Fiber"
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 11 Oct 2025 16:24:49 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "2000"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"success\": true,\n    \"message\": \"Challenge updated successfully\",\n    \"data\": {\n        \"id\": \"78f0913e-5134-48e1-b239-7ee1530f63dd\",\n        \"title\": \"Web Development Challenge 2027\",\n        \"description\": \"Buat aplikasi web inovatif menggunakan teknologi terbaru\",\n        \"deadline\": \"2025-12-31T23:59:59Z\",\n        \"prize\": \"Rp 10.000.000\",\n        \"max_participants\": 100,\n        \"current_participants\": 1,\n        \"winner_team_id\": null,\n        \"created_by_admin_id\": \"7f80ea70-c7ed-42fb-92b9-b92b896996e4\",\n        \"created_by_teacher_id\": null,\n        \"created_at\": \"2025-10-11T22:26:45.90627+07:00\",\n        \"updated_at\": \"2025-10-11T23:24:49.844404927+07:00\",\n        \"submissions\": [\n            {\n                \"id\": \"e510ccea-efa8-4ad2-b0c8-f2e787934cfb\",\n                \"challenge_id\": \"78f0913e-5134-48e1-b239-7ee1530f63dd\",\n                \"title\": \"Amazing Web Application\",\n                \"team_id\": \"72e209ef-758e-4c0a-b9d8-874a215ca0dd\",\n                \"student_profile_id\": null,\n                \"image_url\": null,\n                \"repo_url\": \"https://github.com/team/project\",\n                \"docs_url\": \"https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/challenge-docs/93e74983-75e0-4483-a080-26becdf4d4e1.pdf\",\n                \"submitted_at\": \"2025-10-11T22:57:40.060657+07:00\",\n                \"points\": 0,\n                \"scored_by_admin_id\": null,\n                \"scored_by_teacher_id\": null,\n                \"scored_at\": null,\n                \"team\": {\n                    \"id\": \"72e209ef-758e-4c0a-b9d8-874a215ca0dd\",\n                    \"team_name\": \"Intech Code\",\n                    \"about\": \"Tim yang berfokus pada pengembangan aplikasi mobile\",\n                    \"team_profile_picture\": null,\n                    \"created_by_student_profile_id\": \"43b2e1fb-8e87-4887-a223-9914eb732c36\",\n                    \"created_at\": \"2025-10-11T22:21:40.285876+07:00\",\n                    \"members\": [\n                        {\n                            \"team_id\": \"72e209ef-758e-4c0a-b9d8-874a215ca0dd\",\n                            \"student_profile_id\": \"43b2e1fb-8e87-4887-a223-9914eb732c36\",\n                            \"member_role\": \"Leader\",\n                            \"profiling_role_id\": null,\n                            \"joined_at\": \"2025-10-11T22:21:40.309014+07:00\"\n                        },\n                        {\n                            \"team_id\": \"72e209ef-758e-4c0a-b9d8-874a215ca0dd\",\n                            \"student_profile_id\": \"5dcd1bc3-bfec-4caa-9d4a-1696aa7cc121\",\n                            \"member_role\": \"Member\",\n                            \"profiling_role_id\": null,\n                            \"joined_at\": \"2025-10-11T22:21:40.309025+07:00\"\n                        },\n                        {\n                            \"team_id\": \"72e209ef-758e-4c0a-b9d8-874a215ca0dd\",\n                            \"student_profile_id\": \"54ecf0eb-bbdc-43b7-bbae-c33a618f5dba\",\n                            \"member_role\": \"Member\",\n                            \"profiling_role_id\": null,\n                            \"joined_at\": \"2025-10-11T22:21:40.309031+07:00\"\n                        }\n                    ]\n                }\n            }\n        ]\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Delete Challenge",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/admin/challenges/78f0913e-5134-48e1-b239-7ee1530f63dd",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"admin",
+										"challenges",
+										"78f0913e-5134-48e1-b239-7ee1530f63dd"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Delete Challeneg",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/admin/challenges/78f0913e-5134-48e1-b239-7ee1530f63dd",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"admin",
+												"challenges",
+												"78f0913e-5134-48e1-b239-7ee1530f63dd"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Server",
+											"value": "Fiber"
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 11 Oct 2025 16:26:06 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "59"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"success\": true,\n    \"message\": \"Challenge deleted successfully\"\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Student",
+					"item": [
+						{
+							"name": "Create Teams",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"team_name\": \"Intech Code\",\n    \"about\": \"Tim yang berfokus pada pengembangan aplikasi mobile\",\n    \"member_ids\": [\n        \"67b26932-2174-4c6f-9fae-e1ac7c321def\",\n        \"1028cc4b-1a8a-4941-9972-e005c4e2e360\"\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/student/challenges/teams",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"student",
+										"challenges",
+										"teams"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Create Team",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"team_name\": \"Intech Code\",\n    \"about\": \"Tim yang berfokus pada pengembangan aplikasi mobile\",\n    \"member_ids\": [\n        \"5dcd1bc3-bfec-4caa-9d4a-1696aa7cc121\",\n        \"54ecf0eb-bbdc-43b7-bbae-c33a618f5dba\"\n    ]\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}/student/challenges/teams",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"student",
+												"challenges",
+												"teams"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Server",
+											"value": "Fiber"
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 11 Oct 2025 15:21:39 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "663"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"success\": true,\n    \"message\": \"Team created successfully\",\n    \"data\": {\n        \"id\": \"72e209ef-758e-4c0a-b9d8-874a215ca0dd\",\n        \"team_name\": \"Intech Code\",\n        \"about\": \"Tim yang berfokus pada pengembangan aplikasi mobile\",\n        \"created_at\": \"2025-10-11T22:21:40.285876216+07:00\",\n        \"members\": [\n            {\n                \"student_profile_id\": \"43b2e1fb-8e87-4887-a223-9914eb732c36\",\n                \"member_role\": \"Leader\",\n                \"full_name\": \"Fajar Nugroho\",\n                \"nis\": \"12345006\"\n            },\n            {\n                \"student_profile_id\": \"5dcd1bc3-bfec-4caa-9d4a-1696aa7cc121\",\n                \"member_role\": \"Member\",\n                \"full_name\": \"Joko Susilo\",\n                \"nis\": \"12345010\"\n            },\n            {\n                \"student_profile_id\": \"54ecf0eb-bbdc-43b7-bbae-c33a618f5dba\",\n                \"member_role\": \"Member\",\n                \"full_name\": \"Indira Kusuma\",\n                \"nis\": \"12345009\"\n            }\n        ],\n        \"member_count\": 3\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Get My Teams",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/student/challenges/teams",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"student",
+										"challenges",
+										"teams"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Get My Teams",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/student/challenges/teams",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"student",
+												"challenges",
+												"teams"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Server",
+											"value": "Fiber"
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 11 Oct 2025 15:26:03 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "694"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"success\": true,\n    \"message\": \"Teams retrieved successfully\",\n    \"data\": [\n        {\n            \"id\": \"72e209ef-758e-4c0a-b9d8-874a215ca0dd\",\n            \"team_name\": \"Intech Code\",\n            \"about\": \"Tim yang berfokus pada pengembangan aplikasi mobile\",\n            \"created_at\": \"2025-10-11T22:21:40.285876+07:00\",\n            \"members\": [\n                {\n                    \"student_profile_id\": \"43b2e1fb-8e87-4887-a223-9914eb732c36\",\n                    \"member_role\": \"Leader\",\n                    \"full_name\": \"Fajar Nugroho\",\n                    \"nis\": \"12345006\"\n                },\n                {\n                    \"student_profile_id\": \"5dcd1bc3-bfec-4caa-9d4a-1696aa7cc121\",\n                    \"member_role\": \"Member\",\n                    \"full_name\": \"Joko Susilo\",\n                    \"nis\": \"12345010\"\n                },\n                {\n                    \"student_profile_id\": \"54ecf0eb-bbdc-43b7-bbae-c33a618f5dba\",\n                    \"member_role\": \"Member\",\n                    \"full_name\": \"Indira Kusuma\",\n                    \"nis\": \"12345009\"\n                }\n            ],\n            \"member_count\": 3,\n            \"registered_challenges\": null\n        }\n    ]\n}"
+								}
+							]
+						},
+						{
+							"name": "Get Available Challenge",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/student/challenges",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"student",
+										"challenges"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Get Available Challenge",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/student/challenges",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"student",
+												"challenges"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Server",
+											"value": "Fiber"
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 11 Oct 2025 15:27:27 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "479"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"success\": true,\n    \"message\": \"Data tantangan berhasil diambil\",\n    \"data\": {\n        \"data\": [\n            {\n                \"id\": \"78f0913e-5134-48e1-b239-7ee1530f63dd\",\n                \"title\": \"Web Development Challenge 2025\",\n                \"description\": \"Buat aplikasi web inovatif menggunakan teknologi terbaru\",\n                \"deadline\": \"2026-01-01T06:59:59+07:00\",\n                \"prize\": \"Rp 10.000.000\",\n                \"max_participants\": 100,\n                \"current_participants\": 0,\n                \"can_register\": true,\n                \"is_active\": true,\n                \"organizer_name\": \"Admin\",\n                \"is_registered\": false\n            }\n        ],\n        \"total\": 1,\n        \"page\": 1,\n        \"limit\": 10,\n        \"total_pages\": 1\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Register Challenge",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"challenge_id\": \"78f0913e-5134-48e1-b239-7ee1530f63dd\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/student/challenges/register",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"student",
+										"challenges",
+										"register"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Register Challenge",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"challenge_id\": \"78f0913e-5134-48e1-b239-7ee1530f63dd\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}/student/challenges/register",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"student",
+												"challenges",
+												"register"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Server",
+											"value": "Fiber"
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 11 Oct 2025 15:54:27 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "344"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"success\": true,\n    \"message\": \"Team berhasil terdaftar untuk challenge\",\n    \"data\": {\n        \"message\": \"Team successfully registered for challenge\",\n        \"challenge_id\": \"78f0913e-5134-48e1-b239-7ee1530f63dd\",\n        \"team_id\": \"72e209ef-758e-4c0a-b9d8-874a215ca0dd\",\n        \"team_name\": \"Intech Code\",\n        \"registration_date\": \"2025-10-11T22:54:27.715855876+07:00\",\n        \"current_participants\": 1\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Submit Challenge",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "challenge_id",
+											"value": "78f0913e-5134-48e1-b239-7ee1530f63dd",
+											"type": "text"
+										},
+										{
+											"key": "title",
+											"value": "Amazing Web Application",
+											"type": "text"
+										},
+										{
+											"key": "repo_url",
+											"value": "https://github.com/team/project",
+											"type": "text"
+										},
+										{
+											"key": "docs_file",
+											"type": "file",
+											"src": "/Users/rasya2121/Downloads/Penilaian Naufal Qathafa Rasya Hidayat.pdf"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/student/challenges/submit",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"student",
+										"challenges",
+										"submit"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Submit Challenge",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "challenge_id",
+													"value": "78f0913e-5134-48e1-b239-7ee1530f63dd",
+													"type": "text"
+												},
+												{
+													"key": "title",
+													"value": "Amazing Web Application",
+													"type": "text"
+												},
+												{
+													"key": "repo_url",
+													"value": "https://github.com/team/project",
+													"type": "text"
+												},
+												{
+													"key": "docs_file",
+													"type": "file",
+													"src": "/Users/rasya2121/Downloads/Penilaian Naufal Qathafa Rasya Hidayat.pdf"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{base_url}}/student/challenges/submit",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"student",
+												"challenges",
+												"submit"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Server",
+											"value": "Fiber"
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 11 Oct 2025 15:57:39 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "519"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"success\": true,\n    \"message\": \"Submission berhasil\",\n    \"data\": {\n        \"id\": \"e510ccea-efa8-4ad2-b0c8-f2e787934cfb\",\n        \"challenge_id\": \"78f0913e-5134-48e1-b239-7ee1530f63dd\",\n        \"team_id\": \"72e209ef-758e-4c0a-b9d8-874a215ca0dd\",\n        \"title\": \"Amazing Web Application\",\n        \"repo_url\": \"https://github.com/team/project\",\n        \"docs_url\": \"https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/challenge-docs/93e74983-75e0-4483-a080-26becdf4d4e1.pdf\",\n        \"image_url\": null,\n        \"submitted_at\": \"2025-10-11T22:57:40.060657173+07:00\",\n        \"message\": \"Challenge submitted successfully\"\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Get My Submission",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/student/challenges/submissions",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"student",
+										"challenges",
+										"submissions"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Get My Submission",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/student/challenges/submissions",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"student",
+												"challenges",
+												"submissions"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Server",
+											"value": "Fiber"
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 11 Oct 2025 15:58:40 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "1429"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"success\": true,\n    \"message\": \"Submissions retrieved successfully\",\n    \"data\": {\n        \"data\": [\n            {\n                \"id\": \"e510ccea-efa8-4ad2-b0c8-f2e787934cfb\",\n                \"challenge_id\": \"78f0913e-5134-48e1-b239-7ee1530f63dd\",\n                \"title\": \"Amazing Web Application\",\n                \"team_id\": \"72e209ef-758e-4c0a-b9d8-874a215ca0dd\",\n                \"student_profile_id\": null,\n                \"image_url\": null,\n                \"repo_url\": \"https://github.com/team/project\",\n                \"docs_url\": \"https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/challenge-docs/93e74983-75e0-4483-a080-26becdf4d4e1.pdf\",\n                \"submitted_at\": \"2025-10-11T22:57:40.060657+07:00\",\n                \"points\": 0,\n                \"scored_by_admin_id\": null,\n                \"scored_by_teacher_id\": null,\n                \"scored_at\": null,\n                \"challenge\": {\n                    \"id\": \"78f0913e-5134-48e1-b239-7ee1530f63dd\",\n                    \"title\": \"Web Development Challenge 2025\",\n                    \"description\": \"Buat aplikasi web inovatif menggunakan teknologi terbaru\",\n                    \"deadline\": \"2026-01-01T06:59:59+07:00\",\n                    \"prize\": \"Rp 10.000.000\",\n                    \"max_participants\": 100,\n                    \"current_participants\": 1,\n                    \"winner_team_id\": null,\n                    \"created_by_admin_id\": \"7f80ea70-c7ed-42fb-92b9-b92b896996e4\",\n                    \"created_by_teacher_id\": null,\n                    \"created_at\": \"2025-10-11T22:26:45.90627+07:00\",\n                    \"updated_at\": \"2025-10-11T22:54:27.731366+07:00\"\n                },\n                \"team\": {\n                    \"id\": \"72e209ef-758e-4c0a-b9d8-874a215ca0dd\",\n                    \"team_name\": \"Intech Code\",\n                    \"about\": \"Tim yang berfokus pada pengembangan aplikasi mobile\",\n                    \"team_profile_picture\": null,\n                    \"created_by_student_profile_id\": \"43b2e1fb-8e87-4887-a223-9914eb732c36\",\n                    \"created_at\": \"2025-10-11T22:21:40.285876+07:00\"\n                }\n            }\n        ],\n        \"total\": 1,\n        \"page\": 1,\n        \"limit\": 10,\n        \"total_pages\": 1\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Get Challenge By ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/student/challenges/78f0913e-5134-48e1-b239-7ee1530f63dd",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"student",
+										"challenges",
+										"78f0913e-5134-48e1-b239-7ee1530f63dd"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Get Challenge By ID",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/student/challenges/78f0913e-5134-48e1-b239-7ee1530f63dd",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"student",
+												"challenges",
+												"78f0913e-5134-48e1-b239-7ee1530f63dd"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Server",
+											"value": "Fiber"
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 11 Oct 2025 16:20:23 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "2004"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"success\": true,\n    \"message\": \"Challenge retrieved successfully\",\n    \"data\": {\n        \"id\": \"78f0913e-5134-48e1-b239-7ee1530f63dd\",\n        \"title\": \"Web Development Challenge 2025\",\n        \"description\": \"Buat aplikasi web inovatif menggunakan teknologi terbaru\",\n        \"deadline\": \"2026-01-01T06:59:59+07:00\",\n        \"prize\": \"Rp 10.000.000\",\n        \"max_participants\": 100,\n        \"current_participants\": 1,\n        \"winner_team_id\": null,\n        \"created_by_admin_id\": \"7f80ea70-c7ed-42fb-92b9-b92b896996e4\",\n        \"created_by_teacher_id\": null,\n        \"created_at\": \"2025-10-11T22:26:45.90627+07:00\",\n        \"updated_at\": \"2025-10-11T22:54:27.731366+07:00\",\n        \"submissions\": [\n            {\n                \"id\": \"e510ccea-efa8-4ad2-b0c8-f2e787934cfb\",\n                \"challenge_id\": \"78f0913e-5134-48e1-b239-7ee1530f63dd\",\n                \"title\": \"Amazing Web Application\",\n                \"team_id\": \"72e209ef-758e-4c0a-b9d8-874a215ca0dd\",\n                \"student_profile_id\": null,\n                \"image_url\": null,\n                \"repo_url\": \"https://github.com/team/project\",\n                \"docs_url\": \"https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/challenge-docs/93e74983-75e0-4483-a080-26becdf4d4e1.pdf\",\n                \"submitted_at\": \"2025-10-11T22:57:40.060657+07:00\",\n                \"points\": 0,\n                \"scored_by_admin_id\": null,\n                \"scored_by_teacher_id\": null,\n                \"scored_at\": null,\n                \"team\": {\n                    \"id\": \"72e209ef-758e-4c0a-b9d8-874a215ca0dd\",\n                    \"team_name\": \"Intech Code\",\n                    \"about\": \"Tim yang berfokus pada pengembangan aplikasi mobile\",\n                    \"team_profile_picture\": null,\n                    \"created_by_student_profile_id\": \"43b2e1fb-8e87-4887-a223-9914eb732c36\",\n                    \"created_at\": \"2025-10-11T22:21:40.285876+07:00\",\n                    \"members\": [\n                        {\n                            \"team_id\": \"72e209ef-758e-4c0a-b9d8-874a215ca0dd\",\n                            \"student_profile_id\": \"43b2e1fb-8e87-4887-a223-9914eb732c36\",\n                            \"member_role\": \"Leader\",\n                            \"profiling_role_id\": null,\n                            \"joined_at\": \"2025-10-11T22:21:40.309014+07:00\"\n                        },\n                        {\n                            \"team_id\": \"72e209ef-758e-4c0a-b9d8-874a215ca0dd\",\n                            \"student_profile_id\": \"5dcd1bc3-bfec-4caa-9d4a-1696aa7cc121\",\n                            \"member_role\": \"Member\",\n                            \"profiling_role_id\": null,\n                            \"joined_at\": \"2025-10-11T22:21:40.309025+07:00\"\n                        },\n                        {\n                            \"team_id\": \"72e209ef-758e-4c0a-b9d8-874a215ca0dd\",\n                            \"student_profile_id\": \"54ecf0eb-bbdc-43b7-bbae-c33a618f5dba\",\n                            \"member_role\": \"Member\",\n                            \"profiling_role_id\": null,\n                            \"joined_at\": \"2025-10-11T22:21:40.309031+07:00\"\n                        }\n                    ]\n                }\n            }\n        ]\n    }\n}"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	]
+}
