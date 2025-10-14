@@ -50,10 +50,10 @@
             <div class="flex items-center space-x-6 mt-4 mb-8 z-10 relative">
                 <div class="flex items-center space-x-2">
                     <div class="flex -space-x-2">
-                        <div class="w-8 h-8 bg-cover rounded-full border-2 border-white" :style="`background-image: url('${objectStorageUrl}/assets/profile/sigma-2.webp')`"></div>
-                        <div class="w-8 h-8 bg-cover rounded-full border-2 border-white" :style="`background-image: url('${objectStorageUrl}/assets/profile/sigma.webp')`"></div>
-                        <div class="w-8 h-8 bg-cover rounded-full border-2 border-white" :style="`background-image: url('${objectStorageUrl}/assets/profile/sigma-3.webp')`"></div>
-                        <div class="w-8 h-8 bg-cover rounded-full border-2 border-white flex items-center justify-center" :style="`background-image: url('${objectStorageUrl}/assets/profile/axel.webp')`">
+                        <div class="w-8 h-8 bg-cover rounded-full border-2 border-white" :style="`background-image: url('https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/sigma-2.webp')`"></div>
+                        <div class="w-8 h-8 bg-cover rounded-full border-2 border-white" :style="`background-image: url('https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/sigma.webp')`"></div>
+                        <div class="w-8 h-8 bg-cover rounded-full border-2 border-white" :style="`background-image: url('https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/sigma-3.webp')`"></div>
+                        <div class="w-8 h-8 bg-cover rounded-full border-2 border-white flex items-center justify-center" :style="`background-image: url('https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/axel.webp')`">
                             <span class="text-xs text-white font-bold">5K+</span>
                         </div>
                     </div>
@@ -80,19 +80,19 @@
                 :duration="22"
             >
                 <div class="shrink-0 mx-10">
-                <img :src="`${objectStorageUrl}/assets/logo_smk_telkom_pwt.webp`" alt="SMK Telkom Purwokerto test" class="h-14 md:h-16 object-contain" />
+                <img :src="`https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/logo_smk_telkom_pwt.webp`" alt="SMK Telkom Purwokerto test" class="h-14 md:h-16 object-contain" />
                 </div>
                 <div class="shrink-0 mx-10">
-                <img :src="`${objectStorageUrl}/assets/1000sd.webp`" alt="1000sd" class="h-14 md:h-18 object-contain" />
+                <img :src="`https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/1000sd.webp`" alt="1000sd" class="h-14 md:h-18 object-contain" />
                 </div>
                 <div class="shrink-0 mx-10">
-                <img :src="`${objectStorageUrl}/assets/komdigi.webp`" alt="Komdigi" class="h-14 md:h-18 object-contain" />
+                <img :src="`https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/komdigi.webp`" alt="Komdigi" class="h-14 md:h-18 object-contain" />
                 </div>
                 <div class="shrink-0 mx-10">
-                <img :src="`${objectStorageUrl}/assets/jagoan-hosting.webp`" alt="Jagoan Hosting" class="h-14 md:h-18 object-contain" />
+                <img :src="`https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/jagoan-hosting.webp`" alt="Jagoan Hosting" class="h-14 md:h-18 object-contain" />
                 </div>
                 <div class="shrink-0 mx-10">
-                <img :src="`${objectStorageUrl}/assets/maspion-it.webp`" alt="Maspion IT" class="h-14 md:h-18 object-contain" />
+                <img :src="`https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/maspion-it.webp`" alt="Maspion IT" class="h-14 md:h-18 object-contain" />
                 </div>
             </NuxtMarquee>
         </div>
@@ -204,4 +204,6 @@
 // Setup runtime config untuk CDN
 const config = useRuntimeConfig()
 const objectStorageUrl = config.public.NUXT_PUBLIC_OBJECT_STORAGE_URL || process.env.NUXT_PUBLIC_OBJECT_STORAGE_URL
+
+
 </script>

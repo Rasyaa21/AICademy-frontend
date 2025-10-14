@@ -35,6 +35,9 @@ const formatDeadline = (deadline: string) =>
   });
 
 const isActive = (deadline: string) => new Date(deadline) > new Date()
+
+const { public: publicConfig } = useRuntimeConfig()
+const objectStorageUrl = publicConfig.objectStorageUrl
 </script>
 
 <template>
@@ -46,7 +49,7 @@ const isActive = (deadline: string) => new Date(deadline) > new Date()
     <div class="h-32 relative overflow-hidden">
       <!-- Background Image -->
       <img 
-        src="/assets/images/smk-telkom.jpeg" 
+        :src="`${objectStorageUrl}/assets/smk-telkom.webp`" 
         alt="SMK Telkom" 
         class="w-full h-full object-cover"
         loading="lazy"

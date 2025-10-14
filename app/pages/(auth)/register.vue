@@ -125,8 +125,8 @@ definePageMeta({
 
 const responseMessage = ref("");
 const error = ref(false)
-const config = useRuntimeConfig();
-const objectStorageUrl = config.public.objectStorageUrl
+const { public: publicConfig } = useRuntimeConfig()
+const objectStorageUrl = publicConfig.objectStorageUrl   
 
 const form = ref({
     fullname: '',
@@ -186,7 +186,7 @@ const handleRegister = async () => {
             headers: {
                 'Content-Type' : 'application/json'
             },
-            baseURL: config.public.apiBase
+            baseURL: publicConfig.apiBase
         });
         
         showSuccessModal('Registrasi berhasil! Silahkan cek email anda untuk melanjutkan proses verifikasi')

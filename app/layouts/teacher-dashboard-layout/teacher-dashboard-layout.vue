@@ -49,8 +49,8 @@ watch(isCollapse, v => localStorage.setItem('sidebar:collapsed', v ? '1' : '0'))
     <ul class="space-y-2 w-full">
       <SidebarItems icon="heroicons:home-solid" label="Home" :is-selected="true"
                     path="/teacher/dashboard" :collapsed="isCollapse" />
-      <SidebarItems icon="heroicons:trophy-solid" label="Challange"
-                    :is-selected="false" path="/teacher/dashboard/challange" :collapsed="isCollapse" />
+      <SidebarItems icon="heroicons:trophy-solid" label="Challenge"
+                    :is-selected="false" path="/teacher/dashboard/challenges" :collapsed="isCollapse" />
       <SidebarItems icon="streamline-plump:arrow-roadmap-solid" label="Roadmap" :is-selected="false" path="/teacher/dashboard/roadmap" :collapsed="isCollapse"/>
 
     </ul>
@@ -112,7 +112,7 @@ watch(isCollapse, v => localStorage.setItem('sidebar:collapsed', v ? '1' : '0'))
           <div class="px-4 py-3">
             <div class="flex flex-col gap-2">
                 <SidebarItems icon="heroicons:home-solid" label="Home" path="/teacher/dashboard" />
-                <SidebarItems icon="heroicons:trophy-solid" label="Challange" :is-selected="false" path="/teacher/dashboard/challange" />
+                <SidebarItems icon="heroicons:trophy-solid" label="Challange" :is-selected="false" path="/teacher/dashboard/challenges" />
                 <SidebarItems icon="streamline-plump:arrow-roadmap-solid" label="Roadmap" :is-selected="false" path="/teacher/dashboard/roadmap"/>
             </div>
           </div>

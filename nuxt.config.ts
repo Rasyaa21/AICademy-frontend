@@ -11,6 +11,12 @@ export default defineNuxtConfig({
       objectStorageUrl: process.env.NUXT_PUBLIC_OBJECT_STORAGE_URL
     },
   },
+  image: {
+    domains: ['https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev'],
+    alias: {
+      cdn: process.env.NUXT_PUBLIC_OBJECT_STORAGE_URL || ''
+    }
+  },
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],

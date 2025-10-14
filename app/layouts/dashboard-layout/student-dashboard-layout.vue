@@ -82,7 +82,7 @@ const initials = computed(() => {
       <SidebarItems icon="streamline-plump:arrow-roadmap-solid" label="Roadmap"
                     :is-selected="false" path="/student/dashboard/roadmap" :collapsed="isCollapse" />
       <SidebarItems icon="heroicons:trophy-solid" label="Challange"
-                    :is-selected="false" path="/student/dashboard/challange" :collapsed="isCollapse" />
+                    :is-selected="false" path="/student/dashboard/challanges" :collapsed="isCollapse" />
       <SidebarItems icon="tabler:clipboard-list" label="Peruhsaaan" :is-selected="false" path="/student/dashboard/internships" />
       <SidebarItems icon="heroicons:trophy-solid" label="Profile"
                     :is-selected="false" path="/student/dashboard/Profile" :collapsed="isCollapse" />
@@ -156,7 +156,7 @@ const initials = computed(() => {
               <SidebarItems icon="heroicons:home-solid" label="Dashboard" path="/student/dashboard" />
               <SidebarItems icon="tabler:clipboard-list" label="Profiling" path="/student/dashboard/questionnaires" />
               <SidebarItems icon="streamline-plump:arrow-roadmap-solid" label="Roadmap" path="/student/dashboard/roadmap"/>
-              <SidebarItems icon="heroicons:trophy-solid" label="Challange" path="/student/dashboard/challange" />
+              <SidebarItems icon="heroicons:trophy-solid" label="Challange" path="/student/dashboard/challanges" />
               <SidebarItems icon="tabler:clipboard-list" label="Peruhsaaan" path="/student/dashboard/internships" />
               <SidebarItems icon="heroicons:trophy-solid" label="Profile" path="/student/dashboard/Profile"/>
             </div>

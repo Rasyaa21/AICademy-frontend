@@ -17,19 +17,19 @@
 
         <div class="absolute top-24 left-32 lg:left-48 animate-float">
             <div class="w-[80px] h-[80px] bg-white/10 backdrop-blur-sm rounded-full p-3 shadow-lg">
-                <NuxtImg :src="`${objectStorageUrl}/assets/home-icon.webp`" alt="Home" class="object-contain w-full h-full opacity-80" provider="none" />
+                <NuxtImg :src="`${objectStorageUrl}/assets/home-icon.webp`" alt="Home" class="object-contain w-full h-full opacity-80"  />
             </div>
         </div>
 
         <div class="absolute right-24 top-1/3 lg:right-32 animate-float-delayed">
             <div class="w-[80px] h-[80px] bg-white/10 backdrop-blur-sm rounded-full p-3 shadow-lg">
-                <NuxtImg :src="`${objectStorageUrl}/assets/book-icon.webp`" alt="Book" class="object-contain w-full h-full opacity-80" provider="none" />
+                <NuxtImg :src="`${objectStorageUrl}/assets/book-icon.webp`" alt="Book" class="object-contain w-full h-full opacity-80"  />
             </div>
         </div>
 
         <div class="absolute left-16 bottom-40 animate-float-slow">
             <div class="w-[80px] h-[80px] bg-white/10 backdrop-blur-sm rounded-full p-3 shadow-lg">
-                <NuxtImg :src="`${objectStorageUrl}/assets/gear-icon.webp`" alt="Settings" class="object-contain w-full h-full opacity-80" provider="none" />
+                <NuxtImg :src="`${objectStorageUrl}/assets/gear-icon.webp`" alt="Settings" class="object-contain w-full h-full opacity-80"  />
             </div>
         </div>
 
@@ -116,7 +116,7 @@
                             :src="`${objectStorageUrl}/assets/login.webp`" 
                             alt="Register Illustration" 
                             class="p-10 w-full drop-shadow-lg"
-                            provider="none"
+                            
                         />
                 </div>
             </div>
@@ -129,10 +129,10 @@ import UniversalButton from '~/components/button/UniversalButton.vue';
 import AlertModal from '~/components/modal/basic-modal/AlertModal.vue';
 import MainTextfield from '~/components/textfield/MainTextfield.vue'
 
-const config = useRuntimeConfig();
-const objectStorageUrl = config.public.objectStorageUrl
+const { public: publicConfig } = useRuntimeConfig()
+const objectStorageUrl = publicConfig.objectStorageUrl   
 const authStore = useAuthStore()
-const userStore = useUserStore() // Add user store
+const userStore = useUserStore()
 const { setupTokenRefresh } = useAuth()
 
 definePageMeta({
@@ -187,11 +187,10 @@ const getDashboardUrl = (roleValue: string | null): string => {
   }
 }
 
+const sessionUser = useState<any>('sessionUser', () => null)
+
 const handleLogin = async () => {
-  const payload = {
-    email: form.value.email,
-    password: form.value.password
-  }
+  const payload = { email: form.value.email, password: form.value.password }
 
   try {
     const res = await $fetch('/auth/login', {
@@ -199,32 +198,28 @@ const handleLogin = async () => {
       body: payload,
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
-      baseURL: config.public.apiBase
+      baseURL: publicConfig.apiBase
     })
 
-    if (res?.success && res?.data) {
-      const { access_token, refresh_token, user, require_password_change } = res.data
-      authStore.setTokens(access_token, refresh_token, user)
+    // Ambil profil dari cookie session
+    const me = await $fetch('/auth/me', {
+      baseURL: publicConfig.apiBase,
+      credentials: 'include'
+    }).catch(() => null)
 
-      if (user.role === 'student') {
-        await userStore.fetchUser()
-      }
+    const user = (me as any)?.data || (me as any)?.user || (res as any)?.data?.user || null
+    if (!user) throw new Error('Gagal memuat sesi pengguna')
 
-      // Mulai auto-refresh token
-      setupTokenRefresh()
-
-      if (require_password_change === true) {
-        showSuccessModal('Login berhasil! Anda akan dialihkan ke halaman reset password')
-        setTimeout(() => navigateTo('/reset-default-user-password'), 1200)
-        return
-      }
-
-      const dashboardUrl = getDashboardUrl(user.role)
-      showSuccessModal('Login berhasil! Anda akan dialihkan ke dashboard')
-      setTimeout(() => navigateTo(dashboardUrl), 1200)
-    } else {
-      throw new Error(res?.message || 'Login gagal')
+    sessionUser.value = user
+    if (user.role === 'student') {
+      try { await userStore.fetchUser?.() } catch {}
     }
+
+    setupTokenRefresh()
+
+    const dashboardUrl = getDashboardUrl(user.role)
+    showSuccessModal('Login berhasil! Anda akan dialihkan ke dashboard')
+    setTimeout(() => navigateTo(dashboardUrl), 800)
   } catch (error: unknown) {
     const err = error as { status?: number; statusCode?: number; data?: { message?: string }; message?: string }
     let msg = 'Password atau email yang anda masukan salah'
