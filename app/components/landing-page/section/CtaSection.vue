@@ -1,8 +1,4 @@
-
 <script setup lang="ts">
-
-const config = useRuntimeConfig()
-const objectStorageUrl = config.public.NUXT_PUBLIC_OBJECT_STORAGE_URL || process.env.NUXT_PUBLIC_OBJECT_STORAGE_URL
 
 // Optional: Add any props or state here
 const handleGetStarted = () => {
@@ -26,19 +22,19 @@ const handleGetStarted = () => {
 
         <div class="absolute top-24 left-32 lg:left-48 animate-float">
             <div class="w-[100px] h-[100px] bg-transparent backdrop-blur-sm rounded-full p-3 shadow-lg">
-                <img :src="`${objectStorageUrl}/assets/home-icon.webp`" alt="Settings" class="w-full h-full object-contain opacity-80" />
+                <img src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/home-icon.webp" alt="Settings" class="w-full h-full object-contain opacity-80" />
             </div>
         </div>
 
         <div class="absolute top-1/3 right-24 lg:right-32 animate-float-delayed">
             <div class="w-[100px] h-[100px] bg-transparen backdrop-blur-sm rounded-full p-3 shadow-lg">
-                <img :src="`${objectStorageUrl}/assets/book-icon.webp`" alt="Book" class="w-full h-full object-contain opacity-80" />
+                <img src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/book-icon.webp" alt="Book" class="w-full h-full object-contain opacity-80" />
             </div>
         </div>
 
         <div class="absolute bottom-40 left-16 animate-float-slow">
             <div class="w-[100px] h-[100px] bg-transparen backdrop-blur-sm rounded-full p-3 shadow-lg">
-                <img :src="`${objectStorageUrl}/assets/gear-icon.webp`" alt="Settings" class="w-full h-full object-contain opacity-80" />
+                <img src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/gear-icon.webp" alt="Settings" class="w-full h-full object-contain opacity-80" />
             </div>
         </div>
 

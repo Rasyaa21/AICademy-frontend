@@ -8,14 +8,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000/api/v1',
-      objectStorageUrl: process.env.NUXT_PUBLIC_OBJECT_STORAGE_URL
+      objectStorageUrl: process.env.NUXT_PUBLIC_OBJECT_STORAGE_URL || 'https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev'
     },
-  },
-  image: {
-    domains: ['https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev'],
-    alias: {
-      cdn: process.env.NUXT_PUBLIC_OBJECT_STORAGE_URL || ''
-    }
   },
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
@@ -23,7 +17,6 @@ export default defineNuxtConfig({
   modules: [
     '@nuxtjs/tailwindcss',
     '@nuxtjs/google-fonts',
-    'nuxt-marquee',
     'nuxt-marquee',
     'motion-v/nuxt',
     '@nuxt/icon',
@@ -42,19 +35,16 @@ export default defineNuxtConfig({
     preconnect: true,
   },
   image: {
-    quality: 80,
-    format: ['webp', 'avif', 'png', 'jpg'],
-    screens: {
-      xs: 320,
-      sm: 640,
-      md: 768,
-      lg: 1024,
-      xl: 1280,
-      xxl: 1536,
-    },
-    // optional: jika ingin remote optimization, daftarkan domain CDN
-    domains: process.env.NUXT_PUBLIC_OBJECT_STORAGE_URL
-      ? [new URL(process.env.NUXT_PUBLIC_OBJECT_STORAGE_URL).hostname]
-      : []
-  }
+  provider: 'ipx',            
+  quality: 80,
+  format: ['webp', 'avif', 'png', 'jpg'],
+  screens: {
+    xs: 320, sm: 640, md: 768, lg: 1024, xl: 1280, xxl: 1536,
+  },
+  domains: ['pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev'], 
+  alias: {
+    cdn: process.env.NUXT_PUBLIC_OBJECT_STORAGE_URL
+      || 'https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev'
+  },
+}
 })

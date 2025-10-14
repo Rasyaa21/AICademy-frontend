@@ -28,27 +28,27 @@
                 <FeatureRow
                     title="Profiling Role & Karir"
                     description="Temukan role dan karir impianmu! Isi kuesioner singkat dan cari tahu apa yang sebenarnya kamu suka"
-                    :icon-src="`${objectStorageUrl}/assets/book-icon.webp`"
+                    icon-src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/book-icon.webp"
                     align="left"
                 />
                 <FeatureRow
                     title="Roadmap & Project"
                     description="Buka roadmap karir pilihanmu, lihat progres pembelajaran, dan asah kemampuanmu lewat berbagai projek yang ada"
-                    :icon-src="`${objectStorageUrl}/assets/book-icon.webp`"
+                    icon-src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/book-icon.webp"
                     align="right"
                     offset="-mt-8 lg:-mt-16"
                 />
                 <FeatureRow
                     title="Tim & Challenge"
                     description="Bentuk tim dengan temanmu, selesaikan challenge sebanyak-banyaknya, dan raih peringkat di leaderboard"
-                    :icon-src="`${objectStorageUrl}/assets/book-icon.webp`"
+                    icon-src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/book-icon.webp"
                     align="left"
                     offset="-mt-4 lg:-mt-10"
                 />
                 <FeatureRow
                     title="CV & Perusahaan"
                     description="Susun CV yang profesional dan bangun pengalaman melalui PKL di perusahaan yang terverifikasi"
-                    :icon-src="`${objectStorageUrl}/assets/book-icon.webp`"
+                    icon-src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/book-icon.webp"
                     align="right"
                     offset="-mt-8 lg:-mt-20"
                 />
@@ -60,14 +60,11 @@
 <script setup lang="ts">
 import FeatureRow from '../FeatureRow.vue';
 
-const config = useRuntimeConfig()
-const objectStorageUrl = config.public.NUXT_PUBLIC_OBJECT_STORAGE_URL || process.env.NUXT_PUBLIC_OBJECT_STORAGE_URL
-
 const props = withDefaults(defineProps<{backgroundUrl?: string}>(), {
     backgroundUrl: ""
 })
 
 const sectionBgStyle = computed(() => ({
-    backgroundImage: `url('${objectStorageUrl}/assets/bg-fitur.webp')`
+    backgroundImage: `url('https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/bg-fitur.webp')`
 }))
 </script>
