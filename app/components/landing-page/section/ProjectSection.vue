@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import ProjectCard from '../ProjectCard.vue';
 
-const config = useRuntimeConfig()
-const objectStorageUrl = config.public.NUXT_PUBLIC_OBJECT_STORAGE_URL || process.env.NUXT_PUBLIC_OBJECT_STORAGE_URL
-
 const projects = ref([
   {
     id: 1,
@@ -12,11 +9,11 @@ const projects = ref([
     category: 'Web Application',
     rank: 1,
     author: {
-      avatar: `${objectStorageUrl}/assets/pregnacare.webp`,
+      avatar: 'https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/pregnacare.webp',
       team: 'IntechCode'
     },
     tech: ['Next.js', 'Express.js', 'Prisma', 'PosgresSQL'],
-    image: `${objectStorageUrl}/assets/pregnacare.webp`,
+    image: 'https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/pregnacare.webp',
     githubUrl: 'https://github.com/Rasyaa21/Nyampah_Dinacom',
     liveUrl: 'https://dodolan.example.com'
   },
@@ -27,11 +24,11 @@ const projects = ref([
     category: 'Mobile Application',
     rank: 2,
     author: {
-      avatar: `${objectStorageUrl}/assets/dinacom.webp`,
+      avatar: 'https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/dinacom.webp',
       team: 'klub_realitas.dart'
     },
     tech: ['Flutter', 'Gemini AI', 'Laravel', 'MySQL'],
-    image: `${objectStorageUrl}/assets/dinacom.webp`,
+    image: 'https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/dinacom.webp',
     githubUrl: 'https://github.com/Rasyaa21/Nyampah_Dinacom',
     liveUrl: 'https://edutrack.example.com'
   },
@@ -42,11 +39,11 @@ const projects = ref([
     category: 'Web Application',
     rank: 3,
     author: {
-      avatar: `${objectStorageUrl}/assets/dodolan-img.webp`,
+      avatar: 'https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/dodolan-img.webp',
       team: 'IntechCode'
     },
     tech: ['Next.js'],
-    image: `${objectStorageUrl}/assets/agriloka.webp`,
+    image: 'https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/agriloka.webp',
     githubUrl: 'https://github.com/Rasyaa21/dodolan-final-web',
     liveUrl: 'https://agriloka-intech.vercel.app/'
   }
