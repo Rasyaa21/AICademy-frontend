@@ -402,82 +402,80 @@
 
       <!-- Submit Modal -->
       <div
-        v-if="showSubmitModal"
-        class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-        @click.self="showSubmitModal = false"
-      >
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-          <div class="p-6 border-b border-gray-100">
-            <div class="flex items-center justify-between">
-              <h3 class="text-xl font-bold text-gray-900">Submit Karya</h3>
-              <button @click="showSubmitModal = false" class="text-gray-400 hover:text-gray-600">
-                <Icon name="heroicons:x-mark-20-solid" class="w-6 h-6" />
-              </button>
-            </div>
-          </div>
-          
-          <form @submit.prevent="submitChallenge" class="p-6">
-            <div class="space-y-4">
-              <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Judul Submission</label>
-                <input
-                  v-model="submitForm.title"
-                  type="text"
-                  required
-                  class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
-                  placeholder="Masukkan judul submission"
-                />
-              </div>
-              <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">GitHub Repository URL</label>
-                <input
-                  v-model="submitForm.github_url"
-                  type="url"
-                  required
-                  class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
-                  placeholder="https://github.com/username/repository"
-                />
-              </div>
-              <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Live Demo URL (Opsional)</label>
-                <input
-                  v-model="submitForm.live_url"
-                  type="url"
-                  class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
-                  placeholder="https://your-demo.com"
-                />
-              </div>
-              <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Deskripsi</label>
-                <textarea
-                  v-model="submitForm.description"
-                  rows="4"
-                  required
-                  class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
-                  placeholder="Ceritakan tentang Karya Anda..."
-                ></textarea>
-              </div>
-            </div>
-            <div class="flex gap-3 mt-6">
-              <button
-                type="button"
-                @click="showSubmitModal = false"
-                class="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors"
-              >
-                Batal
-              </button>
-              <button
-                type="submit"
-                :disabled="submitting"
-                class="flex-1 px-4 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors disabled:opacity-50 font-medium flex items-center justify-center gap-2"
-              >
-                <Icon v-if="submitting" name="heroicons:arrow-path-20-solid" class="w-4 h-4 animate-spin" />
-                {{ submitting ? 'Mengirim...' : 'Submit' }}
-              </button>
-            </div>
-          </form>
+    v-if="showSubmitModal"
+    class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+    @click.self="showSubmitModal = false"
+  >
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div class="p-6 border-b border-gray-100">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xl font-bold text-gray-900">Submit Solusi</h3>
+          <button @click="showSubmitModal = false" class="text-gray-400 hover:text-gray-600">
+            <Icon name="heroicons:x-mark-20-solid" class="w-6 h-6" />
+          </button>
         </div>
       </div>
+
+      <form @submit.prevent="submitChallenge" class="p-6">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Judul Submission</label>
+            <input
+              v-model="submitForm.title"
+              type="text"
+              required
+              class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              placeholder="Masukkan judul submission"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Repository URL</label>
+            <input
+              v-model="submitForm.repo_url"
+              type="url"
+              required
+              class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              placeholder="https://github.com/username/repository"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Dokumen (PDF/DOC/DOCX)</label>
+            <input
+              type="file"
+              required
+              accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              class="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              @change="(e:any) => submitForm.docs_file = e.target.files?.[0] || null"
+            />
+            <p v-if="submitForm.docs_file" class="mt-1 text-xs text-gray-600">
+              Terpilih: {{ submitForm.docs_file.name }}
+            </p>
+          </div>
+        </div>
+
+        <div class="flex gap-3 mt-6">
+          <button
+            type="button"
+            @click="showSubmitModal = false"
+            class="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors"
+          >
+            Batal
+          </button>
+          <button
+            type="submit"
+            :disabled="submitting"
+            class="flex-1 px-4 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors disabled:opacity-50 font-medium flex items-center justify-center gap-2"
+          >
+            <Icon v-if="submitting" name="heroicons:arrow-path-20-solid" class="w-4 h-4 animate-spin" />
+            {{ submitting ? 'Mengirim...' : 'Submit' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
 
       <!-- Create Team Modal -->
       <CreateTeamModal
@@ -493,6 +491,8 @@
 import { ref, computed, onMounted } from "vue";
 import type { Challenge, Team } from "~/types/Challenge";
 import CreateTeamModal from "~/components/modal/student/dashboard/CreateTeamModal.vue"
+import { error } from "console";
+const config = useRuntimeConfig() // ADD
 
 definePageMeta({
   layout: "dashboard-layout-student-dashboard-layout",
@@ -524,9 +524,8 @@ const registerForm = ref({
 
 const submitForm = ref({
   title: '',
-  github_url: '',
-  live_url: '',
-  description: ''
+  repo_url: '',          // CHANGED: was github_url
+  docs_file: null as File | null // ADDED
 });
 
 // Computed
@@ -618,31 +617,52 @@ const registerChallenge = async () => {
 const submitChallenge = async () => {
   try {
     submitting.value = true;
-    
-    const response = await $api(`/student/challenges/${challenge.value!.id}/submit`, {
-      method: 'POST',
-      body: {
-        title: submitForm.value.title,
-        github_url: submitForm.value.github_url,
-        live_url: submitForm.value.live_url,
-        description: submitForm.value.description
-      }
-    }) as any;
 
-    if (response.success) {
-      showSubmitModal.value = false;
-      submitForm.value = {
-        title: '',
-        github_url: '',
-        live_url: '',
-        description: ''
-      };
-      await fetchChallenge(challenge.value!.id);
-      alert('Submission berhasil dikirim!');
+    if (!challenge.value?.id) {
+      alert('Challenge tidak valid.');
+      return;
     }
-  } catch (error) {
-    console.error('Error submitting challenge:', error);
-    alert('Gagal mengirim submission. Silakan coba lagi.');
+    if (!submitForm.value.title.trim()) {
+      alert('Judul wajib diisi.');
+      return;
+    }
+  
+    if (!submitForm.value.docs_file) {
+      alert('File dokumen wajib diunggah.');
+      return;
+    }
+
+    const fd = new FormData();
+    fd.append('challenge_id', challenge.value.id);
+    fd.append('title', submitForm.value.title.trim());
+    fd.append('repo_url', submitForm.value.repo_url.trim());
+    fd.append('docs_file', submitForm.value.docs_file);
+
+    // Debug cek payload di console
+    for (const [k, v] of fd.entries()) {
+      console.log('FormData', k, v instanceof File ? `${v.name} (${v.type}, ${v.size}B)` : v);
+    }
+
+    const res = await $fetch('/student/challenges/submit', {
+      method: 'POST',
+      body: fd,
+      baseURL: config.public.apiBase,
+      credentials: 'include',
+    });
+
+    if ((res as any)?.success) {
+      showSubmitModal.value = false;
+      submitForm.value = { title: '', repo_url: '', docs_file: null};
+      await fetchChallenge(challenge.value.id);
+      alert('Submission berhasil dikirim!');
+    } else {
+      throw new Error((res as any)?.message || 'Submit gagal');
+    }
+  } catch (err: any) {
+    const status = err?.response?.status || err?.statusCode;
+    const data = err?.data || err?.response?._data;
+    console.error('Error submitting challenge:', err);
+    alert(data?.message || `Gagal mengirim submission. (${status || err})`);
   } finally {
     submitting.value = false;
   }
@@ -678,3 +698,5 @@ onMounted(async () => {
   }
 });
 </script>
+
+  

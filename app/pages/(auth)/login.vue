@@ -187,11 +187,10 @@ const getDashboardUrl = (roleValue: string | null): string => {
   }
 }
 
+const sessionUser = useState<any>('sessionUser', () => null)
+
 const handleLogin = async () => {
-  const payload = {
-    email: form.value.email,
-    password: form.value.password
-  }
+  const payload = { email: form.value.email, password: form.value.password }
 
   try {
     const res = await $fetch('/auth/login', {
@@ -202,29 +201,25 @@ const handleLogin = async () => {
       baseURL: publicConfig.apiBase
     })
 
-    if (res?.success && res?.data) {
-      const { access_token, refresh_token, user, require_password_change } = res.data
-      authStore.setTokens(access_token, refresh_token, user)
+    // Ambil profil dari cookie session
+    const me = await $fetch('/auth/me', {
+      baseURL: publicConfig.apiBase,
+      credentials: 'include'
+    }).catch(() => null)
 
-      if (user.role === 'student') {
-        await userStore.fetchUser()
-      }
+    const user = (me as any)?.data || (me as any)?.user || (res as any)?.data?.user || null
+    if (!user) throw new Error('Gagal memuat sesi pengguna')
 
-      // Mulai auto-refresh token
-      setupTokenRefresh()
-
-      if (require_password_change === true) {
-        showSuccessModal('Login berhasil! Anda akan dialihkan ke halaman reset password')
-        setTimeout(() => navigateTo('/reset-default-user-password'), 1200)
-        return
-      }
-
-      const dashboardUrl = getDashboardUrl(user.role)
-      showSuccessModal('Login berhasil! Anda akan dialihkan ke dashboard')
-      setTimeout(() => navigateTo(dashboardUrl), 1200)
-    } else {
-      throw new Error(res?.message || 'Login gagal')
+    sessionUser.value = user
+    if (user.role === 'student') {
+      try { await userStore.fetchUser?.() } catch {}
     }
+
+    setupTokenRefresh()
+
+    const dashboardUrl = getDashboardUrl(user.role)
+    showSuccessModal('Login berhasil! Anda akan dialihkan ke dashboard')
+    setTimeout(() => navigateTo(dashboardUrl), 800)
   } catch (error: unknown) {
     const err = error as { status?: number; statusCode?: number; data?: { message?: string }; message?: string }
     let msg = 'Password atau email yang anda masukan salah'

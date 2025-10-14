@@ -374,42 +374,40 @@ const submitForm = ref({
 // API calls
 const { $api } = useNuxtApp();
 
+// Fetch functions
 const fetchChallenges = async () => {
   try {
-    const response = await $api('/student/challenges', {
-      method: 'GET'
-    }) as any;
-    if (response.success) {
-      challenges.value = response.data.data || [];
+    const response = await $api('/student/challenges', { method: 'GET' }) as any;
+    if (response?.data?.data) {
+      challenges.value = response.data.data;
     }
   } catch (error) {
     console.error('Error fetching challenges:', error);
+    challenges.value = [];
   }
 };
 
 const fetchMyTeams = async () => {
   try {
-    const response = await $api('/student/challenges/teams', {
-      method: 'GET'
-    }) as any;
-    if (response.success) {
-      myTeams.value = response.data || [];
+    const response = await $api('/student/challenges/teams', { method: 'GET' }) as any;
+    if (response?.data) {
+      myTeams.value = response.data;
     }
   } catch (error) {
     console.error('Error fetching teams:', error);
+    myTeams.value = [];
   }
 };
 
 const fetchMySubmissions = async () => {
   try {
-    const response = await $api('/student/challenges/submissions', {
-      method: 'GET'
-    }) as any;
-    if (response.success) {
-      mySubmissions.value = response.data.data || [];
+    const response = await $api('/student/challenges/submissions', { method: 'GET' }) as any;
+    if (response?.data?.data) {
+      mySubmissions.value = response.data.data;
     }
   } catch (error) {
     console.error('Error fetching submissions:', error);
+    mySubmissions.value = [];
   }
 };
 
@@ -426,15 +424,12 @@ const openRegisterModal = (challenge: Challenge) => {
 const registerChallenge = async () => {
   try {
     registering.value = true;
-    
     const response = await $api(`/student/challenges/${registerForm.value.challenge_id}/register`, {
       method: 'POST',
-      body: {
-        team_id: registerForm.value.team_id
-      }
+      body: { team_id: registerForm.value.team_id }
     }) as any;
-
-    if (response.success) {
+    
+    if (response?.success) {
       showRegisterModal.value = false;
       registerForm.value = { team_id: '', challenge_id: '' };
       await fetchChallenges();
@@ -451,7 +446,6 @@ const registerChallenge = async () => {
 const submitChallenge = async () => {
   try {
     submitting.value = true;
-    
     const response = await $api(`/student/challenges/${submitForm.value.challenge_id}/submit`, {
       method: 'POST',
       body: {
@@ -461,16 +455,10 @@ const submitChallenge = async () => {
         description: submitForm.value.description
       }
     }) as any;
-
-    if (response.success) {
+    
+    if (response?.success) {
       showSubmitModal.value = false;
-      submitForm.value = {
-        challenge_id: '',
-        title: '',
-        github_url: '',
-        live_url: '',
-        description: ''
-      };
+      submitForm.value = { challenge_id: '', title: '', github_url: '', live_url: '', description: '' };
       await fetchMySubmissions();
       alert('Submission berhasil dikirim!');
     }
