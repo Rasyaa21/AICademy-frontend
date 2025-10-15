@@ -4,23 +4,17 @@ interface User {
   id: string
   email: string
   role: string
-  name: string
+  name?: string
 }
 
 interface AuthState {
   access_token: string | null
   refresh_token: string | null
   user: User | null
-  isAuthenticated: boolean
-}
-
-interface RefreshResponse {
-  success: boolean
-  data: {
-    access_token: string
-    token_type: 'Bearer'
-    expires_in: number // seconds
-  }
+  userRole: string | null
+  requirePasswordChange: boolean
+  isLoggedIn: boolean
+  isTokenExpired: boolean
 }
 
 export const useAuthStore = defineStore('auth', {
@@ -28,102 +22,179 @@ export const useAuthStore = defineStore('auth', {
     access_token: null,
     refresh_token: null,
     user: null,
-    isAuthenticated: false
+    userRole: null,
+    requirePasswordChange: false,
+    isLoggedIn: false,
+    isTokenExpired: false,
   }),
-  
+
   getters: {
-    isLoggedIn: (state) => !!state.access_token && state.isAuthenticated,
-    userRole: (state) => state.user?.role || null,
-    userName: (state) => state.user?.name || null,
-    userEmail: (state) => state.user?.email || null
+    getIsLoggedIn: (state) => !!state.access_token && !!state.userRole,
+    getIsTokenExpired: (state) => {
+      if (!state.access_token) return false
+      try {
+        const payload = JSON.parse(atob(state.access_token.split('.')[1] ?? ''))
+        return Date.now() >= payload.exp * 1000
+      } catch {
+        return false
+      }
+    },
   },
 
   actions: {
-    setTokens(access: string, refresh: string, user: User) {
-      const isProd = !import.meta.dev
-
-      this.access_token = access
-      this.refresh_token = refresh
-      this.user = user
-      this.isAuthenticated = true
-
-      useCookie<string | null>('access_token', { 
-        maxAge: 15 * 60, secure: isProd, sameSite: 'strict' 
-      }).value = access
-
-      useCookie<string | null>('refresh_token', { 
-        maxAge: 60 * 60 * 24 * 30, secure: isProd, sameSite: 'strict' 
-      }).value = refresh
-
-      useCookie<string | null>('role', { 
-        maxAge: 60 * 60 * 24 * 30, secure: isProd, sameSite: 'strict' 
-      }).value = user.role
-
-      useCookie<User | null>('user', { 
-        maxAge: 60 * 60 * 24 * 30, secure: isProd, sameSite: 'strict' 
-      }).value = user
-    },
-
     loadFromCookies() {
-      const accessCookie = useCookie<string | null>('access_token')
-      const refreshCookie = useCookie<string | null>('refresh_token')
-      const userCookie = useCookie<User | null>('user')
-      
-      this.access_token = accessCookie.value || null
-      this.refresh_token = refreshCookie.value || null
-      this.user = userCookie.value || null
-      this.isAuthenticated = !!(this.access_token && this.user)
+      if (import.meta.server) return
+
+      const accessTokenCookie = useCookie<string | null>('access_token', {
+        default: () => null,
+        httpOnly: false,
+        secure: false,
+        sameSite: 'lax',
+      })
+      const tokenCookie = useCookie<string | null>('token', {
+        default: () => null,
+        httpOnly: false,
+        secure: false,
+        sameSite: 'lax',
+      })
+      const roleCookie = useCookie<string | null>('role', {
+        default: () => null,
+        httpOnly: false,
+        secure: false,
+        sameSite: 'lax',
+      })
+      const userCookie = useCookie<User | null>('user', {
+        default: () => null,
+        httpOnly: false,
+        secure: false,
+        sameSite: 'lax',
+      })
+      const requirePasswordChangeCookie = useCookie<boolean>('requirePasswordChange', {
+        default: () => false,
+        httpOnly: false,
+        secure: false,
+        sameSite: 'lax',
+      })
+      const refreshTokenCookie = useCookie<string | null>('refresh_token', {
+        default: () => null,
+        httpOnly: false,
+        secure: false,
+        sameSite: 'lax',
+      })
+
+      this.access_token = accessTokenCookie.value || tokenCookie.value
+      this.refresh_token = refreshTokenCookie.value
+      this.userRole = roleCookie.value
+      this.user = userCookie.value
+      this.requirePasswordChange = requirePasswordChangeCookie.value
+
+      this.isLoggedIn = !!this.access_token && !!this.userRole
+      this.isTokenExpired = this.getIsTokenExpired
     },
 
     async refreshAccessToken() {
-      const config = useRuntimeConfig()
-      const isProd = !import.meta.dev
-
-      const refreshToken = this.refresh_token ?? useCookie<string | null>('refresh_token').value
-      if (!refreshToken) return false
-
       try {
-        const res = await $fetch<RefreshResponse>('/auth/refresh', {
+        const apiBase = useRuntimeConfig().public.apiBase
+
+        const body =
+          this.refresh_token && this.refresh_token.length > 0
+            ? { refresh_token: this.refresh_token }
+            : undefined
+
+        const response = (await $fetch(apiBase + '/auth/refresh', {
           method: 'POST',
-          baseURL: config.public.apiBase,
-          body: { refresh_token: refreshToken },
+          credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
-          credentials: 'include'
-        })
-
-        if (res?.success && res?.data?.access_token) {
-          this.access_token = res.data.access_token
-          this.isAuthenticated = !!(this.access_token && (this.user ?? useCookie<User | null>('user').value))
-
-          // set ulang access_token cookie dengan maxAge baru (default 15 menit kalau tidak dikirim)
-          const maxAge = res.data.expires_in ?? 15 * 60
-          useCookie<string | null>('access_token', { 
-            maxAge, secure: isProd, sameSite: 'strict' 
-          }).value = res.data.access_token
-
-          return true
+          body,
+        })) as {
+          success: boolean
+          data?: { access_token: string; token_type: string; expires_in: number }
         }
-        return false
-      } catch (e) {
-        console.error('Failed to refresh access token:', e)
-        // Jangan langsung logout; biarkan UI handle jika perlu
-        return false
+
+        if (response?.success && response?.data?.access_token) {
+          this.access_token = response.data.access_token
+
+          const accessTokenCookie = useCookie<string>('access_token', {
+            secure: false,
+            sameSite: 'lax',
+          })
+          const tokenCookie = useCookie<string>('token', {
+            secure: false,
+            sameSite: 'lax',
+          })
+          accessTokenCookie.value = response.data.access_token
+          tokenCookie.value = response.data.access_token
+
+          this.isTokenExpired = false
+          this.isLoggedIn = !!this.access_token && !!this.userRole
+          return response.data.access_token
+        }
+        throw new Error('Invalid refresh response')
+      } catch (error) {
+        this.logout()
+        throw error
       }
     },
 
     logout() {
-      const isProd = !import.meta.dev
-      useCookie<string | null>('access_token', { secure: isProd, sameSite: 'strict' }).value = null
-      useCookie<string | null>('refresh_token', { secure: isProd, sameSite: 'strict' }).value = null
-      useCookie<User | null>('user', { secure: isProd, sameSite: 'strict' }).value = null
-      this.clear()
-    },
-
-    clear() {
       this.access_token = null
       this.refresh_token = null
       this.user = null
-      this.isAuthenticated = false
-    }
-  }
+      this.userRole = null
+      this.requirePasswordChange = false
+      this.isLoggedIn = false
+      this.isTokenExpired = false
+
+      if (import.meta.client) {
+        const accessTokenCookie = useCookie<string | null>('access_token', { secure: false, sameSite: 'lax' })
+        const tokenCookie = useCookie<string | null>('token', { secure: false, sameSite: 'lax' })
+        const roleCookie = useCookie<string | null>('role', { secure: false, sameSite: 'lax' })
+        const userCookie = useCookie<User | null>('user', { secure: false, sameSite: 'lax' })
+        const requirePasswordChangeCookie = useCookie<boolean>('requirePasswordChange', { secure: false, sameSite: 'lax' })
+        const refreshTokenCookie = useCookie<string | null>('refresh_token', { secure: false, sameSite: 'lax' })
+        
+        accessTokenCookie.value = null
+        tokenCookie.value = null
+        roleCookie.value = null
+        userCookie.value = null
+        requirePasswordChangeCookie.value = false
+        refreshTokenCookie.value = null
+      }
+    },
+
+    setAuthData(accessToken: string, refreshToken: string | null, user: User, requirePasswordChange: boolean = false) {
+      this.access_token = accessToken
+      this.refresh_token = refreshToken ?? null
+      this.user = user
+      this.userRole = user.role
+      this.requirePasswordChange = requirePasswordChange
+      this.isLoggedIn = true
+      this.isTokenExpired = false
+
+      if (import.meta.client) {
+        const accessTokenCookie = useCookie<string>('access_token', { secure: false, sameSite: 'lax' })
+        const tokenCookie = useCookie<string>('token', { secure: false, sameSite: 'lax' })
+        const roleCookie = useCookie<string>('role', { secure: false, sameSite: 'lax' })
+        const userCookie = useCookie<User>('user', { secure: false, sameSite: 'lax' })
+        const requirePasswordChangeCookie = useCookie<boolean>('requirePasswordChange', { secure: false, sameSite: 'lax' })
+        const refreshTokenCookie = useCookie<string | null>('refresh_token', { secure: false, sameSite: 'lax' })
+        
+        accessTokenCookie.value = accessToken
+        tokenCookie.value = accessToken
+        roleCookie.value = user.role
+        userCookie.value = user
+        requirePasswordChangeCookie.value = requirePasswordChange
+        refreshTokenCookie.value = refreshToken ?? null
+      }
+    },
+
+    clearPasswordChangeRequirement() {
+      this.requirePasswordChange = false
+      
+      if (import.meta.client) {
+        const requirePasswordChangeCookie = useCookie<boolean>('requirePasswordChange', { secure: false, sameSite: 'lax' })
+        requirePasswordChangeCookie.value = false
+      }
+    },
+  },
 })

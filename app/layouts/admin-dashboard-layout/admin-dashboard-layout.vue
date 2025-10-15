@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue'
 import SidebarItems from '../../components/layout-components/SidebarItems.vue'
+import ConfirmModal from '~/components/modal/basic-modal/ConfirmModal.vue'
 
 const isCollapse = ref(false)
 const isOpen = ref(false)
+const showLogoutConfirm = ref(false)
 
 const route = useRoute()
 watch(() => route.path, () => { isOpen.value = false })
@@ -13,9 +15,45 @@ onMounted(() => {
   if (saved !== null) isCollapse.value = saved === '1'
 })
 watch(isCollapse, v => localStorage.setItem('sidebar:collapsed', v ? '1' : '0'))
+
+const userStore = useUserStore()
+const authStore = useAuthStore()
+const config = useRuntimeConfig()
+
+const handleLogout = async () => {
+  const refreshToken = authStore.refresh_token || useCookie<string | null>('refresh_token', { sameSite: 'lax' }).value
+  try {
+    await $fetch(config.public.apiBase + '/auth/logout', {
+      method: 'POST',
+      credentials: 'include',
+      body: { refresh_token: refreshToken },
+      headers: { 'Content-Type': 'application/json' }
+    })
+  } catch (err) {
+    console.log('Logout error', err)
+  }
+  userStore.logout()
+  authStore.logout()
+  navigateTo('/login')
+}
+
+const openLogoutConfirm = () => {
+  showLogoutConfirm.value = true
+}
 </script>
 
 <template>
+
+<ConfirmModal
+  v-model:is-open="showLogoutConfirm"
+  type="danger"
+  title="Logout"
+  message="Apakah Anda yakin ingin logout?"
+  cancel-text="Batal"
+  confirm-text="Logout"
+  @cancel="showLogoutConfirm = false"
+  @confirm="handleLogout"
+/>
   <aside
     class="fixed top-0 left-0 h-screen hidden lg:flex bg-white border-r flex-col transition-all duration-300"
     :class="isCollapse ? 'w-20 p-4 items-center' : 'w-64 p-6'"
@@ -55,8 +93,6 @@ watch(isCollapse, v => localStorage.setItem('sidebar:collapsed', v ? '1' : '0'))
                     :is-selected="false" path="/admin/dashboard/teachers" :collapsed="isCollapse" />
       <SidebarItems icon="heroicons:users-16-solid" label="Data Perusahaan"
                     :is-selected="false" path="/admin/dashboard/companies" :collapsed="isCollapse" />
-      <SidebarItems icon="heroicons:users-16-solid" label="Data Alumni"
-                    :is-selected="false" path="/admin/dashboard/alumni" :collapsed="isCollapse" />
       <SidebarItems icon="heroicons:trophy-solid" label="Challenge"
                     :is-selected="false" path="/admin/dashboard/challenges" :collapsed="isCollapse" />
       <SidebarItems icon="tabler:clipboard-list" label="Profiling Kuisioner"
@@ -65,6 +101,18 @@ watch(isCollapse, v => localStorage.setItem('sidebar:collapsed', v ? '1' : '0'))
       <SidebarItems icon="streamline-plump:arrow-roadmap-solid" label="Roadmap" :is-selected="false" path="/admin/dashboard/roadmap" :collapsed="isCollapse"/>
 
     </ul>
+
+    <!-- Logout Button (desktop sidebar) -->
+    <div class="mt-auto w-full pt-4">
+      <button
+        @click="openLogoutConfirm"
+             class="mt-2 flex items-center gap-2 px-3 py-3 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 text-left border-red-600 border-1"
+        :class="isCollapse ? 'justify-center' : 'justify-start'"
+      >
+        <Icon name="heroicons:arrow-left-on-rectangle-20-solid" class="w-5 h-5" />
+        <span v-if="!isCollapse">Logout</span>
+      </button>
+    </div>
   </aside>
 
   <!-- Content wrapper: margin mengikuti lebar sidebar -->
@@ -103,8 +151,7 @@ watch(isCollapse, v => localStorage.setItem('sidebar:collapsed', v ? '1' : '0'))
 
         <div class="flex items-center gap-x-3">
             <div class="hidden md:block">
-                <div class="text-sm font-medium text-gray-700 hidden lg:flex">John Doe</div>
-                <div class="text-xs text-gray-500 hidden lg:flex">Superadmin</div>
+                <div class="text-xl text-gray-500 font-bold hidden lg:flex">Superadmin</div>
             </div>
         </div>
       </div>
@@ -126,13 +173,18 @@ watch(isCollapse, v => localStorage.setItem('sidebar:collapsed', v ? '1' : '0'))
               <SidebarItems icon="heroicons:users-16-solid" label="Data Siswa" :is-selected="false" path="/admin/dashboard/students"/>
               <SidebarItems icon="heroicons:users-16-solid" label="Data Guru" :is-selected="false" path="/admin/dashboard/teachers"/>
               <SidebarItems icon="heroicons:users-16-solid" label="Data Perusahaan" :is-selected="false" path="/admin/dashboard/companies"/>
-                    <SidebarItems icon="heroicons:users-16-solid" label="Data Alumni"
-                    :is-selected="false" path="/admin/dashboard/alumni" />
               <SidebarItems icon="heroicons:trophy-solid" label="Challange" :is-selected="false" path="/admin/dashboard/challange" />
               <SidebarItems icon="tabler:clipboard-list" label="Profiling Kuisioner" :is-selected="false" path="/admin/dashboard/questionnaires" />
               <SidebarItems icon="tabler:clipboard-list" label="Role" :is-selected="false" path="/admin/dashboard/roles" />
          <SidebarItems icon="streamline-plump:arrow-roadmap-solid" label="Roadmap" :is-selected="false" path="/admin/dashboard/roadmap"/>
 
+              <button
+                @click="openLogoutConfirm"
+       class="mt-2 flex items-center gap-2 px-3 py-3 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 text-left border-red-600 border-1"
+              >
+                <Icon name="heroicons:arrow-left-on-rectangle-20-solid" class="w-5 h-5" />
+                Logout
+              </button>
             </div>
           </div>
         </div>

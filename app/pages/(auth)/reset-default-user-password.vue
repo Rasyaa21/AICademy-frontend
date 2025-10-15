@@ -17,19 +17,19 @@
 
         <div class="absolute top-24 left-32 lg:left-48 animate-float">
             <div class="w-[80px] h-[80px] bg-white/10 backdrop-blur-sm rounded-full p-3 shadow-lg">
-                <NuxtImg :src="`${objectStorageUrl}/assets/home-icon.webp`" alt="Home" class="object-contain w-full h-full opacity-80" provider="none" />
+                <NuxtImg src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/home-icon.webp" alt="Home" class="object-contain w-full h-full opacity-80"  />
             </div>
         </div>
 
         <div class="absolute right-24 top-1/3 lg:right-32 animate-float-delayed">
             <div class="w-[80px] h-[80px] bg-white/10 backdrop-blur-sm rounded-full p-3 shadow-lg">
-                <NuxtImg :src="`${objectStorageUrl}/assets/book-icon.webp`" alt="Book" class="object-contain w-full h-full opacity-80" provider="none" />
+                <NuxtImg src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/book-icon.webp" alt="Book" class="object-contain w-full h-full opacity-80"  />
             </div>
         </div>
 
         <div class="absolute left-16 bottom-40 animate-float-slow">
             <div class="w-[80px] h-[80px] bg-white/10 backdrop-blur-sm rounded-full p-3 shadow-lg">
-                <NuxtImg :src="`${objectStorageUrl}/assets/gear-icon.webp`" alt="Settings" class="object-contain w-full h-full opacity-80" provider="none" />
+                <NuxtImg src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/gear-icon.webp" alt="Settings" class="object-contain w-full h-full opacity-80"  />
             </div>
         </div>
 
@@ -44,22 +44,37 @@
                     </div>
                     <h1 class="mb-3 text-4xl font-bold text-secondary">Reset Password</h1>
                     <p class="mx-auto mb-4 max-w-md text-lg leading-relaxed text-gray-500">
-                        Silahkan masukan password baru anda
+                        Anda perlu mengubah password default untuk melanjutkan
                     </p>
                 </div>
 
-                <form  class="space-y-5 w-full max-w-md" @submit.prevent="handleReset">
-                    <PasswordTextfield v-model:password="form.new_password"/>
+                <form class="space-y-5 w-full max-w-md" @submit.prevent="handleReset">
 
-                    <UniversalButton type="submit" text="Reset Password"/>
+                    <PasswordTextfield 
+                        v-model:password="form.new_password"
+                        label="Password Baru"
+                        placeholder="Masukkan password baru"
+                        required
+                    />
 
-                    
-                    <div class="text-center">
-                        <span class="text-gray-600">Kembali ke halaman </span>
-                        <a href="/login" class="font-semibold transition-colors text-primary hover:text-primary/80">
-                            Login
-                        </a>
+
+                    <div v-if="form.new_password && form.confirm_password" class="text-sm">
+                        <div v-if="passwordsMatch" class="flex items-center text-green-600">
+                            <Icon name="heroicons:check-circle-20-solid" class="w-4 h-4 mr-1" />
+                            Password cocok
+                        </div>
+                        <div v-else class="flex items-center text-red-600">
+                            <Icon name="heroicons:x-circle-20-solid" class="w-4 h-4 mr-1" />
+                            Password tidak cocok
+                        </div>
                     </div>
+
+                    <UniversalButton 
+                        type="submit" 
+                        text="Ubah Password" 
+                        :loading="isLoading"
+                        :disabled="!canSubmit"
+                    />
                 </form>
             </div>
         </div>
@@ -76,17 +91,52 @@ definePageMeta({
 })
 
 const config = useRuntimeConfig()
-const objectStorageUrl = config.public.objectStorageUrl
+const authStore = useAuthStore()
 
 const form = ref({
+    current_password: "telkom@2025",
     new_password: '',
+    confirm_password: ''
 })
+
+const isLoading = ref(false)
 
 const alertModal = ref({
     isOpen: false,
     type: 'success' as 'success' | 'error' | 'warning' | 'info',
     title: '',
     message: ''
+})
+
+const passwordsMatch = computed(() => {
+    return form.value.new_password === form.value.confirm_password
+})
+
+const canSubmit = computed(() => {
+    return form.value.new_password.trim() 
+})
+
+// Check if user is authenticated and requires password change
+onMounted(() => {
+    authStore.loadFromCookies()
+    
+    if (!authStore.access_token) {
+        navigateTo('/login')
+        return
+    }
+    
+    // if (!authStore.requirePasswordChange) {
+    //     // If user doesn't need to change password, redirect to dashboard
+    //     const role = authStore.userRole
+    //     const dashboards: Record<string, string> = {
+    //         admin: '/admin/dashboard',
+    //         teacher: '/teacher/dashboard',
+    //         company: '/company/dashboard',
+    //         alumni: '/student/dashboard',
+    //         student: '/student/dashboard',
+    //     }
+    //     navigateTo(dashboards[role || 'student'] || '/student/dashboard')
+    // }
 })
 
 // Alert modal handlers
@@ -111,37 +161,59 @@ const showErrorModal = (message: string) => {
 const handleAlertOk = () => {
     alertModal.value.isOpen = false
     if (alertModal.value.type === 'success') {
-        // Redirect to login after successful password reset
-        navigateTo('/login')
+        // Clear password change requirement and redirect to dashboard
+        authStore.clearPasswordChangeRequirement()
+        
+        const role = authStore.userRole
+        const dashboards: Record<string, string> = {
+            admin: '/admin/dashboard',
+            teacher: '/teacher/dashboard',
+            company: '/company/dashboard',
+            alumni: '/student/dashboard',
+            student: '/student/dashboard',
+        }
+        navigateTo(dashboards[role || 'student'] || '/student/dashboard')
     }
 }
 
 const handleReset = async () => {
+    if (!canSubmit.value) {
+        showErrorModal('Mohon untuk ikuti pola password')
+        return
+    }
 
-    const payload = {          
+    isLoading.value = true
+    
+    const payload = {
+        current_password: form.value.current_password,
         new_password: form.value.new_password,
+        confirm_password: form.value.new_password 
     }
 
     try {
-        //todo passwing token
         await $fetch('/auth/student/change-default-password', {
             method: 'POST',
             body: payload,
             credentials: 'include',
             headers: {
-                'Content-Type' : 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${authStore.access_token}`
             },
             baseURL: config.public.apiBase
-        });
+        })
         
-        showSuccessModal('Password berhasil direset! Anda akan dialihkan ke dashboard')
+        showSuccessModal('Password berhasil diubah! Anda akan dialihkan ke dashboard')
     } catch (error: unknown) {
         const err = error as { status?: number; statusCode?: number; data?: { message?: string; error?: string }; message?: string }
         
-        let errorMessage = 'Terjadi kesalahan saat mereset password'
+        let errorMessage = 'Terjadi kesalahan saat mengubah password'
         
         if (err.status === 400 || err.statusCode === 400) {
-            errorMessage = 'Token reset password tidak valid atau sudah kadaluarsa'
+            errorMessage = err.data?.message || 'Password tidak valid atau password saat ini salah'
+        } else if (err.status === 401 || err.statusCode === 401) {
+            errorMessage = 'Sesi telah berakhir, silakan login kembali'
+            authStore.logout()
+            setTimeout(() => navigateTo('/login'), 2000)
         } else if (err.data?.message) {
             errorMessage = err.data.message
         } else if (err.message) {
@@ -149,7 +221,9 @@ const handleReset = async () => {
         }
         
         showErrorModal(errorMessage)
-        console.error('Error submitting post:', error)
+        console.error('Error changing password:', error)
+    } finally {
+        isLoading.value = false
     }
 }
 </script>

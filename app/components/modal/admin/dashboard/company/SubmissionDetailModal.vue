@@ -1,4 +1,15 @@
 <template>
+    <!-- Add PDF Viewer -->
+    <PDFViewer
+        v-model:is-open="pdfViewerOpen"
+        :file-url="pdfViewerUrl"
+        :title="pdfViewerTitle"
+        :subtitle="pdfViewerSubtitle"
+        :file-name="pdfViewerFileName"
+        @download="handlePDFDownload"
+        @view="handlePDFView"
+    />
+
     <div v-if="isOpen" class="fixed inset-0 z-[80] flex items-center justify-center">
         <!-- Backdrop -->
         <div 
@@ -104,24 +115,31 @@
                             <Icon name="heroicons:document-text-20-solid" class="w-5 h-5 mr-2" />
                             Curriculum Vitae (CV)
                         </h4>
-                        <div v-if="submissionDetail.cv_file" class="flex items-center space-x-3">
-                            <div class="flex-shrink-0">
-                                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                                    <Icon name="heroicons:document-arrow-down-20-solid" class="w-5 h-5 text-green-600" />
+                        <div v-if="submissionDetail.cv_file" class="flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="flex-shrink-0">
+                                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                        <Icon name="heroicons:document-arrow-down-20-solid" class="w-5 h-5 text-green-600" />
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-gray-900">CV tersedia</p>
+                                    <p class="text-xs text-gray-500">Klik untuk melihat atau mengunduh CV</p>
                                 </div>
                             </div>
-                            <div class="flex-1">
-                                <p class="text-sm font-medium text-gray-900">CV tersedia</p>
-                                <p class="text-xs text-gray-500">Klik untuk melihat atau mengunduh CV</p>
-                            </div>
-                            <a 
-                                :href="submissionDetail.cv_file" 
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="px-3 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 active:bg-green-800 transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:ring-offset-2"
-                            >
-                                Lihat CV
-                            </a>
+                            
+                            <!-- Use DocumentLink Component -->
+                            <DocumentLink
+                                :file-url="submissionDetail.cv_file"
+                                :title="`CV - ${submissionDetail.student.fullname}`"
+                                :subtitle="`${submissionDetail.student.class} - ${submissionDetail.student.nis}`"
+                                :file-name="`CV_${submissionDetail.student.fullname.replace(/\s+/g, '_')}.pdf`"
+                                type="cv"
+                                link-text="Lihat CV"
+                                preview-text="Preview CV"
+                                @download="handleCVDownload"
+                                @view="handleCVView"
+                            />
                         </div>
                         <div v-else class="flex items-center space-x-3">
                             <div class="flex-shrink-0">
@@ -206,6 +224,8 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
+import PDFViewer from '~/components/shared/PDFViewer.vue'
+import DocumentLink from '~/components/shared/DocumentLink.vue'
 
 interface Student {
     id: string
@@ -256,6 +276,11 @@ const loading = ref(false)
 const error = ref<string | null>(null)
 const isUpdating = ref(false)
 const pendingAction = ref<'approved' | 'rejected' | null>(null)
+const pdfViewerOpen = ref(false)
+const pdfViewerUrl = ref<string | null>(null)
+const pdfViewerTitle = ref('')
+const pdfViewerSubtitle = ref('')
+const pdfViewerFileName = ref('')
 
 // Watch for modal open and submissionId changes
 watch([() => props.isOpen, () => props.submissionId], async ([isOpen, submissionId]) => {
@@ -383,5 +408,24 @@ const getStatusText = (status: string) => {
         default:
             return 'Menunggu'
     }
+}
+
+// Add event handlers
+const handleCVView = (url: string) => {
+    console.log('CV viewed:', url)
+    // Analytics tracking
+}
+
+const handleCVDownload = (url: string) => {
+    console.log('CV downloaded:', url)
+    // Analytics tracking
+}
+
+const handlePDFView = (url: string) => {
+    console.log('PDF viewed:', url)
+}
+
+const handlePDFDownload = (url: string) => {
+    console.log('PDF downloaded:', url)
 }
 </script>

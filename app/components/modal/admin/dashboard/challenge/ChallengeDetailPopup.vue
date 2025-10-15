@@ -7,7 +7,7 @@
         @submission-updated="fetchChallengeSubmissions"
     />
 
-    <div v-if="isOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div v-if="isOpen" class="fixed inset-0 z-[65] flex items-center justify-center p-4">
         <!-- Backdrop -->
         <div 
             class="absolute inset-0 bg-black bg-opacity-50 transition-opacity"

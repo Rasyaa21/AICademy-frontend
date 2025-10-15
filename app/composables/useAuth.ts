@@ -2,10 +2,7 @@ export const useAuth = () => {
   const authStore = useAuthStore()
   const router = useRouter()
   let refreshTimer: NodeJS.Timeout | null = null
-  let refreshIntervalId: ReturnType<typeof setInterval> | null = null
-  const INTERVAL_MS = 14 * 60 * 1000 // refresh tiap 14 menit
 
-  // Clear existing timer
   const clearRefreshTimer = () => {
     if (refreshTimer) {
       clearTimeout(refreshTimer)
@@ -13,102 +10,53 @@ export const useAuth = () => {
     }
   }
 
-  // Auto refresh token when it's about to expire
   const setupTokenRefresh = () => {
-    stopTokenRefresh()
-    // Clear any existing timer first
     clearRefreshTimer()
-    
-    if (!authStore.access_token) {
-      console.log('No access token, skipping refresh setup')
-      return
-   }
+    if (!authStore.access_token) return
 
-    // Decode JWT to get expiration time
     try {
-      const tokenPayload = JSON.parse(atob(authStore.access_token.split('.')[1]))
-      const expirationTime = tokenPayload.exp * 1000 // Convert to milliseconds
+      const parts = authStore.access_token.split('.')
+      const payloadPart = parts[1]
+      if (!payloadPart) return
+
+      const tokenPayload = JSON.parse(atob(payloadPart))
+      const expirationTime = tokenPayload.exp * 1000 as number
       const currentTime = Date.now()
       const timeUntilExpiry = expirationTime - currentTime
-      
-      console.log('Token expires in:', Math.floor(timeUntilExpiry / 1000), 'seconds')
-      
-      // Refresh token 2 minutes before expiry, but minimum 30 seconds from now
-      const refreshTime = Math.max(timeUntilExpiry - (2 * 60 * 1000), 30 * 1000)
-      
+
+      const refreshTime = Math.max(timeUntilExpiry - 2 * 60 * 1000, 30 * 1000)
+
       if (refreshTime > 0 && timeUntilExpiry > 0) {
-        console.log('Setting up token refresh in:', Math.floor(refreshTime / 1000), 'seconds')
-        
         refreshTimer = setTimeout(async () => {
           try {
-            console.log('Auto-refreshing token...')
             await authStore.refreshAccessToken()
-            setupTokenRefresh() // Setup next refresh
-          } catch (error) {
-            console.error('Auto token refresh failed:', error)
-            // Redirect to login if refresh fails
+            setupTokenRefresh()
+          } catch {
             await logout()
           }
         }, refreshTime)
       } else {
-        console.log('Token expired or expires too soon, attempting immediate refresh')
-        // Token already expired or expires very soon, try to refresh immediately
-        if (authStore.refresh_token) {
-          authStore.refreshAccessToken().catch(async (error) => {
-            console.error('Immediate token refresh failed:', error)
-            await logout()
-          })
-        }
+        authStore.refreshAccessToken().catch(async () => {
+          await logout()
+        })
       }
-    } catch (error) {
-      console.error('Error parsing token:', error)
-    }
-
-    if (!authStore.isLoggedIn) return
-    refreshIntervalId = setInterval(async () => {
-      await authStore.refreshAccessToken()
-    }, INTERVAL_MS)
-  }
-
-  const stopTokenRefresh = () => {
-    if (refreshIntervalId) {
-      clearInterval(refreshIntervalId)
-      refreshIntervalId = null
-    }
-  }
-
-  // Manual refresh function
-  const refreshToken = async () => {
-    try {
-      console.log('Manual token refresh requested')
-      await authStore.refreshAccessToken()
-      setupTokenRefresh() // Setup next refresh
-      return true
-    } catch (error) {
-      console.error('Manual token refresh failed:', error)
-      await logout()
-      return false
+    } catch {
+      // Handle parsing error silently
     }
   }
 
   const logout = async () => {
     clearRefreshTimer()
-    stopTokenRefresh()
-    
     try {
-      console.log('Attempting logout...')
-      // Optional: Call logout endpoint
-      await $fetch('/auth/logout', {
+      await $fetch(useRuntimeConfig().public.apiBase + '/auth/logout', {
         method: 'POST',
         credentials: 'include',
-        headers: {
-          'Authorization': authStore.access_token ? `Bearer ${authStore.access_token}` : ''
-        },
-        baseURL: useRuntimeConfig().public.apiBase
+        headers: { Authorization: authStore.access_token ? `Bearer ${authStore.access_token}` : '' },
       })
-    } catch (error) {
-      console.error('Logout API call failed:', error)
-    } finally {
+    } catch {
+      // Handle error silently
+    }
+    finally {
       authStore.logout()
       await router.push('/login')
     }
@@ -118,10 +66,9 @@ export const useAuth = () => {
     authStore,
     setupTokenRefresh,
     clearRefreshTimer,
-    refreshToken,
     logout,
     isAuthenticated: computed(() => authStore.isLoggedIn),
     user: computed(() => authStore.user),
-    userRole: computed(() => authStore.userRole)
+    userRole: computed(() => authStore.userRole),
   }
 }
