@@ -42,21 +42,18 @@ export const useUserStore = defineStore('user', {
       this.error = null
       try {
         const config = useRuntimeConfig()
-        const res = await $fetch<MeResponse>(config.public.apiBase + '/auth/me', {
-          credentials: 'include',
+        const res = await $fetch(config.public.apiBase + '/auth/me', {
           method: 'GET',
+          credentials: 'include',
         })
-        if (res?.success && res?.data) {
-          const userData = 'student_profile' in res.data ? res.data.student_profile : (res.data as StudentProfile)
-          this.user = userData
-          this.isAuthenticated = true
-        } else {
-          throw new Error('Invalid response format')
-        }
-      } catch (err: any) {
-        this.error = err?.data?.message || 'Failed to fetch user data'
+        const data: any = res
+        if (!data?.success || !data?.data) throw new Error('Unauthenticated')
+        this.user = data.data
+        this.isAuthenticated = true
+      } catch (e: any) {
         this.user = null
         this.isAuthenticated = false
+        this.error = e?.data?.message || e?.message || 'Unauthorized'
       } finally {
         this.isLoading = false
       }

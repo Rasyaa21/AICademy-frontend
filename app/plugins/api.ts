@@ -2,51 +2,14 @@ import { getCookieConfig } from '~/utils/cookie-config'
 
 export default defineNuxtPlugin(() => {
   const config = useRuntimeConfig()
-  const cookieConfig = getCookieConfig()
 
   const api = $fetch.create({
     baseURL: config.public.apiBase,
     credentials: 'include',
     onRequest({ options }) {
-      const accessTokenCookie = useCookie<string | null>('access_token', cookieConfig)
-      const tokenCookie = useCookie<string | null>('token', cookieConfig)
-      const accessToken = accessTokenCookie.value || tokenCookie.value
-
-      if (!options.headers) {
-        options.headers = {}
-      }
-      
-      // Convert headers to object if it's not already
-      const headers = options.headers as Record<string, string>
-      headers['Content-Type'] = 'application/json'
-      
-      if (accessToken) {
-        headers['Authorization'] = `Bearer ${accessToken}`
-      }
-    },
-    async onResponseError({ response, request }) {
-      if (response.status === 401) {
-        const authStore = useAuthStore()
-        try {
-          await authStore.refreshAccessToken()
-          const newToken = authStore.access_token
-          if (newToken) {
-            // Create new request with updated token
-            const newHeaders = { ...request.headers as Record<string, string> }
-            newHeaders['Authorization'] = `Bearer ${newToken}`
-            
-            return $fetch(request.url, { 
-              method: request.method,
-              body: request.body,
-              headers: newHeaders, 
-              credentials: 'include' 
-            })
-          }
-        } catch {
-          authStore.logout()
-          await navigateTo('/login')
-        }
-      }
+      // Optional: inject Authorization jika FE punya token sendiri
+      // Tidak wajib untuk cross-domain cookie flow
+      options.headers = { ...(options.headers as any), 'Content-Type': 'application/json' }
     },
   })
 
