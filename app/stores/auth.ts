@@ -49,37 +49,37 @@ export const useAuthStore = defineStore('auth', {
         default: () => null,
         httpOnly: false,
         secure: true,
-        sameSite: 'lax',
+        sameSite: 'none',
       })
       const tokenCookie = useCookie<string | null>('token', {
         default: () => null,
         httpOnly: false,
         secure: true,
-        sameSite: 'lax',
+        sameSite: 'none',
       })
       const roleCookie = useCookie<string | null>('role', {
         default: () => null,
         httpOnly: false,
         secure: true,
-        sameSite: 'lax',
+        sameSite: 'none',
       })
       const userCookie = useCookie<User | null>('user', {
         default: () => null,
         httpOnly: false,
         secure: true,
-        sameSite: 'lax',
+        sameSite: 'none',
       })
       const requirePasswordChangeCookie = useCookie<boolean>('requirePasswordChange', {
         default: () => false,
         httpOnly: false,
         secure: true,
-        sameSite: 'lax',
+        sameSite: 'none',
       })
       const refreshTokenCookie = useCookie<string | null>('refresh_token', {
         default: () => null,
         httpOnly: false,
         secure: true,
-        sameSite: 'lax',
+        sameSite: 'none',
       })
 
       this.access_token = accessTokenCookie.value || tokenCookie.value
@@ -116,11 +116,11 @@ export const useAuthStore = defineStore('auth', {
 
           const accessTokenCookie = useCookie<string>('access_token', {
             secure: true,
-            sameSite: 'lax',
+            sameSite: 'none',
           })
           const tokenCookie = useCookie<string>('token', {
             secure: true,
-            sameSite: 'lax',
+            sameSite: 'none',
           })
           accessTokenCookie.value = response.data.access_token
           tokenCookie.value = response.data.access_token
@@ -146,12 +146,12 @@ export const useAuthStore = defineStore('auth', {
       this.isTokenExpired = false
 
       if (import.meta.client) {
-        const accessTokenCookie = useCookie<string | null>('access_token', { secure: true, sameSite: 'lax' })
-        const tokenCookie = useCookie<string | null>('token', { secure: true, sameSite: 'lax' })
-        const roleCookie = useCookie<string | null>('role', { secure: true, sameSite: 'lax' })
-        const userCookie = useCookie<User | null>('user', { secure: true, sameSite: 'lax' })
-        const requirePasswordChangeCookie = useCookie<boolean>('requirePasswordChange', { secure: true, sameSite: 'lax' })
-        const refreshTokenCookie = useCookie<string | null>('refresh_token', { secure: true, sameSite: 'lax' })
+        const accessTokenCookie = useCookie<string | null>('access_token', { secure: true, sameSite: 'none' })
+        const tokenCookie = useCookie<string | null>('token', { secure: true, sameSite: 'none' })
+        const roleCookie = useCookie<string | null>('role', { secure: true, sameSite: 'none' })
+        const userCookie = useCookie<User | null>('user', { secure: true, sameSite: 'none' })
+        const requirePasswordChangeCookie = useCookie<boolean>('requirePasswordChange', { secure: true, sameSite: 'none' })
+        const refreshTokenCookie = useCookie<string | null>('refresh_token', { secure: true, sameSite: 'none' })
         
         accessTokenCookie.value = null
         tokenCookie.value = null
@@ -172,12 +172,12 @@ export const useAuthStore = defineStore('auth', {
       this.isTokenExpired = false
 
       if (import.meta.client) {
-        const accessTokenCookie = useCookie<string>('access_token', { secure: true, sameSite: 'lax' })
-        const tokenCookie = useCookie<string>('token', { secure: true, sameSite: 'lax' })
-        const roleCookie = useCookie<string>('role', { secure: true, sameSite: 'lax' })
-        const userCookie = useCookie<User>('user', { secure: true, sameSite: 'lax' })
-        const requirePasswordChangeCookie = useCookie<boolean>('requirePasswordChange', { secure: true, sameSite: 'lax' })
-        const refreshTokenCookie = useCookie<string | null>('refresh_token', { secure: true, sameSite: 'lax' })
+        const accessTokenCookie = useCookie<string>('access_token', { secure: true, sameSite: 'none' })
+        const tokenCookie = useCookie<string>('token', { secure: true, sameSite: 'none' })
+        const roleCookie = useCookie<string>('role', { secure: true, sameSite: 'none' })
+        const userCookie = useCookie<User>('user', { secure: true, sameSite: 'none' })
+        const requirePasswordChangeCookie = useCookie<boolean>('requirePasswordChange', { secure: true, sameSite: 'none' })
+        const refreshTokenCookie = useCookie<string | null>('refresh_token', { secure: true, sameSite: 'none' })
         
         accessTokenCookie.value = accessToken
         tokenCookie.value = accessToken
@@ -192,7 +192,7 @@ export const useAuthStore = defineStore('auth', {
       this.requirePasswordChange = false
       
       if (import.meta.client) {
-        const requirePasswordChangeCookie = useCookie<boolean>('requirePasswordChange', { secure: true, sameSite: 'lax' })
+        const requirePasswordChangeCookie = useCookie<boolean>('requirePasswordChange', { secure: true, sameSite: 'none' })
         requirePasswordChangeCookie.value = false
       }
     },

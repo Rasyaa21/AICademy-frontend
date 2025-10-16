@@ -58,7 +58,7 @@
             </div>
 
             <div class="px-8 py-4 bg-white rounded-2xl m-6 shadow-xl hover:scale-105 transition z-10 relative">
-                <a href="#" class="text-primary font-bold">Mulai Sekarang</a>
+                <a href="/login" class="text-primary font-bold">Mulai Sekarang</a>
             </div>
 
             <div class="flex items-center space-x-6 mt-4 mb-8 z-10 relative">
@@ -189,7 +189,7 @@
                             Temukan Potensi dan <br /> Rangkai Masa Depanmu!
                         </h2>
                         <p class="text-lg text-gray-600 leading-relaxed">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non erat ut tortor maximus auctor. Morbi condimentum neque magna, bibendum mauris non laoreet mi. Dus tempor orci at tristique volutpat.
+Masih ragu dengan jalan masa depanmu? Platform ini adalah jawaban untuk kamu. Dengan fitur-fitur seperti Challange hingga Profiling yang bisa bantu kamu dengan kebingunganmu!
                         </p>
                         
                         <!-- Stats Row -->
