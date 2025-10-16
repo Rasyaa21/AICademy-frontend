@@ -1,6 +1,5 @@
 import { getCookieConfig } from '~/utils/cookie-config'
 
-// middleware/00.auth.global.ts
 export default defineNuxtRouteMiddleware(async (to) => {
   if (import.meta.server) return
   if (!import.meta.client) return
@@ -10,36 +9,69 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const RESET_PATH = '/reset-default-user-password'
   const isResetRoute = cleanPath === RESET_PATH || cleanPath.endsWith(RESET_PATH)
 
-  const authStore = useAuthStore()
-  await authStore.loadFromCookies()
-
-  // Pakai config cookie runtime (bukan hardcode)
+  // Load cookies dengan config yang konsisten
   const cookieConfig = getCookieConfig()
-  const tokenRef = useCookie<string | null>('token', { ...cookieConfig, default: () => null })
-  const roleRef = useCookie<string | null>('role', { ...cookieConfig, default: () => null })
-  const requirePasswordChangeRef = useCookie<boolean>('requirePasswordChange', { ...cookieConfig, default: () => false })
+  const tokenRef = useCookie<string | null>('token', cookieConfig)
+  const accessTokenRef = useCookie<string | null>('access_token', cookieConfig)
+  const roleRef = useCookie<string | null>('role', cookieConfig)
+  const requirePasswordChangeRef = useCookie<string | null>('requirePasswordChange', cookieConfig)
 
-  let hasToken = !!(authStore.access_token || tokenRef.value)
-  let role = authStore.userRole || roleRef.value || null
-  const requirePasswordChange = authStore.requirePasswordChange || requirePasswordChangeRef.value
+  // Priority: access_token > token (untuk backward compatibility)
+  let hasToken = !!(accessTokenRef.value || tokenRef.value)
+  let role = roleRef.value || null
+  const requirePasswordChange = requirePasswordChangeRef.value === 'true'
 
-  // Fallback terakhir: validasi via /auth/me (cookie domain API akan dikirim otomatis)
+  console.log('Auth Debug:', {
+    hasToken,
+    role,
+    requirePasswordChange,
+    accessToken: !!accessTokenRef.value,
+    token: !!tokenRef.value,
+    cookieDomain: cookieConfig.domain
+  })
+
+  // Jika tidak ada token di cookie, coba validasi dengan backend
   if (!hasToken) {
     try {
       const { $api } = useNuxtApp()
-      const me: any = await $api('/auth/me', { method: 'GET' })
-      if (me?.success) {
+      const me: any = await $api('/auth/me', { 
+        method: 'GET',
+        credentials: 'include'
+      })
+      
+      if (me?.success && me?.data) {
         hasToken = true
-        role = me?.data?.role || me?.user?.role || role
+        role = me.data.role
+        console.log('Token validated via /auth/me:', { role })
+        
+        // Update auth store jika ada
+        const authStore = useAuthStore()
+        authStore.setAuthData(
+          me.data.access_token || 'from_cookie',
+          null,
+          {
+            id: me.data.id || me.data.user_id,
+            email: me.data.email,
+            role: me.data.role,
+            name: me.data.name || me.data.fullname
+          },
+          me.data.require_password_change || false
+        )
       }
-    } catch {}
+    } catch (error) {
+      console.log('Auth validation failed:', error)
+      hasToken = false
+      role = null
+    }
   }
 
+  // Handle reset password route
   if (isResetRoute) {
     if (!hasToken) return navigateTo('/login')
     return
   }
 
+  // Define public routes
   const publicRoutes = new Set([
     '/', '/login', '/register', '/forgot-password',
     '/reset-password', '/email-verification',
@@ -57,28 +89,24 @@ export default defineNuxtRouteMiddleware(async (to) => {
     return
   }
 
+  // Check authentication
   if (!hasToken || !role) {
     return navigateTo('/login')
   }
 
   if (requirePasswordChange) return navigateTo(RESET_PATH)
 
-  try {
-    const isExpired = typeof authStore.getIsTokenExpired === 'function'
-      ? authStore.getIsTokenExpired()
-      : !!authStore.getIsTokenExpired
-    if (isExpired) {
-      authStore.refreshAccessToken().catch(() => navigateTo('/login'))
-    }
-  } catch {}
-
+  // Handle dashboard redirect
   if (cleanPath === '/dashboard') return navigateTo(roleToDashboard(role))
+  
+  // Check role permissions
   const rolePermissions: Record<string, string[]> = {
     '/admin': ['admin'],
     '/teacher': ['teacher', 'admin'],
     '/student': ['student', 'admin', 'alumni'],
     '/company': ['company', 'admin'],
   }
+  
   for (const [prefix, allowed] of Object.entries(rolePermissions)) {
     if (cleanPath.startsWith(prefix + '/') && !allowed.includes(role!)) {
       return navigateTo(roleToDashboard(role!))

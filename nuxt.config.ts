@@ -7,9 +7,8 @@ export default defineNuxtConfig({
   pages: true,
   runtimeConfig: {
     public: {
-      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000',
-      appEnv: process.env.NUXT_PUBLIC_APP_ENV || process.env.NODE_ENV || 'development',
-      secureCookies: process.env.NUXT_PUBLIC_SECURE_COOKIES === 'true',
+      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000/api/v1',
+      cookieDomain: process.env.NUXT_PUBLIC_COOKIE_DOMAIN || '',
     }
   },
   app: {
