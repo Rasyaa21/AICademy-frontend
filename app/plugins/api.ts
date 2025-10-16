@@ -5,8 +5,8 @@ export default defineNuxtPlugin(() => {
     baseURL: config.public.apiBase,
     credentials: 'include',
     onRequest({ options }) {
-      const accessTokenCookie = useCookie<string | null>('access_token', { secure: true, sameSite: 'lax' })
-      const tokenCookie = useCookie<string | null>('token', { secure: true, sameSite: 'lax' })
+      const accessTokenCookie = useCookie<string | null>('access_token', { secure: true, sameSite: 'none' })
+      const tokenCookie = useCookie<string | null>('token', { secure: true, sameSite: 'none' })
       const accessToken = accessTokenCookie.value || tokenCookie.value
 
       if (!options.headers) {

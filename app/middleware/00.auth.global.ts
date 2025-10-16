@@ -12,9 +12,9 @@ export default defineNuxtRouteMiddleware((to) => {
   const authStore = useAuthStore()
   authStore.loadFromCookies()
 
-  const tokenRef = useCookie<string | null>('token', { default: () => null, secure: true, sameSite: 'lax' })
-  const roleRef = useCookie<string | null>('role', { default: () => null, secure: true, sameSite: 'lax' })
-  const requirePasswordChangeRef = useCookie<boolean>('requirePasswordChange', { default: () => false, secure: true, sameSite: 'lax' })
+  const tokenRef = useCookie<string | null>('token', { default: () => null, secure: true, sameSite: 'none' })
+  const roleRef = useCookie<string | null>('role', { default: () => null, secure: true, sameSite: 'none' })
+  const requirePasswordChangeRef = useCookie<boolean>('requirePasswordChange', { default: () => false, secure: true, sameSite: 'none' })
 
   const hasToken = !!(authStore.access_token || tokenRef.value)
   const role = authStore.userRole || roleRef.value
