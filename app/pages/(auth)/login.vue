@@ -182,24 +182,43 @@ const handleLogin = async () => {
     const res = await $fetch<LoginApiResponse>(publicConfig.apiBase + '/auth/login', {
       method: 'POST',
       body: { email: form.value.email, password: form.value.password },
-      credentials: 'include',
+      credentials: 'include', // PENTING: untuk mengirim/menerima cookies
       headers: { 'Content-Type': 'application/json' },
     })
 
     if (!res?.success || !res.data?.user) throw new Error('Login response invalid')
 
-    // Opsional: simpan token ke memory store (tidak wajib untuk cross-domain)
-    authStore.setAuthData(res.data.access_token, res.data.refresh_token ?? null, res.data.user)
+    console.log('Login success:', {
+      hasAccessToken: !!res.data.access_token,
+      role: res.data.user.role,
+      requirePasswordChange: res.data.require_password_change
+    })
 
-    try { await userStore.fetchUser() } catch {}
+    // Set ke auth store (opsional, karena cookies sudah di-set dari backend)
+    authStore.setAuthData(
+      res.data.access_token, 
+      res.data.refresh_token ?? null, 
+      res.data.user,
+      res.data.require_password_change || false
+    )
+
+    try { 
+      await userStore.fetchUser() 
+    } catch (e) {
+      console.log('Failed to fetch user after login:', e)
+    }
+    
     setupTokenRefresh()
 
-    if (res.data.require_password_change || form.value.password == "telkom@2025") {
+    // Check password change requirement
+    if (res.data.require_password_change || form.value.password === "telkom@2025") {
       await navigateTo('/reset-default-user-password', { replace: true })
       return
     }
+    
     await navigateTo(getDashboardUrl(res.data.user.role), { replace: true })
   } catch (error: any) {
+    console.error('Login error:', error)
     const msg = error?.status === 401 ? 'Email atau password tidak valid'
       : error?.data?.message ?? error?.message ?? 'Terjadi kesalahan saat login'
     showErrorModal(msg)
