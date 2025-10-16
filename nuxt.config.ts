@@ -7,9 +7,10 @@ export default defineNuxtConfig({
   pages: true,
   runtimeConfig: {
     public: {
-      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000/api/v1',
-      objectStorageUrl: process.env.NUXT_PUBLIC_OBJECT_STORAGE_URL || 'https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev'
-    },
+      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000',
+      appEnv: process.env.NUXT_PUBLIC_APP_ENV || process.env.NODE_ENV || 'development',
+      secureCookies: process.env.NUXT_PUBLIC_SECURE_COOKIES === 'true',
+    }
   },
   app: {
     head: {

@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { getCookieConfig } from '~/utils/cookie-config'
 
 type StudentProfile = {
   user_id: string
@@ -6,13 +7,11 @@ type StudentProfile = {
   nis: string
   class: string
   profile_picture: string | null
-  // tambahkan field lain bila perlu
 }
 
 interface MeResponse {
   success: boolean
   message: string
-  // API Anda mengembalikan data langsung StudentProfile (lihat contoh /auth/me)
   data: StudentProfile | { student_profile: StudentProfile }
 }
 
@@ -43,17 +42,10 @@ export const useUserStore = defineStore('user', {
       this.error = null
       try {
         const config = useRuntimeConfig()
-
-        const accessTokenCookie = useCookie<string | null>('access_token', { secure: true, sameSite: 'none' })
-        const tokenCookie = useCookie<string | null>('token', { secure: true, sameSite: 'none' })
-        const token = accessTokenCookie.value || tokenCookie.value
-
         const res = await $fetch<MeResponse>(config.public.apiBase + '/auth/me', {
           credentials: 'include',
           method: 'GET',
-          headers: { Authorization: token ? `Bearer ${token}` : '' },
         })
-
         if (res?.success && res?.data) {
           const userData = 'student_profile' in res.data ? res.data.student_profile : (res.data as StudentProfile)
           this.user = userData

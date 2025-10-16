@@ -186,30 +186,21 @@ const handleLogin = async () => {
       headers: { 'Content-Type': 'application/json' },
     })
 
-    if (!res?.success || !res.data?.access_token || !res.data?.user) {
-      throw new Error('Login response invalid')
-    }
+    if (!res?.success || !res.data?.user) throw new Error('Login response invalid')
 
-    authStore.setAuthData(
-      res.data.access_token, 
-      res.data.refresh_token ?? null, 
-      res.data.user,
-    )
+    // Opsional: simpan token ke memory store (tidak wajib untuk cross-domain)
+    authStore.setAuthData(res.data.access_token, res.data.refresh_token ?? null, res.data.user)
 
     try { await userStore.fetchUser() } catch {}
     setupTokenRefresh()
-    
+
     if (res.data.require_password_change || form.value.password == "telkom@2025") {
-    console.log("kelempar ke reset password")
       await navigateTo('/reset-default-user-password', { replace: true })
       return
     }
     await navigateTo(getDashboardUrl(res.data.user.role), { replace: true })
-    return
-
   } catch (error: any) {
-    const msg =
-      error?.status === 401 ? 'Email atau password tidak valid'
+    const msg = error?.status === 401 ? 'Email atau password tidak valid'
       : error?.data?.message ?? error?.message ?? 'Terjadi kesalahan saat login'
     showErrorModal(msg)
   } finally {
