@@ -70,78 +70,8 @@
         </div>
       </div>
     </div>
-
-    <!-- Challenges Grid -->
-    <div v-else-if="filteredChallenges.length > 0" class="p-6">
-      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <div v-for="challenge in paginatedChallenges" :key="challenge.id">
-          <ChallengeCard :challenge="challenge" />
-          <div class="mt-3 flex gap-2">
-            <!-- Register Button -->
-            <button
-              v-if="myTeams.length > 0 && isActive(challenge.deadline) && !isRegistered(challenge.id) && !hasSubmitted(challenge.id)"
-              @click="openRegisterModal(challenge)"
-              class="flex-1 px-3 py-2 border border-blue-600 text-blue-600 text-center rounded-lg hover:bg-blue-50 transition-colors text-sm"
-            >
-              Daftar
-            </button>
-
-            <!-- Submit Button -->
-            <button
-              v-if="isRegistered(challenge.id) && isActive(challenge.deadline) && !hasSubmitted(challenge.id)"
-              @click="openSubmitModal(challenge)"
-              class="flex-1 px-3 py-2 bg-green-600 text-white text-center rounded-lg hover:bg-green-700 transition-colors text-sm"
-            >
-              Submit
-            </button>
-
-            <!-- Submitted Status -->
-            <div
-              v-if="hasSubmitted(challenge.id)"
-              class="flex-1 px-3 py-2 bg-gray-100 text-gray-600 text-center rounded-lg text-sm"
-            >
-              Sudah Submit
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Pagination -->
-      <div v-if="totalPages > 1" class="flex justify-center mt-8">
-        <nav class="flex gap-2 items-center">
-          <button
-            @click="currentPage--"
-            :disabled="currentPage === 1"
-            class="px-3 py-2 text-sm font-medium rounded-lg border border-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-          >
-            Previous
-          </button>
-          <span class="px-4 py-2 text-sm text-gray-600">
-            Page {{ currentPage }} of {{ totalPages }}
-          </span>
-          <button
-            @click="currentPage++"
-            :disabled="currentPage === totalPages"
-            class="px-3 py-2 text-sm font-medium rounded-lg border border-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-          >
-            Next
-          </button>
-        </nav>
-      </div>
-    </div>
-
-    <!-- Empty State -->
-    <div v-else class="p-12 text-center">
-      <div class="mb-4 text-gray-400">
-        <Icon name="heroicons:magnifying-glass-20-solid" class="mx-auto w-16 h-16" />
-      </div>
-      <h3 class="mb-2 text-lg font-semibold text-gray-900">Tidak ada challenge ditemukan</h3>
-      <p class="text-gray-500">
-        {{ searchQuery ? 'Coba ubah kata kunci pencarian' : 'Belum ada challenge tersedia saat ini' }}
-      </p>
-    </div>
-
-    <!-- Submission Saya -->
+    
+     <!-- Submission Saya -->
     <div v-if="mySubmissions.length > 0" class="bg-white p-6 rounded-lg border">
       <h2 class="text-xl font-semibold mb-4">Submission Saya</h2>
       <div class="space-y-4">
@@ -183,6 +113,51 @@
       </div>
     </div>
 
+    <!-- Challenges Grid -->
+    <div v-else-if="filteredChallenges.length > 0" class="p-6">
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div v-for="challenge in paginatedChallenges" :key="challenge.id">
+          <ChallengeCard :challenge="challenge" />
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div v-if="totalPages > 1" class="flex justify-center mt-8">
+        <nav class="flex gap-2 items-center">
+          <button
+            @click="currentPage--"
+            :disabled="currentPage === 1"
+            class="px-3 py-2 text-sm font-medium rounded-lg border border-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+          >
+            Previous
+          </button>
+          <span class="px-4 py-2 text-sm text-gray-600">
+            Page {{ currentPage }} of {{ totalPages }}
+          </span>
+          <button
+            @click="currentPage++"
+            :disabled="currentPage === totalPages"
+            class="px-3 py-2 text-sm font-medium rounded-lg border border-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+          >
+            Next
+          </button>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div v-else class="p-12 text-center">
+      <div class="mb-4 text-gray-400">
+        <Icon name="heroicons:magnifying-glass-20-solid" class="mx-auto w-16 h-16" />
+      </div>
+      <h3 class="mb-2 text-lg font-semibold text-gray-900">Tidak ada challenge ditemukan</h3>
+      <p class="text-gray-500">
+        {{ searchQuery ? 'Coba ubah kata kunci pencarian' : 'Belum ada challenge tersedia saat ini' }}
+      </p>
+    </div>
+
+   
+
     <!-- Create Team Modal -->
     <CreateTeamModal
       :isOpen="showCreateTeamModal"
@@ -213,7 +188,7 @@
               >
                 <option value="">Pilih tim...</option>
                 <option v-for="team in myTeams" :key="team.id" :value="team.id">
-                  {{ team.team_name }} ({{ team.member_count }} anggota)
+                  {{ team.team_name }} 
                 </option>
               </select>
             </div>
@@ -315,7 +290,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from "vue";
+import { ref, computed, watch } from "vue";
 import ChallengeCard from "~/components/card/ChallengeCard.vue";
 import CreateTeamModal from "~/components/modal/student/dashboard/CreateTeamModal.vue";
 import type { Challenge, Team } from "~/types/Challenge";
@@ -336,8 +311,7 @@ definePageMeta({
   layout: "dashboard-layout-student-dashboard-layout",
 });
 
-// State
-const loading = ref(true);
+// --- state lama yang tetap dipakai di template ---
 const searchQuery = ref("");
 const currentPage = ref(1);
 const itemsPerPage = 12;
@@ -352,67 +326,62 @@ const selectedChallenge = ref<Challenge | null>(null);
 const registering = ref(false);
 const submitting = ref(false);
 
-// Data
-const challenges = ref<Challenge[]>([]);
-const myTeams = ref<Team[]>([]);
-const mySubmissions = ref<Submission[]>([]);
-
 // Forms
-const registerForm = ref({
-  team_id: '',
-  challenge_id: ''
-});
+const registerForm = ref({ team_id: "", challenge_id: "" });
+const submitForm = ref({ challenge_id: "", title: "", github_url: "", live_url: "", description: "" });
 
-const submitForm = ref({
-  challenge_id: '',
-  title: '',
-  github_url: '',
-  live_url: '',
-  description: ''
-});
+// Runtime config untuk $fetch
+const config = useRuntimeConfig();
+const fetchOpts = {
+  baseURL: config.public.apiBase as string,
+  credentials: "include" as const,
+  headers: process.server ? useRequestHeaders(["cookie"]) : undefined,
+};
 
-// API calls
+// ====== useAsyncData REPLACEMENT untuk 3 fetch ======
+const {
+  data: challengesRes,
+  pending: challengesPending,
+  error: challengesError,
+  refresh: refreshChallenges,
+} = await useAsyncData(
+  "student-challenges",
+  () => $fetch("/student/challenges", fetchOpts),
+);
+
+const {
+  data: teamsRes,
+  pending: teamsPending,
+  error: teamsError,
+  refresh: refreshTeams,
+} = await useAsyncData(
+  "student-challenge-teams",
+  () => $fetch("/student/challenges/teams", fetchOpts),
+);
+
+const {
+  data: submissionsRes,
+  pending: submissionsPending,
+  error: submissionsError,
+  refresh: refreshSubmissions,
+} = await useAsyncData(
+  "student-challenge-submissions",
+  () => $fetch("/student/challenges/submissions", fetchOpts),
+);
+
+// Assign ke bentuk array yang dipakai template-mu sekarang
+const challenges = computed<Challenge[]>(() => (challengesRes.value as any)?.data?.data ?? []);
+const myTeams = computed<Team[]>(() => (teamsRes.value as any)?.data ?? []);
+const mySubmissions = computed<Submission[]>(() => (submissionsRes.value as any)?.data?.data ?? []);
+
+// Loading gabungan (ganti loading ref sebelumnya)
+const loading = computed(() => challengesPending.value || teamsPending.value || submissionsPending.value);
+
+// API calls (POST) tetap pakai $api biar konsisten dengan interceptor/cookies-mu
 const { $api } = useNuxtApp();
 
-// Fetch functions
-const fetchChallenges = async () => {
-  try {
-    const response = await $api('/student/challenges', { method: 'GET' }) as any;
-    if (response?.data?.data) {
-      challenges.value = response.data.data;
-    }
-  } catch (error) {
-    console.error('Error fetching challenges:', error);
-    challenges.value = [];
-  }
-};
-
-const fetchMyTeams = async () => {
-  try {
-    const response = await $api('/student/challenges/teams', { method: 'GET' }) as any;
-    if (response?.data) {
-      myTeams.value = response.data;
-    }
-  } catch (error) {
-    console.error('Error fetching teams:', error);
-    myTeams.value = [];
-  }
-};
-
-const fetchMySubmissions = async () => {
-  try {
-    const response = await $api('/student/challenges/submissions', { method: 'GET' }) as any;
-    if (response?.data?.data) {
-      mySubmissions.value = response.data.data;
-    }
-  } catch (error) {
-    console.error('Error fetching submissions:', error);
-    mySubmissions.value = [];
-  }
-};
-
 const onTeamCreated = async () => {
-  await fetchMyTeams();
+  await refreshTeams();
 };
 
 const openRegisterModal = (challenge: Challenge) => {
@@ -425,48 +394,24 @@ const registerChallenge = async () => {
   try {
     registering.value = true;
     const response = await $api(`/student/challenges/${registerForm.value.challenge_id}/register`, {
-      method: 'POST',
-      body: { team_id: registerForm.value.team_id }
+      method: "POST",
+      body: { team_id: registerForm.value.team_id },
+      credentials: 'include'
     }) as any;
-    
+
     if (response?.success) {
       showRegisterModal.value = false;
-      registerForm.value = { team_id: '', challenge_id: '' };
-      await fetchChallenges();
-      alert('Berhasil mendaftar challenge!');
+      registerForm.value = { team_id: "", challenge_id: "" };
+      await Promise.all([refreshChallenges(), refreshSubmissions(), refreshTeams()]);
+      alert("Berhasil mendaftar challenge!");
+    } else {
+      throw new Error(response?.message || "Gagal mendaftar challenge");
     }
   } catch (error) {
-    console.error('Error registering challenge:', error);
-    alert('Gagal mendaftar challenge. Silakan coba lagi.');
+    console.error("Error registering challenge:", error);
+    alert("Gagal mendaftar challenge. Silakan coba lagi.");
   } finally {
     registering.value = false;
-  }
-};
-
-const submitChallenge = async () => {
-  try {
-    submitting.value = true;
-    const response = await $api(`/student/challenges/${submitForm.value.challenge_id}/submit`, {
-      method: 'POST',
-      body: {
-        title: submitForm.value.title,
-        github_url: submitForm.value.github_url,
-        live_url: submitForm.value.live_url,
-        description: submitForm.value.description
-      }
-    }) as any;
-    
-    if (response?.success) {
-      showSubmitModal.value = false;
-      submitForm.value = { challenge_id: '', title: '', github_url: '', live_url: '', description: '' };
-      await fetchMySubmissions();
-      alert('Submission berhasil dikirim!');
-    }
-  } catch (error) {
-    console.error('Error submitting challenge:', error);
-    alert('Gagal mengirim submission. Silakan coba lagi.');
-  } finally {
-    submitting.value = false;
   }
 };
 
@@ -476,32 +421,54 @@ const openSubmitModal = (challenge: Challenge) => {
   showSubmitModal.value = true;
 };
 
-// Helper functions
+const submitChallenge = async () => {
+  try {
+    submitting.value = true;
+    const response = await $api(`/student/challenges/${submitForm.value.challenge_id}/submit`, {
+      method: "POST",
+      body: {
+        title: submitForm.value.title,
+        github_url: submitForm.value.github_url,
+        live_url: submitForm.value.live_url,
+        description: submitForm.value.description,
+      },
+      credentials: 'include'
+    }) as any;
+
+    if (response?.success) {
+      showSubmitModal.value = false;
+      submitForm.value = { challenge_id: "", title: "", github_url: "", live_url: "", description: "" };
+      await refreshSubmissions();
+      alert("Submission berhasil dikirim!");
+    } else {
+      throw new Error(response?.message || "Gagal mengirim submission");
+    }
+  } catch (error) {
+    console.error("Error submitting challenge:", error);
+    alert("Gagal mengirim submission. Silakan coba lagi.");
+  } finally {
+    submitting.value = false;
+  }
+};
+
+// Helpers
 const isRegistered = (challengeId: string) => {
-  return mySubmissions.value.some(submission => 
-    submission.challenge_name && submission.challenge_id === challengeId
+  return mySubmissions.value.some(
+    (submission) => submission.challenge_name && submission.challenge_id === challengeId
   );
 };
 
 const hasSubmitted = (challengeId: string) => {
-  return mySubmissions.value.some(submission => 
-    submission.challenge_id === challengeId
-  );
+  return mySubmissions.value.some((submission) => submission.challenge_id === challengeId);
 };
 
 // Computed properties
 const filteredChallenges = computed(() => {
-  let filtered = challenges.value;
-
-  if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase();
-    filtered = filtered.filter((challenge: Challenge) => 
-      challenge.title.toLowerCase().includes(query) ||
-      challenge.description.toLowerCase().includes(query)
-    );
-  }
-
-  return filtered;
+  const q = searchQuery.value.toLowerCase().trim();
+  if (!q) return challenges.value;
+  return challenges.value.filter((c: Challenge) =>
+    c.title.toLowerCase().includes(q) || c.description.toLowerCase().includes(q)
+  );
 });
 
 const paginatedChallenges = computed(() => {
@@ -510,39 +477,21 @@ const paginatedChallenges = computed(() => {
   return filteredChallenges.value.slice(start, end);
 });
 
-const totalPages = computed(() => {
-  return Math.ceil(filteredChallenges.value.length / itemsPerPage);
-});
+const totalPages = computed(() =>
+  Math.ceil(filteredChallenges.value.length / itemsPerPage)
+);
 
 // Utilities
-const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('id-ID', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
+const formatDate = (dateString: string) =>
+  new Date(dateString).toLocaleDateString("id-ID", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   });
-};
 
-const isActive = (deadline: string) => {
-  return new Date(deadline) > new Date();
-};
-
-// Lifecycle
-onMounted(async () => {
-  try {
-    await Promise.all([
-      fetchChallenges(),
-      fetchMyTeams(),
-      fetchMySubmissions()
-    ]);
-  } catch (error) {
-    console.error('Error loading data:', error);
-  } finally {
-    loading.value = false;
-  }
-});
+const isActive = (deadline: string) => new Date(deadline) > new Date();
 
 // Watchers
 watch([searchQuery], () => {

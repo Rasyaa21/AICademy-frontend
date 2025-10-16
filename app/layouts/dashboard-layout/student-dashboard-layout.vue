@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, computed } from 'vue'
 import SidebarItems from '../../components/layout-components/SidebarItems.vue'
+import ConfirmModal from '~/components/modal/basic-modal/ConfirmModal.vue'
 
 const isCollapse = ref(false)
 const isOpen = ref(false)
+const showLogoutConfirm = ref(false)
 
 const route = useRoute()
 watch(() => route.path, () => { isOpen.value = false })
@@ -18,7 +20,9 @@ onMounted(async () => {
   if (saved !== null) isCollapse.value = saved === '1'
 
   if (!userStore.user) {
-    try { await userStore.fetchUser() } catch {}
+    try { await userStore.fetchUser() } catch (err) {
+      console.log(err)
+    }
   }
 })
 watch(isCollapse, v => localStorage.setItem('sidebar:collapsed', v ? '1' : '0'))
@@ -40,9 +44,43 @@ const initials = computed(() => {
     .slice(0, 2)
     .join('') || 'U'
 })
+
+const config = useRuntimeConfig()
+
+const handleLogout = async () => {
+  const refreshToken = authStore.refresh_token || useCookie<string | null>('refresh_token', { sameSite: 'lax' }).value
+  try {
+    await $fetch(config.public.apiBase + '/auth/logout', {
+      method: 'POST',
+      credentials: 'include',
+      body: { refresh_token: refreshToken },
+      headers: { 'Content-Type': 'application/json' }
+    })
+  } catch (err) { 
+    console.log('Logout error', err)
+  }
+  userStore.logout()
+  authStore.logout()
+  navigateTo('/login')
+}
+
+const openLogoutConfirm = () => {
+  showLogoutConfirm.value = true
+}
 </script>
 
 <template>
+
+<ConfirmModal
+  v-model:is-open="showLogoutConfirm"
+  type="danger"
+  title="Logout"
+  message="Apakah Anda yakin ingin logout?"
+  cancel-text="Batal"
+  confirm-text="Logout"
+  @cancel="showLogoutConfirm = false"
+  @confirm="handleLogout"
+/>
   <!-- Sidebar (desktop) -->
   <aside
     class="fixed top-0 left-0 h-screen hidden lg:flex bg-white border-r flex-col transition-all duration-300"
@@ -83,10 +121,24 @@ const initials = computed(() => {
                     :is-selected="false" path="/student/dashboard/roadmap" :collapsed="isCollapse" />
       <SidebarItems icon="heroicons:trophy-solid" label="Challange"
                     :is-selected="false" path="/student/dashboard/challanges" :collapsed="isCollapse" />
-      <SidebarItems icon="tabler:clipboard-list" label="Peruhsaaan" :is-selected="false" path="/student/dashboard/internships" />
+      <SidebarItems icon="tabler:clipboard-list" label="Peruhsaaan" :is-selected="false" path="/student/dashboard/internships" :collapsed="isCollapse"/>
       <SidebarItems icon="heroicons:trophy-solid" label="Profile"
                     :is-selected="false" path="/student/dashboard/Profile" :collapsed="isCollapse" />
+      <SidebarItems icon="heroicons:trophy-solid" label="CV"
+                    :is-selected="false" path="/student/dashboard/cv" :collapsed="isCollapse" />
     </ul>
+
+    <!-- Logout Button (desktop sidebar) -->
+    <div class="mt-auto w-full pt-4">
+      <button
+        @click="openLogoutConfirm"
+       class="mt-2 flex items-center gap-2 px-3 py-3 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 text-left border-red-600 border-1"
+        :class="isCollapse ? 'justify-center' : 'justify-start'"
+      >
+        <Icon name="heroicons:arrow-left-on-rectangle-20-solid" class="w-5 h-5" />
+        <span v-if="!isCollapse">Logout</span>
+      </button>
+    </div>
   </aside>
 
   <div :class="isCollapse ? 'lg:ml-20' : 'lg:ml-64'" class="ml-0">
@@ -141,14 +193,7 @@ const initials = computed(() => {
       </div>
 
       <!-- Mobile menu -->
-      <Transition
-        enter-active-class="transition duration-200 ease-out"
-        enter-from-class="opacity-0 -translate-y-2"
-        enter-to-class="opacity-100 translate-y-0"
-        leave-active-class="transition duration-150 ease-in"
-        leave-from-class="opacity-100 translate-y-0"
-        leave-to-class="opacity-0 -translate-y-2"
-      >
+      <Transition>
         <div v-if="isOpen" id="mobile-menu"
              class="absolute left-0 right-0 top-full z-20 md:hidden bg-white backdrop-blur border-t">
           <div class="px-4 py-3">
@@ -158,7 +203,15 @@ const initials = computed(() => {
               <SidebarItems icon="streamline-plump:arrow-roadmap-solid" label="Roadmap" path="/student/dashboard/roadmap"/>
               <SidebarItems icon="heroicons:trophy-solid" label="Challange" path="/student/dashboard/challanges" />
               <SidebarItems icon="tabler:clipboard-list" label="Peruhsaaan" path="/student/dashboard/internships" />
-              <SidebarItems icon="heroicons:trophy-solid" label="Profile" path="/student/dashboard/Profile"/>
+              <SidebarItems icon="heroicons:trophy-solid" label="Profile" path="/student/dashboard/profile"/>
+              <SidebarItems icon="heroicons:trophy-solid" label="CV" path="/student/dashboard/cv"/>
+              <button
+                @click="openLogoutConfirm"
+                class="mt-2 flex items-center gap-2 px-3 py-3 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 text-left border-red-600 border-1"
+              >
+                <Icon name="heroicons:arrow-left-on-rectangle-20-solid" class="w-5 h-5" />
+                Logout
+              </button>
             </div>
           </div>
         </div>

@@ -1,38 +1,51 @@
 export default defineNuxtPlugin(() => {
-    const config = useRuntimeConfig()
+  const config = useRuntimeConfig()
 
-    const api = $fetch.create({
-        baseURL: config.public.apiBase,
-        credentials: 'include',
-        onRequest({ options }) {
-            const accessToken = useCookie<string | null>('access_token').value
-            options.headers = new Headers(options.headers || {})
-            options.headers.set('Content-Type', 'application/json')
-            if (accessToken) {
-                options.headers.set('Authorization', `Bearer ${accessToken}`)
-            }
-        },
-        async onResponseError({ response }) {
-            // If we get 401 Unauthorized, try to refresh token
-            if (response.status === 401) {
-                const authStore = useAuthStore()
-                const { refreshToken } = useAuth()
-                
-                console.log('Got 401 error, attempting token refresh')
-                
-                // Try to refresh token if we have a refresh token
-                if (authStore.refresh_token) {
-                    try {
-                        await refreshToken()
-                        console.log('Token refreshed successfully after 401')
-                    } catch (error) {
-                        console.error('Failed to refresh token after 401:', error)
-                        // Don't return anything, just log the error
-                    }
-                }
-            }
+  const api = $fetch.create({
+    baseURL: config.public.apiBase,
+    credentials: 'include',
+    onRequest({ options }) {
+      const accessTokenCookie = useCookie<string | null>('access_token', { secure: true, sameSite: 'lax' })
+      const tokenCookie = useCookie<string | null>('token', { secure: true, sameSite: 'lax' })
+      const accessToken = accessTokenCookie.value || tokenCookie.value
+
+      if (!options.headers) {
+        options.headers = {}
+      }
+      
+      // Convert headers to object if it's not already
+      const headers = options.headers as Record<string, string>
+      headers['Content-Type'] = 'application/json'
+      
+      if (accessToken) {
+        headers['Authorization'] = `Bearer ${accessToken}`
+      }
+    },
+    async onResponseError({ response, request }) {
+      if (response.status === 401) {
+        const authStore = useAuthStore()
+        try {
+          await authStore.refreshAccessToken()
+          const newToken = authStore.access_token
+          if (newToken) {
+            // Create new request with updated token
+            const newHeaders = { ...request.headers as Record<string, string> }
+            newHeaders['Authorization'] = `Bearer ${newToken}`
+            
+            return $fetch(request.url, { 
+              method: request.method,
+              body: request.body,
+              headers: newHeaders, 
+              credentials: 'include' 
+            })
+          }
+        } catch {
+          authStore.logout()
+          await navigateTo('/login')
         }
-    })
+      }
+    },
+  })
 
-    return { provide: { api } }
+  return { provide: { api } }
 })

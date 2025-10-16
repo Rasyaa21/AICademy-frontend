@@ -6,33 +6,35 @@ type StudentProfile = {
   nis: string
   class: string
   profile_picture: string | null
+  // tambahkan field lain bila perlu
 }
 
 interface MeResponse {
   success: boolean
-  data: {
-    student_profile: StudentProfile
-  }
+  message: string
+  // API Anda mengembalikan data langsung StudentProfile (lihat contoh /auth/me)
+  data: StudentProfile | { student_profile: StudentProfile }
 }
 
 export const useUserStore = defineStore('user', {
   state: () => ({
     user: null as StudentProfile | null,
     isLoading: false,
-    error: null as string | null
+    error: null as string | null,
+    isAuthenticated: false,
   }),
 
   getters: {
-    isAuthenticated: (state) => !!state.user,
+    getUserAuthenticated: (state) => !!state.user,
     userInitials: (state) => {
       if (!state.user?.fullname) return ''
       return state.user.fullname
         .split(' ')
-        .map(w => w.charAt(0))
+        .map((w) => w.charAt(0))
         .join('')
         .toUpperCase()
         .slice(0, 2)
-    }
+    },
   },
 
   actions: {
@@ -41,21 +43,28 @@ export const useUserStore = defineStore('user', {
       this.error = null
       try {
         const config = useRuntimeConfig()
-        const res = await $fetch<MeResponse>('/student/me', {
-          baseURL: config.public.apiBase,
+
+        const accessTokenCookie = useCookie<string | null>('access_token', { secure: true, sameSite: 'lax' })
+        const tokenCookie = useCookie<string | null>('token', { secure: true, sameSite: 'lax' })
+        const token = accessTokenCookie.value || tokenCookie.value
+
+        const res = await $fetch<MeResponse>(config.public.apiBase + '/auth/me', {
           credentials: 'include',
-          method: 'GET'
+          method: 'GET',
+          headers: { Authorization: token ? `Bearer ${token}` : '' },
         })
-        if (res?.success && res?.data?.student_profile) {
-          this.user = res.data.student_profile
+
+        if (res?.success && res?.data) {
+          const userData = 'student_profile' in res.data ? res.data.student_profile : (res.data as StudentProfile)
+          this.user = userData
+          this.isAuthenticated = true
         } else {
           throw new Error('Invalid response format')
         }
-      } catch (err: unknown) {
-        const e = err as { data?: { message?: string } }
-        console.error('Error fetching user:', err)
-        this.error = e?.data?.message || 'Failed to fetch user data'
+      } catch (err: any) {
+        this.error = err?.data?.message || 'Failed to fetch user data'
         this.user = null
+        this.isAuthenticated = false
       } finally {
         this.isLoading = false
       }
@@ -68,13 +77,11 @@ export const useUserStore = defineStore('user', {
     logout() {
       this.user = null
       this.error = null
+      this.isAuthenticated = false
     },
 
     updateUser(userData: Partial<StudentProfile>) {
       if (this.user) this.user = { ...this.user, ...userData }
-    }
+    },
   },
-
-  // Use persistedstate plugin (registered below)
-  persist: true
 })

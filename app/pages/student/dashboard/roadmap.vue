@@ -85,19 +85,19 @@
                 <!-- Floating Icons - Responsive positioning -->
         <div class="absolute left-8 top-16 md:top-24 md:left-32 lg:left-48 animate-float">
             <div class="p-2 w-12 h-12 rounded-full shadow-lg backdrop-blur-sm md:w-16 md:h-16 lg:w-20 lg:h-20 bg-white/10 md:p-3">
-                <NuxtImg :src="`${objectStorageUrl}/assets/home-icon.webp`" alt="Home" class="object-contain w-full h-full opacity-80" provider="none" />
+                <NuxtImg :src="`${objectStorageUrl}/assets/home-icon.webp`" alt="Home" class="object-contain w-full h-full opacity-80"  />
             </div>
         </div>
 
         <div class="absolute right-8 top-1/3 md:right-24 lg:right-32 animate-float-delayed">
             <div class="p-2 w-12 h-12 rounded-full shadow-lg backdrop-blur-sm md:w-16 md:h-16 lg:w-20 lg:h-20 bg-white/10 md:p-3">
-                <NuxtImg :src="`${objectStorageUrl}/assets/book-icon.webp`" alt="Book" class="object-contain w-full h-full opacity-80" provider="none" />
+                <NuxtImg :src="`${objectStorageUrl}/assets/book-icon.webp`" alt="Book" class="object-contain w-full h-full opacity-80"  />
             </div>
         </div>
 
         <div class="absolute left-4 bottom-32 md:bottom-40 md:left-16 animate-float-slow">
             <div class="p-2 w-12 h-12 rounded-full shadow-lg backdrop-blur-sm md:w-16 md:h-16 lg:w-20 lg:h-20 bg-white/10 md:p-3">
-                <NuxtImg :src="`${objectStorageUrl}/assets/gear-icon.webp`" alt="Settings" class="object-contain w-full h-full opacity-80" provider="none" />
+                <NuxtImg :src="`${objectStorageUrl}/assets/gear-icon.webp`" alt="Settings" class="object-contain w-full h-full opacity-80"  />
             </div>
         </div>
 
@@ -115,11 +115,13 @@
                 <div v-if="roadmapData?.progress" class="mt-6 p-4 mx-auto max-w-md rounded-xl backdrop-blur-sm bg-white/10">
                     <div class="flex justify-between items-center mb-2 text-sm text-white/90">
                         <span>Progress</span>
-                        <span>{{ roadmapData.progress.completed_steps }}/{{ roadmapData.progress.total_steps }}</span>
+                        <span>
+                            {{ (roadmapData.progress.completed_steps / roadmapData.progress.total_steps * 100).toFixed(1) }}%
+                        </span>
                     </div>
                     <div class="w-full h-2 rounded-full bg-white/20">
                         <div 
-                            class="h-full rounded-full bg-gradient-to-r from-green-400 to-blue-500 transition-all duration-300"
+                            class="h-full rounded-full bg-gradient-to-r from-blue-400 to-blue-500 transition-all duration-300"
                             :style="{ width: `${roadmapData.progress.progress_percent}%` }"
                         ></div>
                     </div>
@@ -144,7 +146,8 @@ import UniversalButton from '~/components/button/UniversalButton.vue';
 import type { RoadmapTimelineItem } from '~/types/RoadmapTimeline';
 
 definePageMeta({
-    layout: 'dashboard-layout-student-dashboard-layout'
+    layout: 'dashboard-layout-student-dashboard-layout',
+    ssr: false 
 })
 
 const selectedRoadmapItem = ref<RoadmapTimelineItem | null>(null)
@@ -154,36 +157,26 @@ const errorMessage = ref<string>('')
 const config = useRuntimeConfig()
 const objectStorageUrl = config.public.objectStorageUrl
 
-// Fetch roadmap data using useAsyncData
-const { data, pending, error, refresh } = await useAsyncData('my-roadmap', () => 
-    $fetch('/student/my-roadmap', {
-        method: 'GET',
-        credentials: 'include',
-        baseURL: config.public.apiBase,
-    })
-)
+const { data, pending, error, refresh } = await useLazyAsyncData('my-roadmap', async () => {
+  const res = await $fetch('/student/my-roadmap', {
+    method: 'GET',
+    baseURL: config.public.apiBase,
+    credentials: 'include'
+  })
 
-// Handle API response
-watchEffect(() => {
-    if (data.value?.success) {
-        if (data.value.data) {
-            roadmapData.value = data.value.data
-        } else {
-            errorMessage.value = data.value.message
-        }
-    } else if (error.value) {
-        errorMessage.value = error.value.message || 'Terjadi kesalahan saat memuat roadmap'
-    }
+  return res
+}, {
+  server: false,
+  default: () => null
 })
 
-// Convert API data to timeline items
 const timelineItems = computed(() => {
     if (!roadmapData.value?.steps) return []
     
     return roadmapData.value.steps.map((step: any, index: number) => ({
         title: step.title,
         description: step.description,
-        duration: `${step.estimated_duration} hari`,
+        duration: `${step.estimated_duration} Jam`,
         icon: getStepIcon(step.difficulty_level),
         isActive: step.status === 'unlocked' || step.status === 'in_progress',
         isCompleted: step.status === 'completed',
@@ -219,9 +212,16 @@ const handleLearnMore = (item: RoadmapTimelineItem) => {
 const handleStartStep = async (item: RoadmapTimelineItem) => {
     if (item.stepData?.id && item.stepData?.can_start) {
         try {
+            console.log(`test item id ${item.stepData.id}`)
+            console.log(`test item id ${typeof(item.stepData.id)}`)
+            const payload = { step_id: String(item.stepData.id) } 
             const response = await $fetch('/student/roadmaps/steps/start', {
                 method: 'POST',
-                body: { step_id: item.stepData.id },
+                body: payload,
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Accept': 'application/json'
+                },
                 baseURL: config.public.apiBase,
                 credentials: 'include'
             })

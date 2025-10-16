@@ -31,7 +31,7 @@
                     </label>
                     
                     <!-- Current Photo Preview -->
-                    <div v-if="currentProfile?.profile_picture && !selectedProfilePicture" class="mb-3">
+                    <div v-if="currentProfile?.profile_picture && !profilePicturePreview" class="mb-3">
                         <img 
                             :src="currentProfile.profile_picture" 
                             alt="Current profile"
@@ -68,6 +68,19 @@
                     </div>
                 </div>
 
+                <!-- Headline -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        Headline
+                    </label>
+                    <input
+                        v-model="profileData.headline"
+                        type="text"
+                        placeholder="e.g., Aspiring Full Stack Developer"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                    >
+                </div>
+
                 <!-- Bio -->
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">
@@ -81,17 +94,89 @@
                     ></textarea>
                 </div>
 
-                <!-- Headline -->
+                <!-- Phone -->
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">
-                        Headline
+                        No. HP
                     </label>
                     <input
-                        v-model="profileData.headline"
+                        v-model="profileData.phone"
                         type="text"
-                        placeholder="e.g., Junior Programmer"
+                        placeholder="08123456789"
                         class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                     >
+                </div>
+
+                <!-- Personal Email -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        Email Pribadi
+                    </label>
+                    <input
+                        v-model="profileData.personal_email"
+                        type="email"
+                        placeholder="your.email@example.com"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                    >
+                </div>
+
+                <!-- Location -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        Lokasi
+                    </label>
+                    <input
+                        v-model="profileData.location"
+                        type="text"
+                        placeholder="Jakarta, Indonesia"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                    >
+                </div>
+
+                <!-- Languages -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        Bahasa
+                    </label>
+                    <div class="space-y-3">
+                        <div v-for="(lang, idx) in profileData.languages" :key="idx" class="flex gap-2 items-center">
+                            <input 
+                                v-model="lang.name" 
+                                placeholder="Nama Bahasa" 
+                                class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" 
+                            />
+                            <select 
+                                v-model="lang.level" 
+                                class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                            >
+                                <option value="">Pilih Level</option>
+                                <option value="Beginner">Beginner</option>
+                                <option value="Intermediate">Intermediate</option>
+                                <option value="Advanced">Advanced</option>
+                                <option value="Native">Native</option>
+                            </select>
+                            <label class="flex items-center text-xs whitespace-nowrap">
+                                <input type="checkbox" v-model="lang.certified" class="mr-1" /> 
+                                Bersertifikat
+                            </label>
+                            <button 
+                                type="button" 
+                                @click="removeLanguage(idx)" 
+                                v-if="profileData.languages.length > 1" 
+                                class="text-red-500 hover:text-red-700 p-1"
+                            >
+                                <Icon name="heroicons:trash-20-solid" class="w-4 h-4" />
+                            </button>
+                        </div>
+                        <button 
+                            type="button" 
+                            @click="addLanguage" 
+                            class="text-primary hover:text-primary/80 text-sm flex items-center gap-1"
+                        >
+                            <Icon name="heroicons:plus-20-solid" class="w-4 h-4" />
+                            Tambah Bahasa
+                        </button>
+                    </div>
                 </div>
 
                 <!-- CV File Upload -->
@@ -99,6 +184,17 @@
                     <label class="block text-sm font-semibold text-gray-700 mb-2">
                         CV / Resume
                     </label>
+                    
+                    <!-- Current CV -->
+                    <div v-if="currentProfile?.cv_file && !selectedCvFile" class="mb-3 p-3 bg-gray-50 rounded-lg flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <Icon name="heroicons:document-text-20-solid" class="w-5 h-5 text-gray-400" />
+                            <span class="text-sm text-gray-700">Current CV</span>
+                        </div>
+                        <a :href="currentProfile.cv_file" target="_blank" class="text-primary hover:text-primary/80 text-sm">
+                            View
+                        </a>
+                    </div>
                     
                     <!-- Selected File Preview -->
                     <div v-if="selectedCvFile" class="mb-3 p-3 bg-gray-50 rounded-lg flex items-center justify-between">
@@ -163,8 +259,17 @@ const props = defineProps<{
     isOpen: boolean
     currentProfile?: {
         profile_picture?: string
-        bio?: string
         headline?: string
+        bio?: string
+        cv_file?: string
+        phone?: string
+        personal_email?: string
+        location?: string
+        languages?: Array<{
+            name: string
+            level: string
+            certified: boolean
+        }>
     } | null
 }>()
 
@@ -177,8 +282,14 @@ const emit = defineEmits<{
 const config = useRuntimeConfig()
 
 const profileData = ref({
+    headline: '',
     bio: '',
-    headline: ''
+    phone: '',
+    personal_email: '',
+    location: '',
+    languages: [
+        { name: '', level: '', certified: false }
+    ]
 })
 
 const selectedProfilePicture = ref<File | null>(null)
@@ -192,15 +303,26 @@ const errorMessage = ref('')
 // Watch for current profile changes
 watch(() => props.currentProfile, (profile) => {
     if (profile) {
-        profileData.value.bio = profile.bio || ''
-        profileData.value.headline = profile.headline || ''
+        profileData.value = {
+            headline: profile.headline || '',
+            bio: profile.bio || '',
+            phone: profile.phone || '',
+            personal_email: profile.personal_email || '',
+            location: profile.location || '',
+            languages: profile.languages?.length ? [...profile.languages] : [{ name: '', level: '', certified: false }]
+        }
     }
 }, { immediate: true })
 
 const resetForm = () => {
+    const profile = props.currentProfile
     profileData.value = {
-        bio: props.currentProfile?.bio || '',
-        headline: props.currentProfile?.headline || ''
+        headline: profile?.headline || '',
+        bio: profile?.bio || '',
+        phone: profile?.phone || '',
+        personal_email: profile?.personal_email || '',
+        location: profile?.location || '',
+        languages: profile?.languages?.length ? [...profile.languages] : [{ name: '', level: '', certified: false }]
     }
     selectedProfilePicture.value = null
     profilePicturePreview.value = null
@@ -213,7 +335,18 @@ const closeModal = () => {
     emit('update:isOpen', false)
 }
 
-/* Profile Picture Handlers */
+// Language management
+const addLanguage = () => {
+    profileData.value.languages.push({ name: '', level: '', certified: false })
+}
+
+const removeLanguage = (index: number) => {
+    if (profileData.value.languages.length > 1) {
+        profileData.value.languages.splice(index, 1)
+    }
+}
+
+// File handlers (same as before)
 const handleProfilePictureSelect = (event: Event) => {
     const target = event.target as HTMLInputElement
     if (target.files && target.files[0]) {
@@ -239,7 +372,6 @@ const handleProfilePictureDrop = (event: DragEvent) => {
     }
 }
 
-/* CV File Handlers */
 const handleCvFileSelect = (event: Event) => {
     const target = event.target as HTMLInputElement
     if (target.files && target.files[0]) {
@@ -282,12 +414,21 @@ const submitProfile = async () => {
         isSubmitting.value = true
         errorMessage.value = ''
 
-        // Create FormData for file uploads
+        // Create FormData
         const formData = new FormData()
         
-        // Append text fields
-        if (profileData.value.bio) formData.append('bio', profileData.value.bio)
+        // Append text fields (only if they have values)
         if (profileData.value.headline) formData.append('headline', profileData.value.headline)
+        if (profileData.value.bio) formData.append('bio', profileData.value.bio)
+        if (profileData.value.phone) formData.append('phone', profileData.value.phone)
+        if (profileData.value.personal_email) formData.append('personal_email', profileData.value.personal_email)
+        if (profileData.value.location) formData.append('location', profileData.value.location)
+        
+        // Append languages as JSON string
+        const validLanguages = profileData.value.languages.filter(lang => lang.name && lang.level)
+        if (validLanguages.length > 0) {
+            formData.append('languages', JSON.stringify(validLanguages))
+        }
         
         // Append files
         if (selectedProfilePicture.value) {

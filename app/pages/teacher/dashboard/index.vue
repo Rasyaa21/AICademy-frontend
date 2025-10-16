@@ -1,93 +1,193 @@
 <template>
   <div class="space-y-6">
-    <AdminDashboardHeader />
-    <AdminDashboardStats :challenge-stats="challengeStats" />
-    <AdminDashboardCharts :chart-data="chartData" :challenges="challenges" :recent-challenges="recentChallenges" />
+    <!-- Loading State -->
+    <div v-if="pending" class="flex justify-center items-center py-12">
+      <div class="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mr-3" />
+      <span class="text-gray-600">Loading dashboard...</span>
+    </div>
+
+    <!-- Error State -->
+    <div v-else-if="errMsg" class="bg-red-50 border border-red-200 rounded-lg p-4">
+      <div class="flex items-center gap-2 text-red-800 mb-2">
+        <Icon name="heroicons:exclamation-triangle-20-solid" class="w-5 h-5" />
+        <h3 class="font-medium">Failed to Load Dashboard</h3>
+      </div>
+      <p class="text-red-600 text-sm mb-3">{{ errMsg }}</p>
+      <button 
+        @click="refresh()"
+        class="px-3 py-1.5 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700"
+      >
+        Retry
+      </button>
+    </div>
+
+    <!-- Dashboard Content -->
+    <template v-else-if="dashboardData">
+      <!-- Header -->
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">Teacher Dashboard</h1>
+          <p class="text-gray-600 mt-1">Kelola challenge dan monitor submission siswa</p>
+        </div>
+      </div>
+
+      <!-- Challenge Stats Cards -->
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div class="bg-white rounded-lg p-6 shadow-sm border">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-600">Total Challenges</p>
+              <p class="text-3xl font-bold text-gray-900">{{ dashboardData.challenge_stats.total_challenges }}</p>
+            </div>
+            <div class="p-3 bg-blue-100 rounded-full">
+              <Icon name="heroicons:puzzle-piece-20-solid" class="w-6 h-6 text-blue-600" />
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-lg p-6 shadow-sm border">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-600">Active Challenges</p>
+              <p class="text-3xl font-bold text-green-600">{{ dashboardData.challenge_stats.active_challenges }}</p>
+            </div>
+            <div class="p-3 bg-green-100 rounded-full">
+              <Icon name="heroicons:play-20-solid" class="w-6 h-6 text-green-600" />
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-lg p-6 shadow-sm border">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-600">Completed Challenges</p>
+              <p class="text-3xl font-bold text-purple-600">{{ dashboardData.challenge_stats.completed_challenges }}</p>
+            </div>
+            <div class="p-3 bg-purple-100 rounded-full">
+              <Icon name="heroicons:check-circle-20-solid" class="w-6 h-6 text-purple-600" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submission Stats Cards -->
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div class="bg-white rounded-lg p-6 shadow-sm border">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-600">Total Submissions</p>
+              <p class="text-3xl font-bold text-gray-900">{{ dashboardData.submission_stats.total_submissions }}</p>
+            </div>
+            <div class="p-3 bg-indigo-100 rounded-full">
+              <Icon name="heroicons:document-text-20-solid" class="w-6 h-6 text-indigo-600" />
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-lg p-6 shadow-sm border">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-600">Scored Submissions</p>
+              <p class="text-3xl font-bold text-emerald-600">{{ dashboardData.submission_stats.scored_submissions }}</p>
+            </div>
+            <div class="p-3 bg-emerald-100 rounded-full">
+              <Icon name="heroicons:star-20-solid" class="w-6 h-6 text-emerald-600" />
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-lg p-6 shadow-sm border">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-600">Pending Submissions</p>
+              <p class="text-3xl font-bold text-orange-600">{{ dashboardData.submission_stats.pending_submissions }}</p>
+            </div>
+            <div class="p-3 bg-orange-100 rounded-full">
+              <Icon name="heroicons:clock-20-solid" class="w-6 h-6 text-orange-600" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Activity (Mock Data) -->
+      <div class="bg-white rounded-lg p-6 shadow-sm border">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Recent Activity</h3>
+        <div class="space-y-3">
+          <div v-if="dashboardData.submission_stats.total_submissions === 0" class="text-center py-8">
+            <Icon name="heroicons:inbox-20-solid" class="w-12 h-12 text-gray-400 mx-auto mb-3" />
+            <p class="text-gray-500">No recent activity</p>
+            <p class="text-sm text-gray-400">Submissions and challenges will appear here</p>
+          </div>
+          <div v-else class="space-y-3">
+            <!-- Ini bisa diisi dengan data real activity dari API -->
+            <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+              <div class="p-2 bg-blue-100 rounded-full">
+                <Icon name="heroicons:document-text-16-solid" class="w-4 h-4 text-blue-600" />
+              </div>
+              <div>
+                <p class="text-sm font-medium text-gray-900">New submission received</p>
+                <p class="text-xs text-gray-500">Challenge: React Portfolio - 2 minutes ago</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
   </div>
 </template>
 
-
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { computed } from 'vue'
 
-import type { Challenge } from "~/types/Challenge";
-import AdminDashboardHeader from "~/components/dashboard-admin/sections/AdminDashboardHeader.vue";
-import AdminDashboardStats from "~/components/dashboard-admin/sections/AdminDashboardStats.vue";
-import AdminDashboardCharts from "~/components/dashboard-admin/sections/AdminDashboardCharts.vue";
 definePageMeta({
-    layout: 'teacher-dashboard-layout'
+  layout: 'teacher-dashboard-layout'
 })
 
-const challenges = ref<Challenge[]>([
-  {
-    id: "550e8400-e29b-41d4-a716-446655440001",
-    thumbnail_image: "/assets/images/smk-telkom.jpeg",
-    title: "API Perpustakaan",
-    description: "Buatlah REST API untuk sistem perpustakaan dengan skema database yang telah ditentukan",
-    organizer: "Agus Dwi Cahaya S.Kom",
-    deadline: "2025-08-20T23:59:59Z",
-    prize: "Rp 2.000.000 + Certificate",
-    participant: 47,
-    winner_team_id: null,
+const config = useRuntimeConfig()
+
+interface ApiResponse {
+  success: boolean
+  message: string
+  data: {
+    challenge_stats: {
+      total_challenges: number
+      active_challenges: number
+      completed_challenges: number
+    }
+    submission_stats: {
+      total_submissions: number
+      scored_submissions: number
+      pending_submissions: number
+    }
+  }
+}
+
+const {
+  data: dashboardData,
+  pending,
+  error,
+  refresh
+} = await useLazyAsyncData(
+  'teacher-dashboard',
+  async () => {
+    const res = await $fetch<ApiResponse>('/teacher/dashboard', {
+      baseURL: config.public.apiBase,
+      credentials: 'include',
+      method: 'GET'
+    })
+    
+    return res.data
   },
   {
-    id: "550e8400-e29b-41d4-a716-446655440002",
-    thumbnail_image: "/assets/images/smk-telkom.jpeg",
-    title: "React JS Portfolio",
-    description: "Buat portfolio website menggunakan React JS dengan design yang responsive dan modern",
-    organizer: "Siti Nurhasanah S.Pd",
-    deadline: "2025-08-25T23:59:59Z",
-    prize: null,
-    participant: 32,
-    winner_team_id: null,
-  },
-  {
-    id: "550e8400-e29b-41d4-a716-446655440003",
-    thumbnail_image: "/assets/images/smk-telkom.jpeg",
-    title: "UI Design Challenge",
-    description: "Desain interface aplikasi mobile untuk e-commerce dengan fokus pada user experience",
-    organizer: "Ahmad Rizki M.Kom",
-    deadline: "2025-08-30T23:59:59Z",
-    prize: "Sertifikat + Portfolio Review",
-    participant: 28,
-    winner_team_id: null,
-  },
-  {
-    id: "550e8400-e29b-41d4-a716-446655440004",
-    thumbnail_image: "/assets/images/smk-telkom.jpeg",
-    title: "CTF Web Security",
-    description: "Selesaikan tantangan keamanan web dengan berbagai teknik penetration testing",
-    organizer: "Agus Dwi Cahaya S.Kom",
-    deadline: "2025-09-15T23:59:59Z",
-    prize: null,
-    participant: 15,
-    winner_team_id: null,
-  },
-]);
+    transform: (data: any) => data,
+    default: () => null,
+    server: false
+  }
+)
 
-const challengeStats = computed(() => {
-  const now = new Date();
-  const active = challenges.value.filter((c) => new Date(c.deadline) > now).length;
-  const totalParticipants = challenges.value.reduce((sum, c) => sum + c.participant, 0);
-
-  return {
-    total: challenges.value.length,
-    active,
-    completed: challenges.value.length - active,
-    totalParticipants,
-  };
-});
-
-const recentChallenges = computed(() => {
-  return challenges.value.slice(0, 3);
-});
-
-const chartData = ref([
-  { month: "Jan", challenges: 12, participants: 45 },
-  { month: "Feb", challenges: 15, participants: 67 },
-  { month: "Mar", challenges: 18, participants: 89 },
-  { month: "Apr", challenges: 22, participants: 112 },
-  { month: "May", challenges: 25, participants: 134 },
-  { month: "Jun", challenges: 28, participants: 156 },
-]);
+// Error message handling
+const errMsg = computed(() => {
+  const e = error.value as any
+  return e?.data?.message || e?.message || ''
+})
 </script>

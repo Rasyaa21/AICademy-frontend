@@ -1,92 +1,133 @@
 <template>
   <div class="space-y-6">
-    <AdminDashboardHeader />
-    <AdminDashboardStats :challenge-stats="challengeStats" />
-    <AdminDashboardCharts :chart-data="chartData" :challenges="challenges" :recent-challenges="recentChallenges" />
+    <!-- Loading State -->
+    <div v-if="pending" class="flex justify-center items-center py-12">
+      <div class="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mr-3" />
+      <span class="text-gray-600">Loading dashboard...</span>
+    </div>
+
+    <!-- Error State -->
+    <div v-else-if="errMsg" class="bg-red-50 border border-red-200 rounded-lg p-4">
+      <div class="flex items-center gap-2 text-red-800 mb-2">
+        <Icon name="heroicons:exclamation-triangle-20-solid" class="w-5 h-5" />
+        <h3 class="font-medium">Failed to Load Dashboard</h3>
+      </div>
+      <p class="text-red-600 text-sm mb-3">{{ errMsg }}</p>
+      <button 
+        class="px-3 py-1.5 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700"
+        @click="refresh()"
+      >
+        Retry
+      </button>
+    </div>
+
+    <!-- Dashboard Content -->
+    <template v-else-if="dashboardData">
+      <AdminDashboardHeader />
+      
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <StatsCard title="Total Pengguna"   :value="dashboardData.totals.totalUsers"     icon="heroicons:users-16-solid" />
+        <StatsCard title="Total Siswa"      :value="dashboardData.totals.totalStudents"  icon="heroicons:academic-cap-20-solid" />
+        <StatsCard title="Total Guru"       :value="dashboardData.totals.totalTeachers"  icon="heroicons:user-group-20-solid" />
+        <StatsCard title="Total Perusahaan" :value="dashboardData.totals.totalCompanies" icon="heroicons:building-office-20-solid" />
+      </div>
+
+      <!-- Participation Chart -->
+      <div class="bg-white rounded-lg p-6 shadow-sm">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Distribusi Siswa per Jurusan</h3>
+        <ParticipationChart :student-stats="dashboardData.student_stats" />
+      </div>
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import AdminDashboardHeader from "~/components/dashboard-admin/sections/AdminDashboardHeader.vue";
-import AdminDashboardStats from "~/components/dashboard-admin/sections/AdminDashboardStats.vue";
-import AdminDashboardCharts from "~/components/dashboard-admin/sections/AdminDashboardCharts.vue";
-import type { Challenge } from "~/types/Challenge";
+// filepath: /Users/rasya2121/Documents/code/pkl/JHIC/aicademy-frontend/app/pages/admin/dashboard/index.vue
+import AdminDashboardHeader from '~/components/dashboard-admin/sections/AdminDashboardHeader.vue'
+import StatsCard from '~/components/dashboard-admin/index/StatsCard.vue'
+import ParticipationChart from '~/components/dashboard-admin/index/ParticipationChart.vue'
 
-definePageMeta({
-  layout: "admin-dashboard-layout",
-});
+definePageMeta({ layout: 'admin-dashboard-layout' })
 
-const challenges = ref<Challenge[]>([
-  {
-    id: "550e8400-e29b-41d4-a716-446655440001",
-    thumbnail_image: "/assets/images/smk-telkom.jpeg",
-    title: "API Perpustakaan",
-    description: "Buatlah REST API untuk sistem perpustakaan dengan skema database yang telah ditentukan",
-    organizer: "Agus Dwi Cahaya S.Kom",
-    deadline: "2025-08-20T23:59:59Z",
-    prize: "Rp 2.000.000 + Certificate",
-    participant: 47,
-    winner_team_id: null,
+const config = useRuntimeConfig()
+
+interface ApiResponse {
+  success: boolean
+  message: string
+  data: {
+    totals: {
+      total_users: number
+      total_students: number
+      total_teachers: number
+      total_companies: number
+    }
+    student_stats: {
+      total_tkj: number
+      total_tja: number
+      total_pplg: number
+      total_rpl: number
+    }
+  }
+}
+
+interface DashboardVM {
+  totals: {
+    totalUsers: number
+    totalStudents: number
+    totalTeachers: number
+    totalCompanies: number
+  }
+  student_stats: Array<{ name: string; count: number; percentage: number }>
+}
+
+function pct(count: number, total: number) {
+  if (!total) return 0
+  return Math.round((count / total) * 1000) / 10 // 1 desimal
+}
+
+const {
+  data: dashboardData,
+  pending,
+  error,
+  refresh
+} = await useLazyAsyncData<DashboardVM>(
+  'admin-dashboard',
+  async () => {
+    const res = await $fetch<ApiResponse>('/admin/dashboard', {
+      baseURL: config.public.apiBase,
+      credentials: 'include',
+      method: 'GET'
+    })
+
+    const t = res.data.totals
+    const s = res.data.student_stats
+    const totalStudents = t.total_students
+
+    return {
+      totals: {
+        totalUsers: t.total_users,
+        totalStudents: t.total_students,
+        totalTeachers: t.total_teachers,
+        totalCompanies: t.total_companies
+      },
+      student_stats: [
+        { name: 'TKJ',  count: s.total_tkj,  percentage: pct(s.total_tkj,  totalStudents) },
+        { name: 'TJA',  count: s.total_tja,  percentage: pct(s.total_tja,  totalStudents) },
+        { name: 'PPLG', count: s.total_pplg, percentage: pct(s.total_pplg, totalStudents) },
+        { name: 'RPL',  count: s.total_rpl,  percentage: pct(s.total_rpl,  totalStudents) }
+      ]
+    }
   },
   {
-    id: "550e8400-e29b-41d4-a716-446655440002",
-    thumbnail_image: "/assets/images/smk-telkom.jpeg",
-    title: "React JS Portfolio",
-    description: "Buat portfolio website menggunakan React JS dengan design yang responsive dan modern",
-    organizer: "Siti Nurhasanah S.Pd",
-    deadline: "2025-08-25T23:59:59Z",
-    prize: null,
-    participant: 32,
-    winner_team_id: null,
-  },
-  {
-    id: "550e8400-e29b-41d4-a716-446655440003",
-    thumbnail_image: "/assets/images/smk-telkom.jpeg",
-    title: "UI Design Challenge",
-    description: "Desain interface aplikasi mobile untuk e-commerce dengan fokus pada user experience",
-    organizer: "Ahmad Rizki M.Kom",
-    deadline: "2025-08-30T23:59:59Z",
-    prize: "Sertifikat + Portfolio Review",
-    participant: 28,
-    winner_team_id: null,
-  },
-  {
-    id: "550e8400-e29b-41d4-a716-446655440004",
-    thumbnail_image: "/assets/images/smk-telkom.jpeg",
-    title: "CTF Web Security",
-    description: "Selesaikan tantangan keamanan web dengan berbagai teknik penetration testing",
-    organizer: "Agus Dwi Cahaya S.Kom",
-    deadline: "2025-09-15T23:59:59Z",
-    prize: null,
-    participant: 15,
-    winner_team_id: null,
-  },
-]);
+    transform: (data: any) => data,
+    default: () => null,
+    server: false
+  }
+)
 
-const challengeStats = computed(() => {
-  const now = new Date();
-  const active = challenges.value.filter((c) => new Date(c.deadline) > now).length;
-  const totalParticipants = challenges.value.reduce((sum, c) => sum + c.participant, 0);
-
-  return {
-    total: challenges.value.length,
-    active,
-    completed: challenges.value.length - active,
-    totalParticipants,
-  };
-});
-
-const recentChallenges = computed(() => {
-  return challenges.value.slice(0, 3);
-});
-
-const chartData = ref([
-  { month: "Jan", challenges: 12, participants: 45 },
-  { month: "Feb", challenges: 15, participants: 67 },
-  { month: "Mar", challenges: 18, participants: 89 },
-  { month: "Apr", challenges: 22, participants: 112 },
-  { month: "May", challenges: 25, participants: 134 },
-  { month: "Jun", challenges: 28, participants: 156 },
-]);
+const errMsg = computed(() => {
+  const e = error.value as any
+  return e?.data?.message || e?.message || ''
+})
 </script>

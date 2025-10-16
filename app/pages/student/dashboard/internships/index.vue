@@ -154,7 +154,7 @@ const { data, pending, error, refresh } = await useAsyncData<ApiResponse>(
   () => $fetch('/student/internships', {
     baseURL: config.public.apiBase,
     credentials: 'include',
-    headers: process.server ? useRequestHeaders(['cookie']) : undefined,
+    headers: useRequestHeaders(['cookie']),
     query: {
       page: currentPage.value,
       limit,
@@ -193,25 +193,6 @@ const pageData = computed(() => {
   return { list, total, total_pages, page }
 })
 
-// Computed - perbaiki akses data
-const internshipStats = computed(() => {
-  const list = pageData.value.list
-  if (!list.length) {
-    return { total: 0, companies: 0, active: 0, pkl: 0 }
-  }
-
-  const now = new Date()
-  const companies = new Set(list.map(item => item.company_profile?.company_name).filter(Boolean))
-  const active = list.filter(item => new Date(item.deadline) > now).length
-  const pkl = list.filter(item => item.type === 'PKL').length
-
-  return {
-    total: pageData.value.total,
-    companies: companies.size,
-    active,
-    pkl
-  }
-})
 
 const hasActiveFilters = computed(() => {
   return !!(route.query.search || route.query.status)
