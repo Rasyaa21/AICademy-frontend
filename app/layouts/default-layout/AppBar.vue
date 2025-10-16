@@ -74,9 +74,6 @@ onMounted(() => {
             <NuxtLink to="/login" class="px-4 py-2 font-semibold text-white rounded-lg border border-white hover:bg-white/10">
               Log In
             </NuxtLink>
-            <NuxtLink to="/register" class="px-4 py-2 font-semibold bg-white rounded-lg text-primary hover:bg-white/90">
-              Register
-            </NuxtLink>
           </template>
         </template>
         <!-- Loading state saat hydration -->
@@ -132,9 +129,6 @@ onMounted(() => {
             <div v-else class="grid grid-cols-2 gap-2 mt-3">
               <NuxtLink to="/login" class="px-3 py-2 font-semibold text-center text-white rounded-lg border border-white hover:bg-white/10">
                 Log In
-              </NuxtLink>
-              <NuxtLink to="/register" class="px-3 py-2 font-semibold text-center bg-white rounded-lg text-primary hover:bg-white/90">
-                Register
               </NuxtLink>
             </div>
           </template>

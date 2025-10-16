@@ -170,43 +170,6 @@ const { data, pending, error, refresh } = await useLazyAsyncData('my-roadmap', a
   default: () => null
 })
 
-// Auto start roadmap when mounted (client-side only)
-onMounted(async () => {
-  // Wait for data to be loaded first
-  if (data.value?.data?.id) {
-    try {
-      await $fetch('/student/roadmaps/start', {
-        method: 'POST',
-        baseURL: config.public.apiBase,
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: { roadmap_id: data.value.data.id },
-      })
-      // Refresh data after starting roadmap
-      await refresh()
-    } catch (err: any) {
-      console.error('Error starting roadmap:', err?.response?._data || err)
-    }
-  }
-})
-
-// Handle API response
-watchEffect(() => {
-    if (data.value?.success) {
-        if (data.value.data) {
-            roadmapData.value = data.value.data
-        } else {
-            errorMessage.value = data.value.message
-        }
-    } else if (error.value) {
-        errorMessage.value = error.value.message || 'Terjadi kesalahan saat memuat roadmap'
-    }
-})
-
-// Convert API data to timeline items
 const timelineItems = computed(() => {
     if (!roadmapData.value?.steps) return []
     

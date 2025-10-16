@@ -11,6 +11,17 @@ export default defineNuxtConfig({
       objectStorageUrl: process.env.NUXT_PUBLIC_OBJECT_STORAGE_URL || 'https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev'
     },
   },
+  app: {
+    head: {
+      script: [
+        {
+          src: "https://cloud.umami.is/script.js",
+          defer: true,
+          "data-website-id": "582c19f3-1f1b-4f09-b6ab-54ad3ab1d1fc"
+        }
+      ]
+    }
+  },
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],

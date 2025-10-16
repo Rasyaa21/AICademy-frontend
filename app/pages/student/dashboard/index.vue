@@ -5,34 +5,84 @@
                 <div>
                     <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
                     <p class="text-gray-600 mt-1">
-                        Kelola data siswa dan monitor aktivitas mereka
+                        Kelola progress belajar dan monitor aktivitas Anda
                     </p>
                 </div>
             </div>
-            <ProfilingBanner />
 
-            <MyProgress />
+            <!-- Loading State -->
+            <div v-if="pending" class="flex justify-center items-center py-12">
+                <div class="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mr-3" />
+                <span class="text-gray-600">Loading dashboard...</span>
+            </div>
 
-            <MyChallange/>
+            <!-- Error State -->
+            <div v-else-if="error" class="bg-red-50 border border-red-200 rounded-lg p-4">
+                <div class="flex items-center gap-2 text-red-800 mb-2">
+                    <Icon name="heroicons:exclamation-triangle-20-solid" class="w-5 h-5" />
+                    <h3 class="font-medium">Failed to Load Dashboard</h3>
+                </div>
+                <p class="text-red-600 text-sm mb-3">{{ error }}</p>
+                <button 
+                    @click="refresh()"
+                    class="px-3 py-1.5 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700"
+                >
+                    Retry
+                </button>
+            </div>
+
+            <!-- Dashboard Content -->
+            <template v-else-if="dashboardData">
+                <ProfilingBanner />
+
+                <!-- Roadmap Progress -->
+                <MyRoadmapProgress 
+                    :roadmap="dashboardData.roadmap"
+                    :summary="dashboardData.summary"
+                />
+
+                <!-- Active Challenges -->
+                <MyChallengeProgress 
+                    :challenges="dashboardData.challenges"
+                    :summary="dashboardData.summary"
+                />
+            </template>
         </div>
 
         <div class="flex-[3] space-y-5">
             <Calendar />
-
-            <Team />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import Calendar from '~/components/calendar/Calendar.vue';
-import MyChallange from '~/components/dashboard-student/index/MyChallange.vue';
-import MyProgress from '~/components/dashboard-student/index/MyProgress.vue';
-import ProfilingBanner from '~/components/dashboard-student/index/ProfilingBanner.vue';
-
-
+// filepath: /Users/rasya2121/Documents/code/pkl/JHIC/aicademy-frontend/app/pages/student/dashboard/index.vue
+import Calendar from '~/components/calendar/Calendar.vue'
+import MyRoadmapProgress from '~/components/dashboard-student/index/MyRoadmapProgress.vue'
+import MyChallengeProgress from '~/components/dashboard-student/index/MyChallengeProgress.vue'
+import ProfilingBanner from '~/components/dashboard-student/index/ProfilingBanner.vue'
 
 definePageMeta({
-    layout: 'dashboard-layout-student-dashboard-layout'
+    layout: 'dashboard-layout-student-dashboard-layout',
+    ssr: false
 })
+
+const config = useRuntimeConfig()
+
+// Fetch dashboard data from API
+const { data: dashboardData, pending, error, refresh } = await useAsyncData(
+    'student-dashboard',
+    async () => {
+        return await $fetch('/student/dashboard', {
+            baseURL: config.public.apiBase,
+            credentials: 'include',
+            method: 'GET'
+        })
+    },
+    {
+        transform: (data: any) => (data?.success ? data.data : null),
+        default: () => null,
+        server: false
+    }
+)
 </script>

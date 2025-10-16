@@ -40,7 +40,9 @@ const handleLogout = async () => {
 const openLogoutConfirm = () => {
   showLogoutConfirm.value = true
 }
+
 </script>
+
 
 <template>
 
