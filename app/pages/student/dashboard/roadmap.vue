@@ -53,7 +53,7 @@
                     <h3 class="mb-4 text-xl font-semibold text-white">Mengapa Profiling Penting?</h3>
                     <div class="grid gap-4 md:grid-cols-3">
                         <div class="text-center">
-                            <Icon name="heroicons:target-20-solid" class="w-8 h-8 mx-auto mb-2 text-white/80" />
+                            <Icon name="heroicons:cursor-arrow-rays-20-solid" class="w-8 h-8 mx-auto mb-2 text-white/80" />
                             <p class="text-sm text-white/80">Pembelajaran yang Tepat Sasaran</p>
                         </div>
                         <div class="text-center">
@@ -102,7 +102,7 @@
         </div>
 
         <div class="container px-4 py-8 mx-auto md:py-16">
-            <!-- Header - Responsive text sizes -->
+            <!-- Header -->
             <div class="mb-8 text-center md:mb-16">
                 <h1 class="px-4 mb-2 text-2xl font-bold text-white md:text-3xl lg:text-4xl md:mb-4">
                     {{ roadmapData?.roadmap_name || 'Roadmap Pembelajaran' }}
@@ -110,32 +110,32 @@
                 <p class="px-4 mx-auto max-w-2xl text-sm text-white/80 md:text-base lg:text-lg">
                     {{ roadmapData?.description || 'Ikuti perjalanan pembelajaran yang terstruktur' }}
                 </p>
-                
-                <!-- Progress Info -->
+
                 <div v-if="roadmapData?.progress" class="mt-6 p-4 mx-auto max-w-md rounded-xl backdrop-blur-sm bg-white/10">
                     <div class="flex justify-between items-center mb-2 text-sm text-white/90">
                         <span>Progress</span>
-                        <span>
-                            {{ (roadmapData.progress.completed_steps / roadmapData.progress.total_steps * 100).toFixed(1) }}%
-                        </span>
+                        <span>{{ progressText }}%</span>
                     </div>
                     <div class="w-full h-2 rounded-full bg-white/20">
                         <div 
                             class="h-full rounded-full bg-gradient-to-r from-blue-400 to-blue-500 transition-all duration-300"
-                            :style="{ width: `${roadmapData.progress.progress_percent}%` }"
+                            :style="{ width: progressBarWidth }"
                         ></div>
                     </div>
-                    <p class="mt-1 text-xs text-white/70">{{ roadmapData.progress.progress_percent }}% Complete</p>
+                    <p class="mt-1 text-xs text-white/70">{{ progressText }}% Complete</p>
                 </div>
             </div>
-            
-            <!-- Timeline Container -->
-            <RoadmapTimeline 
+
+            <!-- Timeline -->
+            <ClientOnly>
+              <RoadmapTimeline 
+                :key="timelineItems.length"
                 :timeline-items="timelineItems"
                 @learn-more="handleLearnMore"
                 @start-step="handleStartStep"
-            />
-        </div>
+              />
+            </ClientOnly>
+          </div>
     </section>
 </template>
 
@@ -172,7 +172,6 @@ const { data: roadmapState, pending, error, refresh } = await useAsyncData(
   },
   {
     server: false,
-    default: () => ({ success: false, message: '', data: null }),
     transform: (res: any) => {
       return {
         success: !!res?.success,
@@ -279,6 +278,15 @@ const handleRefreshRoadmap = async () => {
 const navigateToProfile = () => {
   navigateTo('/student/dashboard/questionnaires')
 }
+
+// Progress guard (hindari NaN/Infinity)
+const progressText = computed(() => {
+  const p = roadmapData.value?.progress
+  if (!p || !p.total_steps) return 0
+  const v = (p.completed_steps / p.total_steps) * 100
+  return Number.isFinite(v) ? Number(v.toFixed(1)) : 0
+})
+const progressBarWidth = computed(() => `${roadmapData.value?.progress?.progress_percent ?? progressText.value}%`)
 </script>
 
 <style scoped>

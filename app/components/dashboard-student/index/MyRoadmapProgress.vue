@@ -64,7 +64,7 @@
         </div>
         
         <!-- Timeline-style Cards Grid - Limit to 3 cards total (1 roadmap + 2 top steps) -->
-        <div class="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
             <!-- Current Roadmap Card with Timeline Style -->
             <div v-if="roadmap" 
                  class="group relative bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-all duration-300">

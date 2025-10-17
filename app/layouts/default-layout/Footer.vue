@@ -15,7 +15,6 @@ const aboutLinks = [
 
 const startLinks = [
   { label: "Login", to: "/login" },
-  { label: "Register (Alumni)", to: "/register" },
 ]
 </script>
 
@@ -85,7 +84,7 @@ const startLinks = [
     <div class="border-t border-white/10 mt-10">
       <div class="max-w-7xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-between text-sm text-gray-400">
         <p>© {{ year }} SMK Telkom Purwokerto. All rights reserved.</p>
-        <p class="mt-2 sm:mt-0">Built with ❤️ by AICademy Team</p>
+        <p class="mt-2 sm:mt-0">Built by AICademy Team</p>
       </div>
     </div>
   </footer>
