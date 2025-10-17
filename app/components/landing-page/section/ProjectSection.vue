@@ -147,12 +147,6 @@ const thirdPlace = computed(() => projects.value.find(p => p.rank === 3))
             </div>
         </div>
         </div>
-
-      <div class="text-center mt-16">
-        <button class="bg-gradient-to-r from-primary to-red-600 text-white px-8 py-4 rounded-2xl font-semibold hover:from-primary/90 hover:to-red-600/90 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-          Lihat Semua Project
-        </button>
-      </div>
     </div>
   </section>
 </template>

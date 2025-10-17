@@ -21,16 +21,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
   let role = roleRef.value || null
   const requirePasswordChange = requirePasswordChangeRef.value === 'true'
 
-  console.log('Auth Debug:', {
-    hasToken,
-    role,
-    requirePasswordChange,
-    accessToken: !!accessTokenRef.value,
-    token: !!tokenRef.value,
-    cookieDomain: cookieConfig.domain
-  })
-
-  // Jika tidak ada token di cookie, coba validasi dengan backend
   if (!hasToken) {
     try {
       const { $api } = useNuxtApp()
@@ -42,7 +32,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
       if (me?.success && me?.data) {
         hasToken = true
         role = me.data.role
-        console.log('Token validated via /auth/me:', { role })
         
         // Update auth store jika ada
         const authStore = useAuthStore()
@@ -59,7 +48,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
         )
       }
     } catch (error) {
-      console.log('Auth validation failed:', error)
       hasToken = false
       role = null
     }

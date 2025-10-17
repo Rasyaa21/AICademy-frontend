@@ -195,16 +195,12 @@ Masih ragu dengan jalan masa depanmu? Platform ini adalah jawaban untuk kamu. De
                         <!-- Stats Row -->
                         <div class="grid grid-cols-3 gap-4 py-6">
                             <div class="text-center">
-                                <div class="text-2xl font-bold text-primary">15K+</div>
-                                <div class="text-sm text-gray-600">Students</div>
+                                <div class="text-2xl font-bold text-primary">1K+</div>
+                                <div class="text-sm text-gray-600">Siswa</div>
                             </div>
                             <div class="text-center">
-                                <div class="text-2xl font-bold text-primary">2.5K+</div>
-                                <div class="text-sm text-gray-600">Companies</div>
-                            </div>
-                            <div class="text-center">
-                                <div class="text-2xl font-bold text-primary">98%</div>
-                                <div class="text-sm text-gray-600">Success Rate</div>
+                                <div class="text-2xl font-bold text-primary">50+</div>
+                                <div class="text-sm text-gray-600">Perusahaan</div>
                             </div>
                         </div>
                         
