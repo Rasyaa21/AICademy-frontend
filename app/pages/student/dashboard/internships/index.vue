@@ -10,14 +10,12 @@
     <CompaniesFilterSection
       v-model:search-query="searchQuery"
       v-model:selected-status="selectedStatus"
-      :filtered-count="pageData.list.length"
-      :total-count="pageData.total"
+      :filtered-count="filteredInternships.length"
+      :total-count="allInternships.length"
       :active-filters-count="activeFiltersCount"
       :has-active-filters="hasActiveFilters"
       @clear-filters="clearAllFilters"
     />
-
-    <CompaniesSortViewSection v-model:sort-by="sortBy" v-model:view-mode="viewMode" />
 
     <div v-if="pending" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <div v-for="i in 6" :key="i" class="bg-white rounded-xl p-6 shadow-sm border animate-pulse">
@@ -29,21 +27,19 @@
       </div>
     </div>
 
-    <!-- Error State -->
     <div v-else-if="error" class="bg-white rounded-xl p-8 shadow-sm border text-center">
       <Icon name="heroicons:exclamation-triangle-20-solid" class="w-16 h-16 text-red-500 mx-auto mb-4" />
       <h3 class="text-lg font-semibold text-gray-900 mb-2">Terjadi Kesalahan</h3>
       <p class="text-gray-600 mb-4">Gagal memuat data internship. Silakan coba lagi.</p>
       <UniversalButton variant="primary" @click="refresh()" text="Coba Lagi">
-        
       </UniversalButton>
     </div>
 
     <!-- Internship Display -->
     <CompaniesDisplaySection 
-      v-else-if="pageData.list.length > 0" 
+      v-else-if="paginatedInternships.length > 0" 
       :view-mode="viewMode" 
-      :internships="pageData.list" 
+      :internships="paginatedInternships" 
     />
 
     <!-- Empty State -->
@@ -56,8 +52,8 @@
       <button @click="clearAllFilters" class="font-medium text-primary hover:text-primary/80">Reset semua filter</button>
     </div>
 
-    <!-- Pagination -->
-    <div v-if="pageData.total_pages > 1" class="flex justify-center">
+    <!-- Pagination (client-side) -->
+    <div v-if="totalPages > 1" class="flex justify-center">
       <nav class="flex gap-2 items-center">
         <button 
           @click="goToPage(currentPage - 1)" 
@@ -68,12 +64,12 @@
         </button>
 
         <span class="px-4 py-2 text-sm text-gray-600"> 
-          Halaman {{ currentPage }} dari {{ pageData.total_pages }} 
+          Halaman {{ currentPage }} dari {{ totalPages }} 
         </span>
 
         <button 
           @click="goToPage(currentPage + 1)" 
-          :disabled="currentPage === pageData.total_pages || pending" 
+          :disabled="currentPage === totalPages || pending" 
           class="px-3 py-2 text-sm font-medium rounded-lg border border-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
         >
           Berikutnya
@@ -87,7 +83,6 @@
 import UniversalButton from "~/components/button/UniversalButton.vue"
 import CompaniesDisplaySection from "~/components/dashboard-student/companies/CompaniesDisplaySection.vue"
 import CompaniesFilterSection from "~/components/dashboard-student/companies/CompaniesFilterSection.vue"
-import CompaniesSortViewSection from "~/components/dashboard-student/companies/CompaniesSortViewSection.vue"
 
 interface CompanyProfile {
   id: string
@@ -120,133 +115,96 @@ interface Internship {
   company_profile: CompanyProfile
 }
 
-interface ApiResponse {
-  success: boolean
-  message: string
-  data: {
-    data: Internship[]
-    total: number
-    page: number
-    limit: number
-    total_pages: number
-  }
-}
-
 definePageMeta({
   layout: "dashboard-layout-student-dashboard-layout",
+  ssr: false
 })
 
-const route = useRoute()
-const router = useRouter()
 const config = useRuntimeConfig()
 
-// State
+// State (client-side filter & pagination seperti Challenge)
 const searchQuery = ref('')
-const selectedStatus = ref('')
-const sortBy = ref('newest')
+const selectedStatus = ref('') // optional filter tambahan jika dibutuhkan nanti
 const viewMode = ref<'grid' | 'list'>('grid')
-const currentPage = computed(() => parseInt(route.query.page as string) || 1)
-const limit = 10
+const currentPage = ref(1)
+const itemsPerPage = 12
 
-// Data fetching dengan endpoint yang benar
-const { data, pending, error, refresh } = await useAsyncData<ApiResponse>(
-  'internships',
-  () => $fetch('/student/internships', {
-    baseURL: config.public.apiBase,
-    credentials: 'include',
-    headers: useRequestHeaders(['cookie']),
-    query: {
-      page: currentPage.value,
-      limit,
-      search: route.query.search || '',
-      status: route.query.status || '',
-      sort: route.query.sort || 'newest'
-    }
-  }),
-  {
-    watch: [() => route.query],
-    default: () => ({
-      success: false,
-      message: '',
-      data: {
-        data: [],
-        total: 0,
-        page: 1,
-        limit: 10,
-        total_pages: 0
-      }
-    })
-  }
-)
-
-// --- Normalizer untuk hindari undefined ---
-const pageData = computed(() => {
-  const fallback = { list: [], total: 0, total_pages: 0, page: 1 }
-  const d = data.value?.data
-  if (!d) return fallback
-
-  const list = Array.isArray(d.data) ? d.data : []
-  const total = typeof d.total === 'number' ? d.total : 0
-  const total_pages = typeof d.total_pages === 'number' ? d.total_pages : 0
-  const page = typeof d.page === 'number' ? d.page : 1
-
-  return { list, total, total_pages, page }
-})
-
-
-const hasActiveFilters = computed(() => {
-  return !!(route.query.search || route.query.status)
-})
-
-const activeFiltersCount = computed(() => {
-  let count = 0
-  if (route.query.search) count++
-  if (route.query.status) count++
-  return count
-})
-
-// Methods
-const handleSearch = () => {
-  router.push({
-    query: {
-      ...route.query,
-      search: searchQuery.value || undefined,
-      status: selectedStatus.value || undefined,
-      sort: sortBy.value,
-      page: 1
-    }
-  })
+// Pola fetching disamakan dengan Challenge
+const fetchOpts = {
+  baseURL: config.public.apiBase as string,
+  credentials: "include" as const,
+  headers: process.server ? useRequestHeaders(["cookie"]) : undefined,
 }
 
+const {
+  data: internshipsRes,
+  pending,
+  error,
+  refresh
+} = await useAsyncData(
+  "student-internships",
+  () => $fetch("/student/internships", fetchOpts),
+  { server: false }
+)
+
+// Sumber data utama
+const allInternships = computed<Internship[]>(
+  () => (internshipsRes.value as any)?.data?.data ?? []
+)
+
+// Client-side searching seperti Challenge
+const filteredInternships = computed(() => {
+  const q = searchQuery.value.trim().toLowerCase()
+  let list = allInternships.value
+  if (q) {
+    list = list.filter((i) => {
+      const title = i.title?.toLowerCase() || ''
+      const desc = i.description?.toLowerCase() || ''
+      const company = i.company_profile?.company_name?.toLowerCase() || ''
+      return title.includes(q) || desc.includes(q) || company.includes(q)
+    })
+  }
+  // contoh filter status jika nanti dipakai
+  if (selectedStatus.value) {
+    // sesuaikan logic jika backend menyediakan field status
+    // list = list.filter(i => i.status === selectedStatus.value)
+  }
+  return list
+})
+
+// Client-side pagination seperti Challenge
+const totalPages = computed(() =>
+  Math.max(1, Math.ceil(filteredInternships.value.length / itemsPerPage))
+)
+
+const paginatedInternships = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage
+  return filteredInternships.value.slice(start, start + itemsPerPage)
+})
+
+// Info untuk filter header
+const hasActiveFilters = computed(() => !!(searchQuery.value || selectedStatus.value))
+const activeFiltersCount = computed(() => {
+  let c = 0
+  if (searchQuery.value) c++
+  if (selectedStatus.value) c++
+  return c
+})
+
+// Actions
 const clearAllFilters = () => {
   searchQuery.value = ''
   selectedStatus.value = ''
-  sortBy.value = 'newest'
-  router.push({
-    query: {
-      page: 1
-    }
-  })
+  currentPage.value = 1
 }
 
 const goToPage = (page: number) => {
-  router.push({
-    query: {
-      ...route.query,
-      page
-    }
-  })
+  if (page < 1 || page > totalPages.value) return
+  currentPage.value = page
 }
 
-// Watch for filter changes
-watch([searchQuery, selectedStatus, sortBy], () => {
-  handleSearch()
-})
-
-// Initialize from URL
-onMounted(() => {
-  searchQuery.value = (route.query.search as string) || ''
-  selectedStatus.value = (route.query.status as string) || ''
-  sortBy.value = (route.query.sort as string) || 'newest'
+// Reset ke halaman 1 saat search/status berubah
+watch([searchQuery, selectedStatus], () => {
+  currentPage.value = 1
 })
 </script>

@@ -49,7 +49,7 @@ const objectStorageUrl = publicConfig.objectStorageUrl
     <div class="h-32 relative overflow-hidden">
       <!-- Background Image -->
       <img 
-        :src="`${objectStorageUrl}/assets/smk-telkom.webp`" 
+        src="https://aicademy.galleryne.my.id/assets/smk-telkom.webp" 
         alt="SMK Telkom" 
         class="w-full h-full object-cover"
         loading="lazy"
