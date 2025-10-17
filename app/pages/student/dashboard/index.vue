@@ -17,12 +17,12 @@
             </div>
 
             <!-- Error State -->
-            <div v-else-if="error" class="bg-red-50 border border-red-200 rounded-lg p-4">
+            <div v-else-if="error || errorMessage" class="bg-red-50 border border-red-200 rounded-lg p-4">
                 <div class="flex items-center gap-2 text-red-800 mb-2">
                     <Icon name="heroicons:exclamation-triangle-20-solid" class="w-5 h-5" />
                     <h3 class="font-medium">Failed to Load Dashboard</h3>
                 </div>
-                <p class="text-red-600 text-sm mb-3">{{ error }}</p>
+                <p class="text-red-600 text-sm mb-3">{{ errorMessage || error }}</p>
                 <button 
                     @click="refresh()"
                     class="px-3 py-1.5 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700"
@@ -56,7 +56,6 @@
 </template>
 
 <script setup lang="ts">
-// filepath: /Users/rasya2121/Documents/code/pkl/JHIC/aicademy-frontend/app/pages/student/dashboard/index.vue
 import Calendar from '~/components/calendar/Calendar.vue'
 import MyRoadmapProgress from '~/components/dashboard-student/index/MyRoadmapProgress.vue'
 import MyChallengeProgress from '~/components/dashboard-student/index/MyChallengeProgress.vue'
@@ -68,9 +67,11 @@ definePageMeta({
 })
 
 const config = useRuntimeConfig()
+const dashboardData = ref<any>(null)
+const errorMessage = ref<string>('')
 
-// Fetch dashboard data from API
-const { data: dashboardData, pending, error, refresh } = await useAsyncData(
+// Fetch dashboard data from API - menggunakan pattern yang sama seperti roadmap
+const { data, pending, error, refresh } = await useLazyAsyncData(
     'student-dashboard',
     async () => {
         return await $fetch('/student/dashboard', {
@@ -80,9 +81,34 @@ const { data: dashboardData, pending, error, refresh } = await useAsyncData(
         })
     },
     {
-        transform: (data: any) => (data?.success ? data.data : null),
-        default: () => null,
-        server: false
+        server: false,
+        default: () => null
     }
 )
+
+// Watch for data changes and update dashboardData
+watch(data, (newData) => {
+  if (newData?.success && newData?.data) {
+    dashboardData.value = newData.data
+  } else if (newData && !newData.success) {
+    errorMessage.value = newData.message || 'Gagal memuat dashboard'
+  }
+}, { immediate: true })
+
+// Watch for error changes
+watch(error, (newError) => {
+  if (newError) {
+    console.error('Error loading dashboard:', newError)
+    errorMessage.value = 'Terjadi kesalahan saat memuat dashboard'
+  }
+}, { immediate: true })
+
+// Initialize data on mount
+onMounted(() => {
+  if (data.value?.success && data.value?.data) {
+    dashboardData.value = data.value.data
+  } else if (data.value && !data.value.success) {
+    errorMessage.value = data.value.message || 'Gagal memuat dashboard'
+  }
+})
 </script>

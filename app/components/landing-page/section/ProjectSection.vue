@@ -15,7 +15,8 @@ const projects = ref([
     tech: ['Next.js', 'Express.js', 'Prisma', 'PosgresSQL'],
     image: 'https://aicademy.galleryne.my.id/assets/pregnacare.webp',
     githubUrl: 'https://github.com/Rasyaa21/Nyampah_Dinacom',
-    liveUrl: 'https://dodolan.example.com'
+    liveUrl: 'https://dodolan.example.com',
+    fetchPriority: 'high' // Add this for the first place project
   },
   {
     id: 2,
@@ -30,7 +31,8 @@ const projects = ref([
     tech: ['Flutter', 'Gemini AI', 'Laravel', 'MySQL'],
     image: 'https://aicademy.galleryne.my.id/assets/dinacom.webp',
     githubUrl: 'https://github.com/Rasyaa21/Nyampah_Dinacom',
-    liveUrl: 'https://edutrack.example.com'
+    liveUrl: 'https://edutrack.example.com',
+    fetchPriority: 'high' // Add this for the second place project
   },
   {
     id: 3,
@@ -45,7 +47,8 @@ const projects = ref([
     tech: ['Next.js'],
     image: 'https://aicademy.galleryne.my.id/assets/agriloka.webp',
     githubUrl: 'https://github.com/Rasyaa21/dodolan-final-web',
-    liveUrl: 'https://agriloka-intech.vercel.app/'
+    liveUrl: 'https://agriloka-intech.vercel.app/',
+    fetchPriority: 'high' // Add this for the third place project
   }
 ]);
 

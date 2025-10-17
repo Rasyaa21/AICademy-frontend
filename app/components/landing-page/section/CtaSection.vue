@@ -22,19 +22,34 @@ const handleGetStarted = () => {
 
         <div class="absolute top-24 left-32 lg:left-48 animate-float">
             <div class="w-[100px] h-[100px] bg-transparent backdrop-blur-sm rounded-full p-3 shadow-lg">
-                <img src="https://aicademy.galleryne.my.id/assets/home-icon.webp" alt="Settings" class="w-full h-full object-contain opacity-80" />
+                <img 
+                  src="https://aicademy.galleryne.my.id/assets/home-icon.webp" 
+                  alt="Settings" 
+                  class="w-full h-full object-contain opacity-80"
+                  fetchpriority="high"
+                />
             </div>
         </div>
 
         <div class="absolute top-1/3 right-24 lg:right-32 animate-float-delayed">
             <div class="w-[100px] h-[100px] bg-transparen backdrop-blur-sm rounded-full p-3 shadow-lg">
-                <img src="https://aicademy.galleryne.my.id/assets/book-icon.webp" alt="Book" class="w-full h-full object-contain opacity-80" />
+                <img 
+                  src="https://aicademy.galleryne.my.id/assets/book-icon.webp" 
+                  alt="Book" 
+                  class="w-full h-full object-contain opacity-80"
+                  fetchpriority="high"
+                />
             </div>
         </div>
 
         <div class="absolute bottom-40 left-16 animate-float-slow">
             <div class="w-[100px] h-[100px] bg-transparen backdrop-blur-sm rounded-full p-3 shadow-lg">
-                <img src="https://aicademy.galleryne.my.id/assets/gear-icon.webp" alt="Settings" class="w-full h-full object-contain opacity-80" />
+                <img 
+                  src="https://aicademy.galleryne.my.id/assets/gear-icon.webp" 
+                  alt="Settings" 
+                  class="w-full h-full object-contain opacity-80"
+                  fetchpriority="high"
+                />
             </div>
         </div>
 

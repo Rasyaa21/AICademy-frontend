@@ -103,7 +103,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const rolePermissions: Record<string, string[]> = {
     '/admin': ['admin'],
     '/teacher': ['teacher', 'admin'],
-    '/student': ['student', 'admin', 'alumni'],
+    '/student': ['student', 'admin'],
     '/company': ['company', 'admin'],
   }
   
@@ -119,7 +119,6 @@ function roleToDashboard(role: string): string {
     admin: '/admin/dashboard',
     teacher: '/teacher/dashboard',
     company: '/company/dashboard',
-    alumni: '/student/dashboard',
     student: '/student/dashboard',
   }
   return dashboards[role] || '/student/dashboard'

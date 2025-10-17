@@ -13,12 +13,15 @@ interface Project {
   image: string
   githubUrl?: string
   liveUrl?: string
+  fetchPriority?: string
 }
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   project: Project
   isWinner?: boolean
-}>()
+}>(), {
+  isWinner: false
+})
 
 const rankColors = {
   1: 'from-yellow-400 to-yellow-600',
@@ -35,7 +38,8 @@ const rankColors = {
        ]">
     <div class="h-48 relative overflow-hidden">
       <NuxtImg :src="project.image" :alt="project.title" 
-           class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+           class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
+           :fetchpriority="project.fetchPriority || 'auto'" />
       
       <!-- Overlay -->
       <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>

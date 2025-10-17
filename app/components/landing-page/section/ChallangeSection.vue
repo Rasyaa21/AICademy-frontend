@@ -18,6 +18,7 @@ const challenges = ref<Challenge[]>([
     prize: "Rp 2.000.000 + Certificate",
     participant: 47,
     winner_team_id: null,
+    fetchPriority: "high" // Add this for the first challenge
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440002",
@@ -29,6 +30,7 @@ const challenges = ref<Challenge[]>([
     prize: null,
     participant: 32,
     winner_team_id: null,
+    fetchPriority: "high" // Add this for the second challenge
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440003",

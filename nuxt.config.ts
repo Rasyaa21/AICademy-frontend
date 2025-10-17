@@ -17,6 +17,18 @@ export default defineNuxtConfig({
       htmlAttrs: {
         lang: 'id'
       },
+      link: [
+        {
+          rel: 'preload',
+          as: 'style',
+          href: '/_nuxt/entry.MZsD9sKh.css'
+        },
+        {
+          rel: 'preload',
+          as: 'style',
+          href: '/_nuxt/index.BMdsvxCv.css'
+        }
+      ],
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },

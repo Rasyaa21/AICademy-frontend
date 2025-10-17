@@ -18,7 +18,7 @@
                       src="https://aicademy.galleryne.my.id/assets/home-icon.webp" 
                       alt="Home" 
                       class="w-full h-full object-contain opacity-80"
-                
+                      fetchpriority="high"
                     />
                 </div>
             </div>
@@ -29,7 +29,7 @@
                       src="https://aicademy.galleryne.my.id/assets/book-icon.webp" 
                       alt="Book" 
                       class="w-full h-full object-contain opacity-80"
-                
+                      fetchpriority="high"
                     />
                 </div>
             </div>
@@ -40,7 +40,7 @@
                       src="https://aicademy.galleryne.my.id/assets/gear-icon.webp" 
                       alt="Settings" 
                       class="w-full h-full object-contain opacity-80"
-                
+                      fetchpriority="high"
                     />
                 </div>
             </div>
@@ -68,26 +68,26 @@
                           src="https://aicademy.galleryne.my.id/assets/sigma-2.webp" 
                           alt="Student 1" 
                           class="w-8 h-8 rounded-full border-2 border-white object-cover"
-                    
+                          fetchpriority="high"
                         />
                         <NuxtImg 
                           src="https://aicademy.galleryne.my.id/assets/sigma.webp" 
                           alt="Student 2" 
                           class="w-8 h-8 rounded-full border-2 border-white object-cover"
-                    
+                          fetchpriority="high"
                         />
                         <NuxtImg 
                           src="https://aicademy.galleryne.my.id/assets/sigma-3.webp" 
                           alt="Student 3" 
                           class="w-8 h-8 rounded-full border-2 border-white object-cover"
-                    
+                          fetchpriority="high"
                         />
                         <div class="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center relative overflow-hidden">
                             <NuxtImg 
                               src="https://aicademy.galleryne.my.id/assets/axel.webp" 
                               alt="Student 4" 
                               class="w-full h-full object-cover"
-                        
+                              fetchpriority="high"
                             />
                             <span class="absolute inset-0 bg-black/50 flex items-center justify-center text-xs text-white font-bold">100+</span>
                         </div>
@@ -119,7 +119,7 @@
                       src="https://aicademy.galleryne.my.id/assets/logo_smk_telkom_pwt.webp" 
                       alt="SMK Telkom Purwokerto" 
                       class="h-14 md:h-16 object-contain"
-                
+                      fetchpriority="high"
                     />
                 </div>
                 <div class="shrink-0 mx-10">
@@ -127,7 +127,7 @@
                       src="https://aicademy.galleryne.my.id/assets/garuda-spark.webp" 
                       alt="1000sd" 
                       class="h-14 md:h-18 object-contain"
-                
+                      fetchpriority="high"
                     />
                 </div>
                 <div class="shrink-0 mx-10">
@@ -135,7 +135,7 @@
                       src="https://aicademy.galleryne.my.id/assets/komdigi.webp" 
                       alt="Komdigi" 
                       class="h-14 md:h-18 object-contain"
-                
+                      fetchpriority="high"
                     />
                 </div>
                 <div class="shrink-0 mx-10">
@@ -143,7 +143,7 @@
                       src="https://aicademy.galleryne.my.id/assets/jagoan-hosting.webp" 
                       alt="Jagoan Hosting" 
                       class="h-14 md:h-18 object-contain"
-                
+                      fetchpriority="high"
                     />
                 </div>
                 <div class="shrink-0 mx-10">
@@ -151,7 +151,7 @@
                       src="https://aicademy.galleryne.my.id/assets/maspion-it.webp" 
                       alt="Maspion IT" 
                       class="h-14 md:h-18 object-contain"
-                
+                      fetchpriority="high"
                     />
                 </div>
             </NuxtMarquee>
@@ -165,7 +165,7 @@
                             src="https://aicademy.galleryne.my.id/assets/dashboard.webp"
                             alt="Dashboard"
                             class="w-full max-w-6xl h-auto"
-                    
+                            fetchpriority="high"
                         />
                     </div>
                 </div>
@@ -220,7 +220,7 @@ Masih ragu dengan jalan masa depanmu? Platform ini adalah jawaban untuk kamu. De
                               src="https://aicademy.galleryne.my.id/assets/dashboard.webp" 
                               alt="Dashboard Preview"
                               class="w-full max-w-lg h-auto"
-                        
+                              fetchpriority="high"
                             />
                         </div>
                     </div>

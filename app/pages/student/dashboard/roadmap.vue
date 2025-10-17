@@ -170,6 +170,30 @@ const { data, pending, error, refresh } = await useLazyAsyncData('my-roadmap', a
   default: () => null
 })
 
+watch(data, (newData) => {
+  if (newData?.success && newData?.data) {
+    roadmapData.value = newData.data
+  } else if (newData && !newData.success) {
+    errorMessage.value = newData.message || 'Gagal memuat roadmap'
+  }
+}, { immediate: true })
+
+// Watch for error changes
+watch(error, (newError) => {
+  if (newError) {
+    console.error('Error loading roadmap:', newError)
+    errorMessage.value = 'Terjadi kesalahan saat memuat roadmap'
+  }
+}, { immediate: true })
+
+onMounted(() => {
+  if (data.value?.success && data.value?.data) {
+    roadmapData.value = data.value.data
+  } else if (data.value && !data.value.success) {
+    errorMessage.value = data.value.message || 'Gagal memuat roadmap'
+  }
+})
+
 const timelineItems = computed(() => {
     if (!roadmapData.value?.steps) return []
     

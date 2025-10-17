@@ -3,6 +3,10 @@
         class="w-full relative bg-top bg-no-repeat bg-cover"
         :style="sectionBgStyle"
     >
+        <Head>
+            <Link rel="preload" as="image" href="https://aicademy.galleryne.my.id/assets/bg-fitur.webp" fetchpriority="high"/>
+        </Head>
+        
         <div class="absolute inset-0 bg-white/30 pointer-events-none"></div>
         <div class="relative max-w-7xl mx-auto px-6 py-20">
             <div class="text-center mb-12">
