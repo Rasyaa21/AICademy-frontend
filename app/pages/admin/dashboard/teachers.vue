@@ -79,7 +79,6 @@ import TeachersTableSection from '~/components/dashboard-admin/teachers/Teachers
 import TeachersEmptyState from '~/components/dashboard-admin/teachers/TeachersEmptyState.vue'
 import TeachersPaginationSection from '~/components/dashboard-admin/teachers/TeachersPaginationSection.vue'
 import TeacherFilter from '~/components/dashboard-admin/teachers/TeacherFilter.vue'
-
 import AlertModal from '~/components/modal/basic-modal/AlertModal.vue'
 import type { Teacher } from '~/types/Teacher'
 import TeacherInputPopup from '~/components/modal/admin/dashboard/teacher/TeacherInputPopup.vue'
@@ -110,7 +109,7 @@ const itemsPerPage = 10
 
 const headers = useRequestHeaders(['cookie'])
 
-// ✅ Build API query with all parameters
+// Build API query
 const buildApiQuery = () => {
     const params = new URLSearchParams({
         page: currentPage.value.toString(),
@@ -132,7 +131,7 @@ const buildApiQuery = () => {
     return params.toString()
 }
 
-// ✅ Fetch data from API
+// Fetch data from API
 const { data: teacherData, pending, error, refresh } = await useAsyncData('teacherData', () => 
     $fetch(`/admin/users/teachers?${buildApiQuery()}`, {
         baseURL: config.public.apiBase,
@@ -143,17 +142,16 @@ const { data: teacherData, pending, error, refresh } = await useAsyncData('teach
     }
 )
 
-// ✅ Use API data directly
-const teachers = computed(() => teacherData.value?.data || [])
+// Use API data with correct structure
+const teachers = computed(() => teacherData.value?.data?.data || [])
 const totalPages = computed(() => teacherData.value?.data?.total_pages || 1)
 const totalItems = computed(() => teacherData.value?.data?.total || 0)
 
 const teacherStats = computed(() => {
-    // For accurate stats, you might need a separate API endpoint
     const active = teachers.value.filter(t => t.status === 'active').length
     
     return {
-        total: totalItems.value, // ✅ Use totalItems from API
+        total: totalItems.value,
         active,
         challengeOrganizers: Math.floor(totalItems.value * 0.8)
     }
@@ -230,7 +228,7 @@ const handleAlertOk = () => {
     }
 }
 
-// ✅ Reset page when filters change
+// Reset page when filters change
 watch([searchQuery, selectedStatus, sortBy], () => {
     currentPage.value = 1
 })

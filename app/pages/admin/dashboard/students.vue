@@ -47,7 +47,6 @@
 
         <!-- Content -->
         <template v-else>
-            <!-- Filter Component -->
             <StudentFilter
                 v-model:searchQuery="searchQuery"
                 v-model:selectedClass="selectedClass"
@@ -61,7 +60,6 @@
                 @add-student="openStudentInput = true"
             />
 
-            <!-- Students Table -->
             <StudentsTableSection 
                 :paginated-students="students"
                 @view-student="viewStudent"
@@ -69,14 +67,12 @@
                 @delete-student="deleteStudent"
             />
 
-            <!-- Empty State -->
             <StudentsEmptyState 
                 v-if="students.length === 0"
                 :search-query="searchQuery"
                 @clear-filters="clearAllFilters"
             />
 
-            <!-- Pagination -->
             <StudentsPaginationSection
                 v-if="totalPages > 1"
                 :current-page="currentPage"
@@ -92,7 +88,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import StudentFilter from '~/components/dashboard-admin/students/StudentFilter.vue'
-
 import UploadCsvPopup from '~/components/modal/UploadCsvPopup.vue'
 import AlertModal from '~/components/modal/basic-modal/AlertModal.vue'
 import StudentsStatsSection from '~/components/dashboard-admin/students/StudentsStatsSection.vue'
@@ -131,7 +126,7 @@ const itemsPerPage = 10
 
 const headers = useRequestHeaders(['cookie'])
 
-// ✅ FIXED: Build API query with all parameters
+// Build API query
 const buildApiQuery = () => {
     const params = new URLSearchParams({
         page: currentPage.value.toString(),
@@ -157,7 +152,7 @@ const buildApiQuery = () => {
     return params.toString()
 }
 
-// ✅ FIXED: Watch all filter parameters
+// Fetch data from API
 const { data: studentData, pending, error, refresh } = await useAsyncData('studentData', () => 
     $fetch(`/admin/users/students?${buildApiQuery()}`, {
         baseURL: config.public.apiBase,
@@ -168,17 +163,12 @@ const { data: studentData, pending, error, refresh } = await useAsyncData('stude
     }
 )
 
-// ✅ FIXED: Use API data directly (no client-side filtering)
-const students = computed(() => studentData.value?.data || [])
+// Use API data with correct structure
+const students = computed(() => studentData.value?.data?.data || [])
 const totalPages = computed(() => studentData.value?.data?.total_pages || 1)
 const totalItems = computed(() => studentData.value?.data?.total || 0)
 
-// ✅ FIXED: Remove client-side filtering and pagination
-// const filteredStudents = computed(() => { ... }) // ← HAPUS
-// const paginatedStudents = computed(() => { ... }) // ← HAPUS
-
 const studentStats = computed(() => {
-    // For accurate stats, you might need a separate API endpoint
     const newThisMonth = students.value.filter(s => {
         const createdDate = new Date(s.created_at)
         const now = new Date()
@@ -186,7 +176,7 @@ const studentStats = computed(() => {
     }).length
     
     return {
-        total: totalItems.value, // ✅ FIXED: Use totalItems from API
+        total: totalItems.value,
         newThisMonth,
         challengeParticipants: Math.floor(totalItems.value * 0.7)
     }
@@ -204,7 +194,6 @@ const clearAllFilters = () => {
     currentPage.value = 1
 }
 
-// ✅ FIXED: Proper page change handler
 const handlePageChange = (page: number) => {
     currentPage.value = page
 }
@@ -229,7 +218,7 @@ const deleteStudent = async (student: Student) => {
                 headers
             })
             showSuccessModal('Siswa berhasil dihapus')
-        refresh()
+            refresh()
         } catch (error) {
             console.error('Error deleting student:', error)
             showErrorModal('Gagal menghapus siswa')
@@ -263,7 +252,7 @@ const handleAlertOk = () => {
     }
 }
 
-// ✅ FIXED: Reset page when filters change
+// Reset page when filters change
 watch([searchQuery, selectedClass, selectedStatus, sortBy], () => {
     currentPage.value = 1
 })

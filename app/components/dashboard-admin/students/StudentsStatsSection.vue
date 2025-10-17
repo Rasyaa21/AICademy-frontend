@@ -1,33 +1,10 @@
 <template>
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-1 lg:grid-cols-1">
         <div class="p-6 bg-white rounded-xl border shadow-sm">
             <div class="flex justify-between items-center">
                 <div>
                     <p class="text-sm text-gray-500">Total Siswa</p>
                     <p class="text-2xl font-bold text-gray-900">{{ studentStats.total }}</p>
-                </div>
-                <div class="flex justify-center items-center w-12 h-12 rounded-xl bg-primary/10">
-                    <Icon name="heroicons:users-20-solid" class="w-6 h-6 text-primary" />
-                </div>
-            </div>
-        </div>
-
-        <div class="p-6 bg-white rounded-xl border shadow-sm">
-            <div class="flex justify-between items-center">
-                <div>
-                    <p class="text-sm text-gray-500">Siswa PPLG / RPL</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ studentStats.challengeParticipants }}</p>
-                </div>
-                <div class="flex justify-center items-center w-12 h-12 rounded-xl bg-primary/10">
-                    <Icon name="heroicons:users-20-solid" class="w-6 h-6 text-primary" />
-                </div>
-            </div>
-        </div>
-        <div class="p-6 bg-white rounded-xl border shadow-sm">
-            <div class="flex justify-between items-center">
-                <div>
-                    <p class="text-sm text-gray-500">Siswa TJKT / TJA</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ studentStats.challengeParticipants }}</p>
                 </div>
                 <div class="flex justify-center items-center w-12 h-12 rounded-xl bg-primary/10">
                     <Icon name="heroicons:users-20-solid" class="w-6 h-6 text-primary" />

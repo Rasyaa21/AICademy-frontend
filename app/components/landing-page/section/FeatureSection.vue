@@ -28,27 +28,27 @@
                 <FeatureRow
                     title="Profiling Role & Karir"
                     description="Temukan role dan karir impianmu! Isi kuesioner singkat dan cari tahu apa yang sebenarnya kamu suka"
-                    icon-src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/book-icon.webp"
+                    icon-src="https://aicademy.galleryne.my.id/assets/book-icon.webp"
                     align="left"
                 />
                 <FeatureRow
                     title="Roadmap & Project"
                     description="Buka roadmap karir pilihanmu, lihat progres pembelajaran, dan asah kemampuanmu lewat berbagai projek yang ada"
-                    icon-src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/book-icon.webp"
+                    icon-src="https://aicademy.galleryne.my.id/assets/book-icon.webp"
                     align="right"
                     offset="-mt-8 lg:-mt-16"
                 />
                 <FeatureRow
                     title="Tim & Challenge"
-                    description="Bentuk tim dengan temanmu, selesaikan challenge sebanyak-banyaknya, dan raih peringkat di leaderboard"
-                    icon-src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/book-icon.webp"
+                    description="Bentuk tim dengan temanmu. Selesaikan challenge sebanyak-banyaknya, dan raih peringkat di leaderboard!"
+                    icon-src="https://aicademy.galleryne.my.id/assets/book-icon.webp"
                     align="left"
                     offset="-mt-4 lg:-mt-10"
                 />
                 <FeatureRow
                     title="CV & Perusahaan"
                     description="Susun CV yang profesional dan bangun pengalaman melalui PKL di perusahaan yang terverifikasi"
-                    icon-src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/book-icon.webp"
+                    icon-src="https://aicademy.galleryne.my.id/assets/book-icon.webp"
                     align="right"
                     offset="-mt-8 lg:-mt-20"
                 />
@@ -65,6 +65,6 @@ const props = withDefaults(defineProps<{backgroundUrl?: string}>(), {
 })
 
 const sectionBgStyle = computed(() => ({
-    backgroundImage: `url('https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/bg-fitur.webp')`
+    backgroundImage: `url('https://aicademy.galleryne.my.id/assets/bg-fitur.webp')`
 }))
 </script>

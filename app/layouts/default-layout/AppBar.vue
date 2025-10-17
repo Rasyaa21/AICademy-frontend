@@ -2,8 +2,8 @@
 const isOpen = ref(false)
 const links = [
   { label: 'Home', to: '/' },
-  { label: 'Challange', to: '/Challange' },
-  { label: 'Project', to: '/Project' },
+  { label: 'Challenge', to: '/#challenge' },
+  { label: 'Project', to: '/#project' },
 ]
 
 const route = useRoute()
@@ -39,6 +39,39 @@ const getDashboardUrl = () => {
   }
 }
 
+// Fungsi untuk smooth scroll ke section
+const scrollToSection = (to: string) => {
+  if (to.includes('#')) {
+    const sectionId = to.split('#')[1]
+    const element = document.getElementById(sectionId)
+    if (element) {
+      element.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      })
+      isOpen.value = false
+    }
+  }
+}
+
+// Handle navigation click
+const handleNavigation = (link: any) => {
+  if (route.path !== '/' && link.to.includes('#')) {
+    // Jika tidak di home page, navigasi ke home dulu
+    navigateTo('/').then(() => {
+      nextTick(() => {
+        scrollToSection(link.to)
+      })
+    })
+  } else if (link.to.includes('#')) {
+    // Jika sudah di home page, langsung scroll
+    scrollToSection(link.to)
+  } else {
+    // Navigasi normal
+    navigateTo(link.to)
+  }
+}
+
 watch(() => route.fullPath, () => (isOpen.value = false))
 
 onMounted(() => {
@@ -58,7 +91,12 @@ onMounted(() => {
 
       <ul class="hidden gap-6 justify-center items-center w-1/3 font-medium text-white md:flex">
         <li v-for="l in links" :key="l.to">
-          <NuxtLink :to="l.to" class="hover:text-white/80">{{ l.label }}</NuxtLink>
+          <button 
+            @click="handleNavigation(l)" 
+            class="hover:text-white/80 cursor-pointer transition-colors"
+          >
+            {{ l.label }}
+          </button>
         </li>
       </ul>
 
@@ -109,14 +147,14 @@ onMounted(() => {
       <div v-show="isOpen" id="mobile-menu" class="border-t backdrop-blur md:hidden bg-primary/95 border-white/10">
         <div class="px-4 py-3 space-y-2">
           <div class="flex flex-col gap-2">
-            <NuxtLink
+            <button
               v-for="l in links"
               :key="l.to"
-              :to="l.to"
-              class="block px-3 py-2 font-medium rounded-lg text-white/95 hover:bg-white/10"
+              @click="handleNavigation(l)"
+              class="block px-3 py-2 font-medium rounded-lg text-white/95 hover:bg-white/10 text-left"
             >
               {{ l.label }}
-            </NuxtLink>
+            </button>
           </div>
           
           <!-- Mobile Auth Buttons -->

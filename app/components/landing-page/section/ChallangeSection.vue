@@ -10,7 +10,7 @@ const selectedCategory = ref("All");
 const challenges = ref<Challenge[]>([
   {
     id: "550e8400-e29b-41d4-a716-446655440001",
-    thumbnail_image: "https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/smk-telkom.webp",
+    thumbnail_image: "https://aicademy.galleryne.my.id/assets/smk-telkom.webp",
     title: "API Perpustakaan",
     description: "Buatlah REST API untuk sistem perpustakaan dengan skema database yang telah ditentukan",
     organizer: "Agus Dwi Cahaya S.Kom",
@@ -21,7 +21,7 @@ const challenges = ref<Challenge[]>([
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440002",
-    thumbnail_image: "https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/smk-telkom.webp",
+    thumbnail_image: "https://aicademy.galleryne.my.id/assets/smk-telkom.webp",
     title: "React JS Portfolio",
     description: "Buat portfolio website menggunakan React JS dengan design yang responsive dan modern",
     organizer: "Siti Nurhasanah S.Pd",
@@ -32,7 +32,7 @@ const challenges = ref<Challenge[]>([
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440003",
-    thumbnail_image: "https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/smk-telkom.webp",
+    thumbnail_image: "https://aicademy.galleryne.my.id/assets/smk-telkom.webp",
     title: "UI Design Challenge",
     description: "Desain interface aplikasi mobile untuk e-commerce dengan fokus pada user experience",
     organizer: "Ahmad Rizki M.Kom",
@@ -43,7 +43,7 @@ const challenges = ref<Challenge[]>([
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440004",
-    thumbnail_image: "https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/smk-telkom.webp",
+    thumbnail_image: "https://aicademy.galleryne.my.id/assets/smk-telkom.webp",
     title: "CTF Web Security",
     description: "Selesaikan tantangan keamanan web dengan berbagai teknik penetration testing",
     organizer: "Agus Dwi Cahaya S.Kom",
@@ -71,7 +71,7 @@ const filteredChallenges = computed(() => {
 </script>
 
 <template>
-  <section class="w-full py-20 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
+  <section id="challenge" class="w-full py-20 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
     <div class="absolute top-0 left-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-x-32 -translate-y-32"></div>
     <div class="absolute bottom-0 right-0 w-96 h-96 bg-accent/5 rounded-full blur-3xl translate-x-48 translate-y-48"></div>
 

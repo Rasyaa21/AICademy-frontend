@@ -25,7 +25,7 @@
                 <div class="h-32 relative overflow-hidden">
                     <!-- SMK Telkom Background Image -->
                     <img 
-                        src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/smk-telkom.webp"
+                        src="https://aicademy.galleryne.my.id/assets/smk-telkom.webp"
                         alt="SMK Telkom"
                         class="w-full h-full object-cover object-center"
                     />
