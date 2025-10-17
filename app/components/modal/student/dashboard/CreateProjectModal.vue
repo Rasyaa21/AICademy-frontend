@@ -269,7 +269,6 @@
 </template>
 
 <script setup lang="ts">
-// filepath: /Users/rasya2121/Documents/code/pkl/JHIC/aicademy-frontend/app/components/modal/student/dashboard/CreateProjectModal.vue
 import MainTextfield from '~/components/textfield/MainTextfield.vue'
 import type { CreateProjectRequest, UpdateProjectRequest, Project } from '~/types/Profile'
 
@@ -436,14 +435,40 @@ const removeContributor = (idx: number) => {
 }
 
 /* Search Students */
+const normalizeStudent = (s: any): StudentOption => ({
+  id: s.id || s.user_id || s.student_id || '',
+  fullname: s.fullname || s.full_name || s.name || `${s.first_name ?? ''} ${s.last_name ?? ''}`.trim(),
+  nis: s.nis || s.student_number || s.nisn || '-',
+  class: s.class || s.class_name || s.kelas || undefined
+})
+
+// Fetch students (robust + tahan error)
 const fetchStudents = async (query: string) => {
-  const url = `/student/users/students?page=1&limit=10&search=${encodeURIComponent(query || '')}`
-  const res = await $fetch<{ success: boolean; data: StudentOption[] }>(url, {
-    baseURL: config.public.apiBase,
-    credentials: 'include'
-  })
-  return res?.success ? res.data : []
+  try {
+    const res = await $fetch<any>('/student/users/students', {
+      baseURL: config.public.apiBase,
+      credentials: 'include',
+      headers: process.server ? useRequestHeaders(['cookie']) : undefined,
+      query: {
+        page: 1,
+        limit: 10,
+        ...(query ? { search: query } : {})
+      }
+    })
+
+    // Terima bentuk: { success, data: [] } atau { success, data: { data: [] } }
+    const raw =
+      Array.isArray(res?.data) ? res.data :
+      Array.isArray(res?.data?.data) ? res.data.data :
+      []
+
+    return (raw as any[]).map(normalizeStudent)
+  } catch (e) {
+    console.error('fetchStudents error:', e)
+    return []
+  }
 }
+
 const onStudentInput = (row: ContributorRow) => {
   row.loadingStudent = true
   row.isStudentOpen = true
@@ -451,15 +476,20 @@ const onStudentInput = (row: ContributorRow) => {
   row.studentTimer = setTimeout(async () => {
     try {
       row.studentOptions = await fetchStudents(row.studentQuery)
+    } catch {
+      row.studentOptions = []
     } finally {
       row.loadingStudent = false
     }
   }, 300)
 }
+
 const openStudentDropdown = (row: ContributorRow) => {
   row.isStudentOpen = true
+  // Saat pertama kali dibuka tanpa query, jangan fetch (hindari 401 spam); fetch ketika user mengetik.
   if (!row.studentOptions.length && row.studentQuery) onStudentInput(row)
 }
+
 const selectStudent = (row: ContributorRow, s: StudentOption) => {
   row.student = s
   row.studentQuery = `${s.fullname} (${s.nis})`
@@ -472,13 +502,28 @@ const clearStudent = (row: ContributorRow) => {
 
 /* Search Roles */
 const fetchRoles = async (query: string) => {
-  const url = `/student/questionnaires/target-roles?page=1&limit=10&search=${encodeURIComponent(query || '')}`
-  const res = await $fetch<{
-    success: boolean
-    data: { data: RoleOption[] }
-  }>(url, { baseURL: config.public.apiBase, credentials: 'include' })
-  return res?.success ? res.data.data : []
+  try {
+    const res = await $fetch<any>('/student/questionnaires/target-roles', {
+      baseURL: config.public.apiBase,
+      credentials: 'include',
+      headers: process.server ? useRequestHeaders(['cookie']) : undefined,
+      query: {
+        page: 1,
+        limit: 10,
+        ...(query ? { search: query } : {})
+      }
+    })
+    const raw =
+      Array.isArray(res?.data) ? res.data :
+      Array.isArray(res?.data?.data) ? res.data.data :
+      []
+    return raw as RoleOption[]
+  } catch (e) {
+    console.error('fetchRoles error:', e)
+    return []
+  }
 }
+
 const onRoleInput = (row: ContributorRow) => {
   row.loadingRole = true
   row.isRoleOpen = true

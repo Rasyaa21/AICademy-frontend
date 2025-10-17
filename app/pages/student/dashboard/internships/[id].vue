@@ -276,29 +276,63 @@ const confirmApply = async () => {
   isApplyLoading.value = true
   
   try {
-    await $fetch('/student/internship/apply', {
+    const response = await $fetch('/student/internship/apply', {
       method: 'POST',
       baseURL: config.public.apiBase,
       credentials: 'include',
-      headers: process.server ? useRequestHeaders(['cookie']) : undefined,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        ...(process.server ? useRequestHeaders(['cookie']) : {})
+      },
       body: {
         internship_id: internshipData.value.id
       }
     })
     
-    hasApplied.value = true
-    alertType.value = 'success'
-    alertTitle.value = 'Berhasil Apply'
-    alertMessage.value = `Anda telah berhasil apply untuk posisi ${internshipData.value.title}. Perusahaan akan menghubungi Anda jika terpilih.`
-    showAlertModal.value = true
+    // Success response
+    if (response.success) {
+      hasApplied.value = true
+      alertType.value = 'success'
+      alertTitle.value = 'Berhasil Apply'
+      alertMessage.value = response.message || `Anda telah berhasil apply untuk posisi ${internshipData.value.title}. Perusahaan akan menghubungi Anda jika terpilih.`
+      showAlertModal.value = true
+    } else {
+      // Backend returned success: false
+      alertType.value = 'error'
+      alertTitle.value = 'Gagal Apply'
+      alertMessage.value = response.message || 'Terjadi kesalahan saat apply. Silakan coba lagi.'
+      showAlertModal.value = true
+    }
     
   } catch (error: any) {
+    console.error('Apply internship error:', error)
+    
+    let errorMessage = 'Terjadi kesalahan saat apply. Silakan coba lagi.'
+    
+    // Handle different error structures from backend
+    if (error.data) {
+      // FetchError with data property
+      errorMessage = error.data.message || error.data.error || errorMessage
+    } else if (error.response?.data) {
+      // Axios-style error
+      errorMessage = error.response.data.message || error.response.data.error || errorMessage
+    } else if (error.message) {
+      // Generic error message
+      errorMessage = error.message
+    } else if (typeof error === 'string') {
+      // String error
+      errorMessage = error
+    }
+    
     alertType.value = 'error'
     alertTitle.value = 'Gagal Apply'
-    alertMessage.value = error.data?.message || 'Terjadi kesalahan saat apply. Silakan coba lagi.'
+    alertMessage.value = errorMessage
     showAlertModal.value = true
+    
   } finally {
     isApplyLoading.value = false
+    showConfirmModal.value = false
   }
 }
 

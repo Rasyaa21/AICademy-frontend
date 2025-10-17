@@ -5,7 +5,6 @@
         @refresh-roadmap="handleRefreshRoadmap"
     />
     
-    <!-- Loading State -->
     <div v-if="pending" class="flex justify-center items-center min-h-screen bg-gradient-to-b from-primary to-red-700">
         <div class="text-center">
             <div class="animate-spin w-12 h-12 mx-auto mb-4 border-4 border-white border-t-transparent rounded-full"></div>
@@ -13,15 +12,12 @@
         </div>
     </div>
 
-    <!-- Profiling CTA Section -->
     <section v-else-if="!roadmapData" class="overflow-hidden relative py-6 -m-6 min-h-screen bg-gradient-to-b to-red-700 min-w-screen md:py-8 from-primary">
-        <!-- Background Elements -->
         <div class="absolute -top-10 -left-10 w-48 h-48 rounded-full blur-3xl md:w-72 md:h-72 bg-white/10"></div>
         <div class="absolute -right-10 -bottom-20 w-64 h-64 rounded-full blur-3xl md:w-96 md:h-96 bg-pink-400/20"></div>
         
         <div class="container px-4 py-8 mx-auto md:py-16">
             <div class="max-w-2xl mx-auto text-center">
-                <!-- Icon -->
                 <div class="mb-8">
                     <div class="p-6 w-24 h-24 mx-auto rounded-full shadow-lg backdrop-blur-sm bg-white/10">
                         <Icon name="heroicons:clipboard-document-list-20-solid" class="w-full h-full text-white" />
@@ -111,7 +107,27 @@
                     {{ roadmapData?.description || 'Ikuti perjalanan pembelajaran yang terstruktur' }}
                 </p>
 
-                <div v-if="roadmapData?.progress" class="mt-6 p-4 mx-auto max-w-md rounded-xl backdrop-blur-sm bg-white/10">
+                <!-- Start Roadmap Button - Show if not started yet -->
+                <div v-if="!isRoadmapStarted && roadmapData?.id" class="mt-6">
+                    <UniversalButton
+                        :text="isStartingRoadmap ? 'Memulai...' : 'Mulai Roadmap'"
+                        :disabled="isStartingRoadmap"
+                        size="lg"
+                        class="mx-auto"
+                        @click="handleStartRoadmap"
+                    >
+                        <template #icon>
+                            <Icon 
+                                :name="isStartingRoadmap ? 'heroicons:arrow-path-20-solid' : 'heroicons:play-circle-20-solid'" 
+                                :class="{ 'animate-spin': isStartingRoadmap }"
+                                class="w-5 h-5" 
+                            />
+                        </template>
+                    </UniversalButton>
+                </div>
+
+                <!-- Progress Info - Show if started -->
+                <div v-if="isRoadmapStarted && roadmapData?.progress" class="mt-6 p-4 mx-auto max-w-md rounded-xl backdrop-blur-sm bg-white/10">
                     <div class="flex justify-between items-center mb-2 text-sm text-white/90">
                         <span>Progress</span>
                         <span>{{ progressText }}%</span>
@@ -124,18 +140,37 @@
                     </div>
                     <p class="mt-1 text-xs text-white/70">{{ progressText }}% Complete</p>
                 </div>
+
+                <!-- Roadmap Started Status -->
+                <div v-if="isRoadmapStarted" class="mt-4">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full backdrop-blur-sm bg-green-500/20 border border-green-400/30">
+                        <Icon name="heroicons:check-circle-20-solid" class="w-4 h-4 text-green-400" />
+                        <span class="text-sm text-green-100">Roadmap Dimulai</span>
+                    </div>
+                </div>
             </div>
 
-            <!-- Timeline -->
-            <ClientOnly>
-              <RoadmapTimeline 
-                :key="timelineItems.length"
-                :timeline-items="timelineItems"
-                @learn-more="handleLearnMore"
-                @start-step="handleStartStep"
-              />
-            </ClientOnly>
-          </div>
+            <!-- Timeline - Show only if roadmap started -->
+            <div v-if="isRoadmapStarted">
+                <ClientOnly>
+                  <RoadmapTimeline 
+                    :key="timelineItems.length"
+                    :timeline-items="timelineItems"
+                    @learn-more="handleLearnMore"
+                    @start-step="handleStartStep"
+                  />
+                </ClientOnly>
+            </div>
+
+            <!-- Not Started Message -->
+            <div v-else class="text-center py-12">
+                <div class="mb-6">
+                    <Icon name="heroicons:lock-closed-20-solid" class="w-16 h-16 mx-auto text-white/60" />
+                </div>
+                <h3 class="text-xl font-semibold text-white mb-2">Roadmap Belum Dimulai</h3>
+                <p class="text-white/80">Klik tombol "Mulai Roadmap" di atas untuk memulai perjalanan pembelajaran Anda.</p>
+            </div>
+        </div>
     </section>
 </template>
 
@@ -152,11 +187,8 @@ definePageMeta({
 
 const selectedRoadmapItem = ref<RoadmapTimelineItem | null>(null)
 const isRoadmapPopupOpen = ref(false)
-// ...existing code...
-// const roadmapData = ref<any>(null)
-// const errorMessage = ref<string>('')
+const isStartingRoadmap = ref(false)
 const config = useRuntimeConfig()
-const objectStorageUrl = config.public.objectStorageUrl
 const headers = useRequestHeaders(['cookie'])
 
 // Ganti useLazyAsyncData -> useAsyncData + transform (seperti kuisioner)
@@ -190,8 +222,67 @@ const errorMessage = computed(() => {
     : ''
 })
 
-// Hapus watcher dan onMounted yang meng-assign manual
-// ...existing code...
+// Check if roadmap is started from localStorage
+const isRoadmapStarted = ref(false)
+
+// Check localStorage on mount
+onMounted(() => {
+  if (process.client && roadmapData.value?.id) {
+    const startedRoadmaps = JSON.parse(localStorage.getItem('startedRoadmaps') || '[]')
+    isRoadmapStarted.value = startedRoadmaps.includes(roadmapData.value.id)
+  }
+})
+
+// Watch roadmapData changes to check localStorage
+watch(roadmapData, (newData) => {
+  if (process.client && newData?.id) {
+    const startedRoadmaps = JSON.parse(localStorage.getItem('startedRoadmaps') || '[]')
+    isRoadmapStarted.value = startedRoadmaps.includes(newData.id)
+  }
+}, { immediate: true })
+
+// Handle start roadmap
+const handleStartRoadmap = async () => {
+  if (!roadmapData.value?.id || isStartingRoadmap.value) return
+  
+  isStartingRoadmap.value = true
+  
+  try {
+    const payload = { roadmap_id: roadmapData.value.id }
+    const response = await $fetch('/student/roadmaps/start', {
+      method: 'POST',
+      body: payload,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        ...headers
+      },
+      baseURL: config.public.apiBase,
+      credentials: 'include'
+    })
+    
+    if (response.success) {
+      // Save to localStorage
+      if (process.client) {
+        const startedRoadmaps = JSON.parse(localStorage.getItem('startedRoadmaps') || '[]')
+        if (!startedRoadmaps.includes(roadmapData.value.id)) {
+          startedRoadmaps.push(roadmapData.value.id)
+          localStorage.setItem('startedRoadmaps', JSON.stringify(startedRoadmaps))
+        }
+        isRoadmapStarted.value = true
+      }
+      
+      // Refresh roadmap data
+      await refresh()
+      
+      console.log('Roadmap started successfully')
+    }
+  } catch (error) {
+    console.error('Error starting roadmap:', error)
+  } finally {
+    isStartingRoadmap.value = false
+  }
+}
 
 const timelineItems = computed(() => {
   const steps = roadmapData.value?.steps

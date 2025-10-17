@@ -241,13 +241,36 @@ const removeMember = (idx: number) => {
 }
 
 /* Search Students */
+const normalizeStudent = (s: any): StudentOption => ({
+  id: s.id || s.user_id || s.student_id || '',
+  fullname: s.fullname || s.full_name || s.name || `${s.first_name ?? ''} ${s.last_name ?? ''}`.trim(),
+  nis: s.nis || s.student_number || s.nisn || '-',
+  class: s.class || s.class_name || s.kelas || undefined
+})
+
 const fetchStudents = async (query: string) => {
-  const url = `/student/users/students?page=1&limit=10&search=${encodeURIComponent(query || '')}`
-  const res = await $fetch<{ success: boolean; data: StudentOption[] }>(url, {
-    baseURL: config.public.apiBase,
-    credentials: 'include'
-  })
-  return res?.success ? res.data : []
+  try {
+    const res = await $fetch<any>('/student/users/students', {
+      baseURL: config.public.apiBase,
+      credentials: 'include',
+      headers: process.server ? useRequestHeaders(['cookie']) : undefined,
+      query: {
+        page: 1,
+        limit: 10,
+        ...(query ? { search: query } : {})
+      }
+    })
+
+    const raw =
+      Array.isArray(res?.data) ? res.data :
+      Array.isArray(res?.data?.data) ? res.data.data :
+      []
+
+    return (raw as any[]).map(normalizeStudent)
+  } catch (e) {
+    console.error('fetchStudents error:', e)
+    return []
+  }
 }
 
 const onStudentInput = (row: MemberRow) => {
@@ -257,6 +280,8 @@ const onStudentInput = (row: MemberRow) => {
   row.studentTimer = setTimeout(async () => {
     try {
       row.studentOptions = await fetchStudents(row.studentQuery)
+    } catch {
+      row.studentOptions = []
     } finally {
       row.loadingStudent = false
     }
@@ -297,7 +322,6 @@ const submitTeam = async () => {
       return
     }
 
-    // ...existing code...
     const body = {
       team_name: teamData.value.team_name,
       about: teamData.value.about,

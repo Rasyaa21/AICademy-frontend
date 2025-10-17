@@ -37,32 +37,6 @@ export default defineNuxtConfig({
           crossorigin: ''
         },
         {
-          rel: 'apple-touch-icon',
-          sizes: '180x180',
-          href: 'https://aicademy.galleryne.my.id/assets/apple-touch-icon.png'
-        },
-        {
-          rel: 'icon',
-          type: 'image/png',
-          sizes: '32x32',
-          href: 'https://aicademy.galleryne.my.id/assets/favicon-32x32.png'
-        },
-        {
-          rel: 'icon',
-          type: 'image/png',
-          sizes: '16x16',
-          href: 'https://aicademy.galleryne.my.id/assets/favicon-16x16.png'
-        },
-        {
-          rel: 'shortcut icon',
-          href: 'https://aicademy.galleryne.my.id/assets/favicon.ico'
-        },
-        {
-          rel: 'mask-icon',
-          href: 'https://aicademy.galleryne.my.id/assets/safari-pinned-tab.svg',
-          color: '#dc2626'
-        },
-        {
           rel: 'icon',
           type: 'image/webp',
           href: 'https://aicademy.galleryne.my.id/assets/aicademy-logo.webp'
