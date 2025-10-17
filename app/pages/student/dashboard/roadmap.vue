@@ -191,7 +191,6 @@ const isStartingRoadmap = ref(false)
 const config = useRuntimeConfig()
 const headers = useRequestHeaders(['cookie'])
 
-// Ganti useLazyAsyncData -> useAsyncData + transform (seperti kuisioner)
 const { data: roadmapState, pending, error, refresh } = await useAsyncData(
   'student-my-roadmap',
   async () => {
@@ -214,32 +213,16 @@ const { data: roadmapState, pending, error, refresh } = await useAsyncData(
   }
 )
 
-// roadmapData dan errorMessage jadi computed agar selalu sinkron
-const roadmapData = computed(() => roadmapState.value?.payload || null)
+// Gunakan data roadmap langsung dari response payload.roadmap
+const roadmapData = computed(() => roadmapState.value?.payload?.roadmap || null)
 const errorMessage = computed(() => {
   return roadmapState.value && roadmapState.value.success === false
     ? roadmapState.value.message || 'Gagal memuat roadmap'
     : ''
 })
 
-// Check if roadmap is started from localStorage
-const isRoadmapStarted = ref(false)
-
-// Check localStorage on mount
-onMounted(() => {
-  if (process.client && roadmapData.value?.id) {
-    const startedRoadmaps = JSON.parse(localStorage.getItem('startedRoadmaps') || '[]')
-    isRoadmapStarted.value = startedRoadmaps.includes(roadmapData.value.id)
-  }
-})
-
-// Watch roadmapData changes to check localStorage
-watch(roadmapData, (newData) => {
-  if (process.client && newData?.id) {
-    const startedRoadmaps = JSON.parse(localStorage.getItem('startedRoadmaps') || '[]')
-    isRoadmapStarted.value = startedRoadmaps.includes(newData.id)
-  }
-}, { immediate: true })
+// Status mulai roadmap berdasarkan API (tidak pakai localStorage)
+const isRoadmapStarted = computed(() => !!roadmapState.value?.payload?.has_started_roadmap)
 
 // Handle start roadmap
 const handleStartRoadmap = async () => {
@@ -262,19 +245,8 @@ const handleStartRoadmap = async () => {
     })
     
     if (response.success) {
-      // Save to localStorage
-      if (process.client) {
-        const startedRoadmaps = JSON.parse(localStorage.getItem('startedRoadmaps') || '[]')
-        if (!startedRoadmaps.includes(roadmapData.value.id)) {
-          startedRoadmaps.push(roadmapData.value.id)
-          localStorage.setItem('startedRoadmaps', JSON.stringify(startedRoadmaps))
-        }
-        isRoadmapStarted.value = true
-      }
-      
-      // Refresh roadmap data
+      // Refresh agar has_started_roadmap dan progress ter-update dari server
       await refresh()
-      
       console.log('Roadmap started successfully')
     }
   } catch (error) {
@@ -289,7 +261,6 @@ const timelineItems = computed(() => {
   if (!steps || !Array.isArray(steps)) return []
 
   return steps.map((step: any, index: number) => {
-    // Safe parse resource_links
     let links: string[] = []
     try {
       if (Array.isArray(step.resource_links)) {
@@ -323,7 +294,6 @@ const timelineItems = computed(() => {
   })
 })
 
-// Helper function to get icon based on difficulty
 const getStepIcon = (difficulty: string) => {
   switch (difficulty) {
     case 'beginner': return 'heroicons:play-circle-20-solid'
@@ -370,7 +340,6 @@ const navigateToProfile = () => {
   navigateTo('/student/dashboard/questionnaires')
 }
 
-// Progress guard (hindari NaN/Infinity)
 const progressText = computed(() => {
   const p = roadmapData.value?.progress
   if (!p || !p.total_steps) return 0

@@ -287,12 +287,23 @@
       </div>
     </div>
   </div>
+
+  <!-- Alert Modal -->
+  <AlertModal
+    :isOpen="alertOpen"
+    :type="alertType"
+    :title="alertTitle"
+    :message="alertMessage"
+    :okText="alertOkText"
+    @update:isOpen="alertOpen = $event"
+  />
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch } from "vue";
 import ChallengeCard from "~/components/card/ChallengeCard.vue";
 import CreateTeamModal from "~/components/modal/student/dashboard/CreateTeamModal.vue";
+import AlertModal from '~/components/modal/basic-modal/AlertModal.vue';
 import type { Challenge, Team } from "~/types/Challenge";
 
 interface Submission {
@@ -315,6 +326,21 @@ definePageMeta({
 const searchQuery = ref("");
 const currentPage = ref(1);
 const itemsPerPage = 12;
+
+// Alert Modal state
+type AlertKind = 'success' | 'error' | 'warning' | 'info'
+const alertOpen = ref(false)
+const alertType = ref<AlertKind>('info')
+const alertTitle = ref('')
+const alertMessage = ref('')
+const alertOkText = ref('OK')
+const showAlert = (opts: { type?: AlertKind; title?: string; message: string; okText?: string }) => {
+  alertType.value = opts.type ?? 'info'
+  alertTitle.value = opts.title ?? (opts.type === 'success' ? 'Berhasil' : opts.type === 'error' ? 'Terjadi Kesalahan' : 'Informasi')
+  alertMessage.value = opts.message
+  alertOkText.value = opts.okText ?? 'OK'
+  alertOpen.value = true
+}
 
 // Modals
 const showCreateTeamModal = ref(false);
@@ -403,13 +429,13 @@ const registerChallenge = async () => {
       showRegisterModal.value = false;
       registerForm.value = { team_id: "", challenge_id: "" };
       await Promise.all([refreshChallenges(), refreshSubmissions(), refreshTeams()]);
-      alert("Berhasil mendaftar challenge!");
+      showAlert({ type: 'success', message: 'Berhasil mendaftar challenge!' });
     } else {
       throw new Error(response?.message || "Gagal mendaftar challenge");
     }
   } catch (error) {
     console.error("Error registering challenge:", error);
-    alert("Gagal mendaftar challenge. Silakan coba lagi.");
+    showAlert({ type: 'error', message: 'Gagal mendaftar challenge. Silakan coba lagi.' });
   } finally {
     registering.value = false;
   }
@@ -439,13 +465,13 @@ const submitChallenge = async () => {
       showSubmitModal.value = false;
       submitForm.value = { challenge_id: "", title: "", github_url: "", live_url: "", description: "" };
       await refreshSubmissions();
-      alert("Submission berhasil dikirim!");
+      showAlert({ type: 'success', message: 'Submission berhasil dikirim!' });
     } else {
       throw new Error(response?.message || "Gagal mengirim submission");
     }
   } catch (error) {
     console.error("Error submitting challenge:", error);
-    alert("Gagal mengirim submission. Silakan coba lagi.");
+    showAlert({ type: 'error', message: 'Gagal mengirim submission. Silakan coba lagi.' });
   } finally {
     submitting.value = false;
   }

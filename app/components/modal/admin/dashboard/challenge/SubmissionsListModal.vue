@@ -356,36 +356,43 @@ const fetchSubmissions = async () => {
 
 const updateScore = async (submission: Submission) => {
     const newScore = scoreInputs.value[submission.id]
-    
+
     if (newScore === undefined || newScore < 0 || newScore > 100) {
         emit('show-error-modal', 'Skor harus antara 0-100')
         return
     }
-    
+
     if (newScore === submission.points) {
         emit('show-error-modal', 'Skor tidak berubah')
         return
     }
-    
+
     try {
         scoringSubmissions.value.push(submission.id)
-        
-        const response = await $fetch(`${apiPrefix.value}/challenges/submissions/${submission.id}/score`, {
-            method: 'PUT',
+
+        const response = await $fetch(`${apiPrefix.value}/challenges/submissions/score`, {
+            method: 'POST',
             baseURL: config.public.apiBase,
             credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                ...(process.server ? useRequestHeaders(['cookie']) : {})
+            },
             body: {
+                submission_id: submission.id,
                 points: newScore
+                // feedback, detailed_scores, judge_notes, recommendations bisa ditambahkan di sini bila ada
             }
         }) as { success: boolean; message: string }
-        
+
         if (response.success) {
             // Update local data
             const submissionIndex = submissions.value.findIndex(s => s.id === submission.id)
             if (submissionIndex !== -1) {
                 submissions.value[submissionIndex].points = newScore
             }
-            
+
             emit('show-success-modal', `Skor untuk tim "${submission.team_name}" berhasil diupdate menjadi ${newScore} poin`)
             emit('submission-updated')
         } else {
@@ -393,8 +400,9 @@ const updateScore = async (submission: Submission) => {
         }
     } catch (err: any) {
         console.error('Error updating score:', err)
-        emit('show-error-modal', err.message || 'Gagal mengupdate skor')
-        
+        const msg = err?.data?.message || err?.message || 'Gagal mengupdate skor'
+        emit('show-error-modal', msg)
+
         // Reset input to original value
         scoreInputs.value[submission.id] = submission.points
     } finally {
