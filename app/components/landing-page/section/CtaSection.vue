@@ -22,19 +22,19 @@ const handleGetStarted = () => {
 
         <div class="absolute top-24 left-32 lg:left-48 animate-float">
             <div class="w-[100px] h-[100px] bg-transparent backdrop-blur-sm rounded-full p-3 shadow-lg">
-                <img src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/home-icon.webp" alt="Settings" class="w-full h-full object-contain opacity-80" />
+                <img src="https://aicademy.galleryne.my.id/assets/home-icon.webp" alt="Settings" class="w-full h-full object-contain opacity-80" />
             </div>
         </div>
 
         <div class="absolute top-1/3 right-24 lg:right-32 animate-float-delayed">
             <div class="w-[100px] h-[100px] bg-transparen backdrop-blur-sm rounded-full p-3 shadow-lg">
-                <img src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/book-icon.webp" alt="Book" class="w-full h-full object-contain opacity-80" />
+                <img src="https://aicademy.galleryne.my.id/assets/book-icon.webp" alt="Book" class="w-full h-full object-contain opacity-80" />
             </div>
         </div>
 
         <div class="absolute bottom-40 left-16 animate-float-slow">
             <div class="w-[100px] h-[100px] bg-transparen backdrop-blur-sm rounded-full p-3 shadow-lg">
-                <img src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/gear-icon.webp" alt="Settings" class="w-full h-full object-contain opacity-80" />
+                <img src="https://aicademy.galleryne.my.id/assets/gear-icon.webp" alt="Settings" class="w-full h-full object-contain opacity-80" />
             </div>
         </div>
 
@@ -55,8 +55,7 @@ const handleGetStarted = () => {
 
           <!-- Description -->
           <p class="text-xl lg:text-2xl text-white/90 mb-10 max-w-4xl mx-auto leading-relaxed">
-            Bergabunglah dengan ribuan siswa yang telah memulai perjalanan menuju kesuksesan. 
-            Dapatkan akses ke challenge terbaik, mentor berpengalaman, dan komunitas developer masa depan.
+Ayo! Bergabung bersama ribuan siswa yang telah memulai perjalanan menuju kesuksesan. Dapatkan akses ke challenge terbaik, mentor berpengalaman dan komunitas developer masa depan.
           </p>
 
           <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">

@@ -17,19 +17,19 @@
 
         <div class="absolute top-24 left-32 lg:left-48 animate-float">
             <div class="w-[80px] h-[80px] bg-white/10 backdrop-blur-sm rounded-full p-3 shadow-lg">
-                <NuxtImg src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/home-icon.webp" alt="Home" class="object-contain w-full h-full opacity-80" />
+                <NuxtImg src="https://aicademy.galleryne.my.id/assets/home-icon.webp" alt="Home" class="object-contain w-full h-full opacity-80" />
             </div>
         </div>
 
         <div class="absolute right-24 top-1/3 lg:right-32 animate-float-delayed">
             <div class="w-[80px] h-[80px] bg-white/10 backdrop-blur-sm rounded-full p-3 shadow-lg">
-                <NuxtImg src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/book-icon.webp" alt="Book" class="object-contain w-full h-full opacity-80" />
+                <NuxtImg src="https://aicademy.galleryne.my.id/assets/book-icon.webp" alt="Book" class="object-contain w-full h-full opacity-80" />
             </div>
         </div>
 
         <div class="absolute left-16 bottom-40 animate-float-slow">
             <div class="w-[80px] h-[80px] bg-white/10 backdrop-blur-sm rounded-full p-3 shadow-lg">
-                <NuxtImg src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/gear-icon.webp" alt="Settings" class="object-contain w-full h-full opacity-80" />
+                <NuxtImg src="https://aicademy.galleryne.my.id/assets/gear-icon.webp" alt="Settings" class="object-contain w-full h-full opacity-80" />
             </div>
         </div>
 
@@ -102,7 +102,7 @@
 
                 <div class="hidden overflow-hidden relative justify-center items-center h-full lg:flex lg:w-1/2">
                         <NuxtImg 
-                            src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/login.webp`" 
+                            src="https://aicademy.galleryne.my.id/assets/login.webp`" 
                            alt="Register Illustration" 
                             class="mx-auto w-full max-w-md drop-shadow-lg"
                         

@@ -13,6 +13,21 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
+      title: 'AICademy - Temukan Karir yang Kamu Banget',
+      htmlAttrs: {
+        lang: 'id'
+      },
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        {
+          name: 'description',
+          content:
+            'AICademy membantu siswa dan alumni menemukan karir impian mereka dengan profiling keahlian, koneksi perusahaan, dan peluang magang di seluruh Indonesia.'
+        },
+        { name: 'author', content: 'AICademy Team' },
+        { name: 'theme-color', content: '#dc2626' },
+      ],
       script: [
         {
           src: "https://cloud.umami.is/script.js",
@@ -20,6 +35,29 @@ export default defineNuxtConfig({
           "data-website-id": "582c19f3-1f1b-4f09-b6ab-54ad3ab1d1fc"
         }
       ]
+    }
+  },
+  routeRules: {
+    // Bundle build Nuxt
+    '/_nuxt/**': {
+      headers: { 'cache-control': 'public, max-age=31536000, immutable' }
+    },
+    // File di folder /public (mis. /assets/*.webp, /icons/*.svg, dll)
+    '/assets/**': {
+      headers: { 'cache-control': 'public, max-age=31536000, immutable' }
+    },
+    '/icons/**': {
+      headers: { 'cache-control': 'public, max-age=31536000, immutable' }
+    },
+
+    // API jangan di-cache
+    '/api/**': {
+      headers: { 'cache-control': 'no-store' }
+    },
+
+    // HTML: revalidate setiap request
+    '/**': {
+      headers: { 'cache-control': 'public, max-age=0, must-revalidate' }
     }
   },
   compatibilityDate: '2025-07-15',
@@ -55,7 +93,7 @@ export default defineNuxtConfig({
   domains: ['pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev'], 
   alias: {
     cdn: process.env.NUXT_PUBLIC_OBJECT_STORAGE_URL
-      || 'https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev'
+      || 'https://aicademy.galleryne.my.id'
   },
 }
 })

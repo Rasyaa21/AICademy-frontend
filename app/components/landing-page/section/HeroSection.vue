@@ -15,7 +15,7 @@
             <div class="absolute top-24 left-32 lg:left-48 animate-float">
                 <div class="w-[100px] h-[100px] bg-transparent backdrop-blur-sm rounded-full p-3 shadow-lg">
                     <NuxtImg 
-                      src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/home-icon.webp" 
+                      src="https://aicademy.galleryne.my.id/assets/home-icon.webp" 
                       alt="Home" 
                       class="w-full h-full object-contain opacity-80"
                 
@@ -26,7 +26,7 @@
             <div class="absolute top-1/3 right-24 lg:right-32 animate-float-delayed">
                 <div class="w-[100px] h-[100px] bg-transparent backdrop-blur-sm rounded-full p-3 shadow-lg">
                     <NuxtImg 
-                      src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/book-icon.webp" 
+                      src="https://aicademy.galleryne.my.id/assets/book-icon.webp" 
                       alt="Book" 
                       class="w-full h-full object-contain opacity-80"
                 
@@ -37,7 +37,7 @@
             <div class="absolute bottom-40 left-16 animate-float-slow">
                 <div class="w-[100px] h-[100px] bg-transparen backdrop-blur-sm rounded-full p-3 shadow-lg">
                     <NuxtImg 
-                      src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/gear-icon.webp" 
+                      src="https://aicademy.galleryne.my.id/assets/gear-icon.webp" 
                       alt="Settings" 
                       class="w-full h-full object-contain opacity-80"
                 
@@ -65,26 +65,26 @@
                 <div class="flex items-center space-x-2">
                     <div class="flex -space-x-2">
                         <NuxtImg 
-                          src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/sigma-2.webp" 
+                          src="https://aicademy.galleryne.my.id/assets/sigma-2.webp" 
                           alt="Student 1" 
                           class="w-8 h-8 rounded-full border-2 border-white object-cover"
                     
                         />
                         <NuxtImg 
-                          src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/sigma.webp" 
+                          src="https://aicademy.galleryne.my.id/assets/sigma.webp" 
                           alt="Student 2" 
                           class="w-8 h-8 rounded-full border-2 border-white object-cover"
                     
                         />
                         <NuxtImg 
-                          src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/sigma-3.webp" 
+                          src="https://aicademy.galleryne.my.id/assets/sigma-3.webp" 
                           alt="Student 3" 
                           class="w-8 h-8 rounded-full border-2 border-white object-cover"
                     
                         />
                         <div class="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center relative overflow-hidden">
                             <NuxtImg 
-                              src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/axel.webp" 
+                              src="https://aicademy.galleryne.my.id/assets/axel.webp" 
                               alt="Student 4" 
                               class="w-full h-full object-cover"
                         
@@ -116,7 +116,7 @@
             >
                 <div class="shrink-0 mx-10">
                     <NuxtImg 
-                      src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/logo_smk_telkom_pwt.webp" 
+                      src="https://aicademy.galleryne.my.id/assets/logo_smk_telkom_pwt.webp" 
                       alt="SMK Telkom Purwokerto" 
                       class="h-14 md:h-16 object-contain"
                 
@@ -124,7 +124,7 @@
                 </div>
                 <div class="shrink-0 mx-10">
                     <NuxtImg 
-                      src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/1000sd.webp" 
+                      src="https://aicademy.galleryne.my.id/assets/garuda-spark.webp" 
                       alt="1000sd" 
                       class="h-14 md:h-18 object-contain"
                 
@@ -132,7 +132,7 @@
                 </div>
                 <div class="shrink-0 mx-10">
                     <NuxtImg 
-                      src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/komdigi.webp" 
+                      src="https://aicademy.galleryne.my.id/assets/komdigi.webp" 
                       alt="Komdigi" 
                       class="h-14 md:h-18 object-contain"
                 
@@ -140,7 +140,7 @@
                 </div>
                 <div class="shrink-0 mx-10">
                     <NuxtImg 
-                      src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/jagoan-hosting.webp" 
+                      src="https://aicademy.galleryne.my.id/assets/jagoan-hosting.webp" 
                       alt="Jagoan Hosting" 
                       class="h-14 md:h-18 object-contain"
                 
@@ -148,7 +148,7 @@
                 </div>
                 <div class="shrink-0 mx-10">
                     <NuxtImg 
-                      src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/maspion-it.webp" 
+                      src="https://aicademy.galleryne.my.id/assets/maspion-it.webp" 
                       alt="Maspion IT" 
                       class="h-14 md:h-18 object-contain"
                 
@@ -162,7 +162,7 @@
                 <div class="relative w-screen flex justify-center px-8">
                     <div class="relative">
                         <NuxtImg
-                            src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/dashboard.webp"
+                            src="https://aicademy.galleryne.my.id/assets/dashboard.webp"
                             alt="Dashboard"
                             class="w-full max-w-6xl h-auto"
                     
@@ -217,7 +217,7 @@ Masih ragu dengan jalan masa depanmu? Platform ini adalah jawaban untuk kamu. De
                     <div class="flex justify-center lg:justify-end">
                         <div class="relative">
                             <NuxtImg 
-                              src="https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/dashboard.webp" 
+                              src="https://aicademy.galleryne.my.id/assets/dashboard.webp" 
                               alt="Dashboard Preview"
                               class="w-full max-w-lg h-auto"
                         

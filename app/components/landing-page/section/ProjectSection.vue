@@ -9,11 +9,11 @@ const projects = ref([
     category: 'Web Application',
     rank: 1,
     author: {
-      avatar: 'https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/pregnacare.webp',
+      avatar: 'https://aicademy.galleryne.my.id/assets/pregnacare.webp',
       team: 'IntechCode'
     },
     tech: ['Next.js', 'Express.js', 'Prisma', 'PosgresSQL'],
-    image: 'https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/pregnacare.webp',
+    image: 'https://aicademy.galleryne.my.id/assets/pregnacare.webp',
     githubUrl: 'https://github.com/Rasyaa21/Nyampah_Dinacom',
     liveUrl: 'https://dodolan.example.com'
   },
@@ -24,11 +24,11 @@ const projects = ref([
     category: 'Mobile Application',
     rank: 2,
     author: {
-      avatar: 'https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/dinacom.webp',
+      avatar: 'https://aicademy.galleryne.my.id/assets/dinacom.webp',
       team: 'klub_realitas.dart'
     },
     tech: ['Flutter', 'Gemini AI', 'Laravel', 'MySQL'],
-    image: 'https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/dinacom.webp',
+    image: 'https://aicademy.galleryne.my.id/assets/dinacom.webp',
     githubUrl: 'https://github.com/Rasyaa21/Nyampah_Dinacom',
     liveUrl: 'https://edutrack.example.com'
   },
@@ -39,11 +39,11 @@ const projects = ref([
     category: 'Web Application',
     rank: 3,
     author: {
-      avatar: 'https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/dodolan-img.webp',
+      avatar: 'https://aicademy.galleryne.my.id/assets/dodolan-img.webp',
       team: 'IntechCode'
     },
     tech: ['Next.js'],
-    image: 'https://pub-05d8cb1ce8b94b96a4835f0b0b556c1a.r2.dev/assets/agriloka.webp',
+    image: 'https://aicademy.galleryne.my.id/assets/agriloka.webp',
     githubUrl: 'https://github.com/Rasyaa21/dodolan-final-web',
     liveUrl: 'https://agriloka-intech.vercel.app/'
   }
@@ -56,7 +56,7 @@ const thirdPlace = computed(() => projects.value.find(p => p.rank === 3))
 </script>
 
 <template>
-  <section class="w-full py-20 bg-gradient-to-b from-white to-blue-50 relative overflow-hidden">
+  <section id="project" class="w-full py-20 bg-gradient-to-b from-white to-blue-50 relative overflow-hidden">
     <div class="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-yellow-400/10 to-transparent rounded-full blur-3xl"></div>
     <div class="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-3xl"></div>
     

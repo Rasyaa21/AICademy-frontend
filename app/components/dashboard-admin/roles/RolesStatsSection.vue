@@ -16,7 +16,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-gray-500 text-sm">Peran Aktif</p>
-                    <p class="text-2xl font-bold text-green-600">{{ roleStats.active }}</p>
+                    <p class="text-2xl font-bold text-green-600">{{ roleStats.total }}</p>
                 </div>
                 <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
                     <Icon name="heroicons:check-circle-20-solid" class="w-6 h-6 text-green-600" />
