@@ -15,7 +15,7 @@
 
       <div class="bg-white rounded-2xl p-6 shadow-sm border">
         <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-semibold text-gray-900">Challange Terkini</h3>
+          <h3 class="text-lg font-semibold text-gray-900">Challenge Terkini</h3>
           <NuxtLink to="/admin/dashboard/challenge" class="text-primary hover:text-primary/80 text-sm font-medium"> Lihat Semua </NuxtLink>
         </div>
         <ChallengeTable :challenges="recentChallenges" />

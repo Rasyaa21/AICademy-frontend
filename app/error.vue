@@ -14,7 +14,7 @@
     <div class="absolute top-24 left-32 lg:left-48 animate-float">
       <div class="w-[80px] h-[80px] bg-transparent backdrop-blur-sm rounded-full p-3 shadow-lg">
         <NuxtImg 
-          :src="`${objectStorageUrl}/assets/home-icon.webp`" 
+          src="https://aicademy.galleryne.my.id/assets/home-icon.webp"
           alt="Home" 
           class="w-full h-full object-contain opacity-60"
           loading="lazy"
@@ -28,7 +28,7 @@
     <div class="absolute top-1/3 right-24 lg:right-32 animate-float-delayed">
       <div class="w-[80px] h-[80px] bg-transparent backdrop-blur-sm rounded-full p-3 shadow-lg">
         <NuxtImg 
-          :src="`${objectStorageUrl}/assets/book-icon.webp`" 
+          src="https://aicademy.galleryne.my.id/assets/book-icon.webp"
           alt="Book" 
           class="w-full h-full object-contain opacity-60"
           loading="lazy"
@@ -42,7 +42,7 @@
     <div class="absolute bottom-40 left-16 animate-float-slow">
       <div class="w-[80px] h-[80px] bg-transparent backdrop-blur-sm rounded-full p-3 shadow-lg">
         <NuxtImg 
-          :src="`${objectStorageUrl}/assets/gear-icon.webp`" 
+          src="https://aicademy.galleryne.my.id/assets/gear-icon.webp"
           alt="Settings" 
           class="w-full h-full object-contain opacity-60"
           loading="lazy"

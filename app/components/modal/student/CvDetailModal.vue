@@ -98,7 +98,7 @@
             <div class="flex-1 overflow-y-auto min-h-0">
                 <div v-if="loading" class="flex items-center justify-center py-12">
                     <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
-                    <span class="ml-3 text-gray-600">Loading CV details...</span>
+                    <span class="ml-3 text-gray-600">Memuat Detail CV...</span>
                 </div>
 
                 <div v-else-if="error" class="text-center py-12">
@@ -110,7 +110,7 @@
                         class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                         @click="fetchCvDetail"
                     >
-                        Retry
+                        Ulangi
                     </button>
                 </div>
 
@@ -152,7 +152,7 @@
                                     class="px-4 py-2 border border-blue-300 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors flex items-center gap-2 text-sm"
                                 >
                                     <Icon name="heroicons:arrow-top-right-on-square-20-solid" class="w-4 h-4" />
-                                    Open
+                                    Buka
                                 </button>
                                 
                                 <button
@@ -170,11 +170,11 @@
                     <div class="bg-blue-50 rounded-xl p-6">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                             <Icon name="heroicons:user-20-solid" class="w-5 h-5 text-blue-600" />
-                            Personal Information
+                            Informasi Personal
                         </h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <p class="text-sm text-gray-600">Full Name</p>
+                                <p class="text-sm text-gray-600">Nama Lengkap</p>
                                 <p class="font-medium text-gray-900 break-words">{{ cvDetail.content?.personal_info?.full_name || '-' }}</p>
                             </div>
                             <div>
@@ -182,17 +182,17 @@
                                 <p class="font-medium text-gray-900 break-all">{{ cvDetail.content?.personal_info?.email || '-' }}</p>
                             </div>
                             <div>
-                                <p class="text-sm text-gray-600">Phone</p>
+                                <p class="text-sm text-gray-600">No Telp</p>
                                 <p class="font-medium text-gray-900">{{ cvDetail.content?.personal_info?.phone || '-' }}</p>
                             </div>
                             <div>
-                                <p class="text-sm text-gray-600">Location</p>
+                                <p class="text-sm text-gray-600">Lokasi</p>
                                 <p class="font-medium text-gray-900 break-words">{{ cvDetail.content?.personal_info?.location || '-' }}</p>
                             </div>
                         </div>
                         
                         <div v-if="cvDetail.content?.summary" class="mt-4">
-                            <p class="text-sm text-gray-600 mb-2">Professional Summary</p>
+                            <p class="text-sm text-gray-600 mb-2">Kesimpulan</p>
                             <p class="text-gray-900 leading-relaxed break-words">{{ cvDetail.content.summary }}</p>
                         </div>
                     </div>
@@ -218,7 +218,7 @@
                     <div v-if="cvDetail.content?.experiences?.length" class="bg-purple-50 rounded-xl p-6">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                             <Icon name="heroicons:briefcase-20-solid" class="w-5 h-5 text-purple-600" />
-                            Work Experience
+                            Pengalaman Kerja
                         </h3>
                         <div class="space-y-4">
                             <div 
@@ -283,7 +283,7 @@
                                         class="text-orange-600 hover:text-orange-800 text-sm flex items-center gap-1 break-all"
                                     >
                                         <Icon name="heroicons:link-20-solid" class="w-4 h-4 flex-shrink-0" />
-                                        <span class="truncate">View Project</span>
+                                        <span class="truncate">Lihat Project</span>
                                     </a>
                                 </div>
                             </div>
@@ -312,7 +312,7 @@
                     <div v-if="cvDetail.content?.certifications?.length" class="bg-yellow-50 rounded-xl p-6">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                             <Icon name="heroicons:trophy-20-solid" class="w-5 h-5 text-yellow-600" />
-                            Certifications
+                            Sertifikasi
                         </h3>
                         <div class="space-y-3">
                             <div 
@@ -345,7 +345,7 @@
                     <div v-if="cvDetail.content?.languages?.length" class="bg-teal-50 rounded-xl p-6">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                             <Icon name="heroicons:language-20-solid" class="w-5 h-5 text-teal-600" />
-                            Languages
+                            Bahasa
                         </h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div 
@@ -371,18 +371,18 @@
                     <div v-if="cvDetail.ats_score" class="bg-gray-50 rounded-xl p-6">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                             <Icon name="heroicons:chart-bar-20-solid" class="w-5 h-5 text-gray-600" />
-                            ATS Analysis
+                            Analisis ATS
                         </h3>
                         
                         <!-- Score Breakdown -->
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                             <div class="text-center p-3 bg-white rounded-lg">
                                 <div class="text-2xl font-bold text-green-600">{{ cvDetail.ats_score.overall }}</div>
-                                <div class="text-sm text-gray-600">Overall</div>
+                                <div class="text-sm text-gray-600">Total</div>
                             </div>
                             <div class="text-center p-3 bg-white rounded-lg">
                                 <div class="text-2xl font-bold text-blue-600">{{ cvDetail.ats_score.keywords }}</div>
-                                <div class="text-sm text-gray-600">Keywords</div>
+                                <div class="text-sm text-gray-600">Kata Kunci</div>
                             </div>
                             <div class="text-center p-3 bg-white rounded-lg">
                                 <div class="text-2xl font-bold text-purple-600">{{ cvDetail.ats_score.format }}</div>
@@ -390,13 +390,13 @@
                             </div>
                             <div class="text-center p-3 bg-white rounded-lg">
                                 <div class="text-2xl font-bold text-indigo-600">{{ cvDetail.ats_score.structure }}</div>
-                                <div class="text-sm text-gray-600">Structure</div>
+                                <div class="text-sm text-gray-600">Struktur</div>
                             </div>
                         </div>
 
                         <!-- Suggestions -->
                         <div v-if="cvDetail.ats_score.suggestions?.length" class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                            <h4 class="font-medium text-yellow-800 mb-2">Improvement Suggestions:</h4>
+                            <h4 class="font-medium text-yellow-800 mb-2">Saran Perbaikan:</h4>
                             <ul class="space-y-1">
                                 <li 
                                     v-for="suggestion in cvDetail.ats_score.suggestions" 

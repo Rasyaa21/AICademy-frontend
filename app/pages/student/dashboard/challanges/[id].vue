@@ -8,7 +8,7 @@
           class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white hover:shadow-sm transition-all duration-200"
         >
           <Icon name="heroicons:arrow-left-20-solid" class="w-4 h-4" />
-          <span class="font-medium">Kembali ke Challenges</span>
+          <span class="font-medium">Kembali ke List Challenge</span>
         </NuxtLink>
         <Icon name="heroicons:chevron-right-20-solid" class="w-4 h-4" />
         <span class="text-gray-800 font-medium">Detail Challenge</span>

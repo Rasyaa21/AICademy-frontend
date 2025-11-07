@@ -2,7 +2,7 @@
   <div class="space-y-6">
     <div class="flex flex-col gap-4 justify-between lg:flex-row lg:items-center">
       <div>
-        <h1 class="text-3xl font-bold text-gray-900">Internship untuk Mahasiswa</h1>
+        <h1 class="text-3xl font-bold text-gray-900">Internship untuk Siswa</h1>
         <p class="mt-1 text-gray-600">Temukan peluang magang terbaik untuk mengembangkan karir Anda</p>
       </div>
     </div>

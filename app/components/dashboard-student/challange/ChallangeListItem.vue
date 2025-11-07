@@ -39,7 +39,7 @@
 
           <div class="flex items-center gap-3">
             <span :class="['px-2 py-1 rounded-full text-xs font-medium', isActive(challenge.deadline) ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800']">
-              {{ isActive(challenge.deadline) ? "🟢 Aktif" : "🔴 Berakhir" }}
+              {{ isActive(challenge.deadline) ? "Aktif" : "Berakhir" }}
             </span>
 
             <button class="text-primary hover:text-primary/80 font-medium text-sm">Lihat Detail →</button>

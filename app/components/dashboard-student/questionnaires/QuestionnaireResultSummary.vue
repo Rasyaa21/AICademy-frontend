@@ -64,35 +64,25 @@
 
     
     <!-- Compact Justification with Expandable -->
-    <div class="p-5 bg-white rounded-xl border shadow-sm">
+    <div class="p-5 relative overflow-hidden p-8 bg-gradient-to-r from-primary to-primary/80 rounded-2xl text-white shadow-lg">
       <div class="flex items-start justify-between gap-3">
         <div class="flex-1">
-          <h3 class="text-lg font-semibold text-gray-900 mb-2 flex items-center gap-2">
+          <h3 class="text-lg font-semibold text-white mb-2 flex items-center gap-2">
             <Icon name="heroicons:light-bulb-20-solid" class="w-5 h-5 text-yellow-500" />
             Mengapa {{ mainRecommendedRole.role_name }}?
           </h3>
           <p 
-            class="text-gray-700 leading-relaxed transition-all duration-300"
+            class="text-white/80 leading-relaxed transition-all duration-300"
             :class="{ 'line-clamp-3': !isExpanded }"
           >
             {{ mainRecommendedRole.justification }}
           </p>
-          
-          <!-- Expand/Collapse Button -->
-          <button 
-            v-if="mainRecommendedRole.justification.length > 150"
-            @click="isExpanded = !isExpanded"
-            class="mt-2 text-sm text-primary hover:text-primary/80 font-medium flex items-center gap-1"
-          >
-            {{ isExpanded ? 'Lihat Lebih Sedikit' : 'Lihat Selengkapnya' }}
-            <Icon 
-              :name="isExpanded ? 'heroicons:chevron-up-20-solid' : 'heroicons:chevron-down-20-solid'" 
-              class="w-4 h-4" 
-            />
-          </button>
         </div>
-        
       </div>
+    </div>
+    <div class="relative overflow-hidden p-8 bg-gradient-to-r from-primary to-primary/80 rounded-2xl text-white shadow-lg">
+      <h1 class="text-lg font-bold text-white text-center">Hasil analisis AI ini bersifat rekomendatif dan bukan keputusan akhir.
+Gunakan sebagai bahan pertimbangan, pendukung, atau penyemangat, bukan sebagai patokan mutlak.</h1>
     </div>
   </div>
 </template>

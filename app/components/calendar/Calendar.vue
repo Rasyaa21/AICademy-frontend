@@ -62,19 +62,12 @@
                 </div>
             </div>
         </div>
-
-        <!-- Challenge Deadline Reminder -->
-        <div class="mt-6 p-4 bg-red-50 rounded-xl border border-red-100">
-            <h4 class="text-sm font-semibold text-red-800 mb-2">Challenge Deadline</h4>
-            <p class="text-xs text-red-600">API Perpustakaan - 20 Agustus 2025</p>
-        </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 
-// Calendar state
 const currentDate = ref(new Date())
 const selectedDate = ref<number | null>(null)
 

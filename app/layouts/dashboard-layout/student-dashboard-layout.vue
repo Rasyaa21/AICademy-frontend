@@ -119,12 +119,12 @@ const openLogoutConfirm = () => {
                     :is-selected="false" path="/student/dashboard/questionnaires" :collapsed="isCollapse" />
       <SidebarItems icon="streamline-plump:arrow-roadmap-solid" label="Roadmap"
                     :is-selected="false" path="/student/dashboard/roadmap" :collapsed="isCollapse" />
-      <SidebarItems icon="heroicons:trophy-solid" label="Challange"
+      <SidebarItems icon="heroicons:trophy-solid" label="Challenge"
                     :is-selected="false" path="/student/dashboard/challanges" :collapsed="isCollapse" />
-      <SidebarItems icon="tabler:clipboard-list" label="Peruhsaaan" :is-selected="false" path="/student/dashboard/internships" :collapsed="isCollapse"/>
-      <SidebarItems icon="heroicons:trophy-solid" label="Profile"
+      <SidebarItems icon="tabler:clipboard-list" label="Perusahaan" :is-selected="false" path="/student/dashboard/internships" :collapsed="isCollapse"/>
+      <SidebarItems icon="heroicons:user-circle-16-solid" label="Profile"
                     :is-selected="false" path="/student/dashboard/Profile" :collapsed="isCollapse" />
-      <SidebarItems icon="heroicons:trophy-solid" label="CV"
+      <SidebarItems icon="heroicons:document-text-20-solid" label="CV"
                     :is-selected="false" path="/student/dashboard/cv" :collapsed="isCollapse" />
     </ul>
 

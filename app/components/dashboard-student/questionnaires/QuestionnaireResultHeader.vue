@@ -19,17 +19,6 @@
           Berdasarkan jawaban Anda, sistem AI telah menganalisis dan memberikan rekomendasi jalur karir IT yang paling sesuai dengan kepribadian dan minat Anda.
         </p>
       </div>
-      
-      <div class="flex justify-center items-center gap-6 text-sm text-white/80">
-        <div class="flex items-center gap-2">
-          <Icon name="heroicons:calendar-20-solid" class="w-4 h-4" />
-          <span>{{ formattedDate }}</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <Icon name="heroicons:check-circle-20-solid" class="w-4 h-4 text-green-300" />
-          <span class="text-green-200 font-medium">{{ result.status === 'completed' ? 'Selesai' : 'Diproses' }}</span>
-        </div>
-      </div>
     </div>
   </div>
 </template>

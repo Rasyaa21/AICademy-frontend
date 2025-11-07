@@ -724,7 +724,6 @@ const getInitials = (name: string) =>
 const formatDate = (dateString: string) =>
   new Date(dateString).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' })
 
-// Fallback URL profil publik kalau backend belum kirim
 const safeProfileUrl = computed(() => {
   const explicit = publicProfile?.value.nis
   if (explicit) return explicit
@@ -733,7 +732,7 @@ const safeProfileUrl = computed(() => {
   if (typeof window === 'undefined') return null
   const origin = window.location.origin
   // Sesuaikan pola URL publik di app kamu
-  return `${origin}/profile/${publicProfile?.value.nis}`
+  return `aicademy.smktelkom-pwt.sch.id/profile/${publicProfile?.value.nis}`
 })
 
 const copyProfileUrl = async () => {

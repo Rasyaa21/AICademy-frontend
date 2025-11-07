@@ -1,4 +1,3 @@
-<!-- components/dashboard-student/challange/ChallengeGrid.vue -->
 <template>
   <div>
     <!-- Sort Options -->
