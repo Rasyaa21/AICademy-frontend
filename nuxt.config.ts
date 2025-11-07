@@ -1,6 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import 'pinia-plugin-persistedstate'
 export default defineNuxtConfig({
+  experimental: {
+    appManifest: false
+  },  
   pinia: {
     autoImports: ['defineStore']
   },
